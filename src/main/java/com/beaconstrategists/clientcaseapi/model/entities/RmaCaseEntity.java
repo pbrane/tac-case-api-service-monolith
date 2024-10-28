@@ -111,6 +111,15 @@ public class RmaCaseEntity {
 
   private Integer vendorRmaNumber;
 
+  @OneToMany(mappedBy = "rmaCase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+  @JsonManagedReference
+  private List<RmaCaseNoteEntity> rmaCaseNotes = new ArrayList<>();
+
+  public void addRmaCaseNote(RmaCaseNoteEntity rmaCaseNote) {
+    rmaCaseNotes.add(rmaCaseNote);
+    rmaCaseNote.setRmaCase(this);
+  }
+
   @OneToMany(mappedBy = "rmaCase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   @JsonManagedReference
   private List<RmaCaseAttachmentEntity> attachments = new ArrayList<>();

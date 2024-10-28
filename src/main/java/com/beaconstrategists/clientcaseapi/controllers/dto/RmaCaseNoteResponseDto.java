@@ -11,9 +11,11 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TacCaseNoteUploadDto {
+public class RmaCaseNoteResponseDto {
 
+    private Long id;
+    private Long rmaCaseId;
     private String author;
     private OffsetDateTime date;
-    private String text;
+
 }

@@ -63,21 +63,22 @@ $ sudo apt install git curl wget -y
 
 ### Clone the Repo
 ```
-$ mkdir -p development/src/molex
-$ cd development/src/molex
-$ git clone https://github.com/pbrane/client-api-demo.git
+$ cd
+$ mkdir -p development
+$ cd development
+$ git clone https://github.com/pbrane/tac-case-api-service.git
 ```
 
 ### Build the Container
 ```
-$ cd client-api-demo/
+$ cd tac-case-api-service/
 $ ./mvnw clean
-$ docker build -t client-api-demo .
+$ docker build -t tac-case-api-service .
 ```
 
 ### Now Run it
 ```
-$ docker run -p 8080:8080 client-api-demo
+$ docker run -p 8080:8080 tac-case-api-service
 ```
 
 ### Try it out:

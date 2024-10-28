@@ -15,17 +15,17 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tac_case_notes")
-public class TacCaseNoteEntity {
+@Table(name = "rma_case_notes")
+public class RmaCaseNoteEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "tac_case_id", nullable = false)
+  @JoinColumn(name = "rma_case_id", nullable = false)
   @JsonBackReference
-  private TacCaseEntity tacCase;
+  private RmaCaseEntity rmaCase;
 
   private String author;
 

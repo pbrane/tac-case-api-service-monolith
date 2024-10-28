@@ -17,8 +17,8 @@ public class TacCaseNoteUploadMapperImpl implements TacCaseNoteUploadMapper {
     }
 
     @Override
-    public TacCaseNoteUploadDto mapTo(TacCaseNoteEntity attachmentEntity) {
-        return modelMapper.map(attachmentEntity, TacCaseNoteUploadDto.class);
+    public TacCaseNoteUploadDto mapTo(TacCaseNoteEntity noteEntity) {
+        return modelMapper.map(noteEntity, TacCaseNoteUploadDto.class);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class TacCaseNoteUploadMapperImpl implements TacCaseNoteUploadMapper {
         return modelMapper.map(tacCaseNoteUploadDto, TacCaseNoteEntity.class);
     }
 
-    public void mapFrom(TacCaseNoteUploadDto tacCaseNoteUploadDto, TacCaseNoteEntity attachmentEntity) {
-        modelMapper.map(tacCaseNoteUploadDto, attachmentEntity);
+    public void mapFrom(TacCaseNoteUploadDto tacCaseNoteUploadDto, TacCaseNoteEntity noteEntity) {
+        modelMapper.map(tacCaseNoteUploadDto, noteEntity);
     }
 }

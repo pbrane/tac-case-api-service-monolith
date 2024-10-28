@@ -1,17 +1,16 @@
 package com.beaconstrategists.clientcaseapi.services.impl;
 
-import com.beaconstrategists.clientcaseapi.controllers.dto.RmaCaseAttachmentDownloadDto;
-import com.beaconstrategists.clientcaseapi.controllers.dto.RmaCaseAttachmentResponseDto;
-import com.beaconstrategists.clientcaseapi.controllers.dto.RmaCaseAttachmentUploadDto;
-import com.beaconstrategists.clientcaseapi.controllers.dto.RmaCaseDto;
+import com.beaconstrategists.clientcaseapi.controllers.dto.*;
 import com.beaconstrategists.clientcaseapi.exceptions.ResourceNotFoundException;
 import com.beaconstrategists.clientcaseapi.mappers.RmaCaseAttachmentDownloadMapper;
 import com.beaconstrategists.clientcaseapi.mappers.RmaCaseAttachmentResponseMapper;
+import com.beaconstrategists.clientcaseapi.mappers.RmaCaseNoteDownloadMapper;
+import com.beaconstrategists.clientcaseapi.mappers.RmaCaseNoteResponseMapper;
 import com.beaconstrategists.clientcaseapi.mappers.impl.RmaCaseMapperImpl;
 import com.beaconstrategists.clientcaseapi.model.CaseStatus;
-import com.beaconstrategists.clientcaseapi.model.entities.RmaCaseAttachmentEntity;
-import com.beaconstrategists.clientcaseapi.model.entities.RmaCaseEntity;
+import com.beaconstrategists.clientcaseapi.model.entities.*;
 import com.beaconstrategists.clientcaseapi.repositories.RmaCaseAttachmentRepository;
+import com.beaconstrategists.clientcaseapi.repositories.RmaCaseNoteRepository;
 import com.beaconstrategists.clientcaseapi.repositories.RmaCaseRepository;
 import com.beaconstrategists.clientcaseapi.services.RmaCaseService;
 import com.beaconstrategists.clientcaseapi.specifications.RmaCaseSpecification;
@@ -33,20 +32,29 @@ public class RmaCaseServiceImpl implements RmaCaseService {
 
     private final RmaCaseRepository rmaCaseRepository;
     private final RmaCaseAttachmentRepository rmaCaseAttachmentRepository;
+    private final RmaCaseNoteRepository rmaCaseNoteRepository;
     private final RmaCaseMapperImpl rmaCaseMapper;
-    private final RmaCaseAttachmentResponseMapper responseMapper;
-    private final RmaCaseAttachmentDownloadMapper downloadMapper;
+    private final RmaCaseAttachmentResponseMapper attachmentResponseMapper;
+    private final RmaCaseAttachmentDownloadMapper attachmentDownloadMapper;
+    private final RmaCaseNoteDownloadMapper noteDownloadMapper;
+    private final RmaCaseNoteResponseMapper noteResponseMapper;
 
     public RmaCaseServiceImpl(RmaCaseRepository rmaCaseRepository,
                               RmaCaseAttachmentRepository rmaCaseAttachmentRepository,
+                              RmaCaseNoteRepository rmaCaseNoteRepository,
                               RmaCaseMapperImpl rmaCaseMapper,
-                              RmaCaseAttachmentResponseMapper responseMapper,
-                              RmaCaseAttachmentDownloadMapper downloadMapper) {
+                              RmaCaseAttachmentResponseMapper attachmentResponseMapper,
+                              RmaCaseAttachmentDownloadMapper attachmentDownloadMapper,
+                              RmaCaseNoteDownloadMapper noteDownloadMapper,
+                              RmaCaseNoteResponseMapper noteResponseMapper) {
         this.rmaCaseRepository = rmaCaseRepository;
         this.rmaCaseAttachmentRepository = rmaCaseAttachmentRepository;
+        this.rmaCaseNoteRepository = rmaCaseNoteRepository;
         this.rmaCaseMapper = rmaCaseMapper;
-        this.responseMapper = responseMapper;
-        this.downloadMapper = downloadMapper;
+        this.attachmentResponseMapper = attachmentResponseMapper;
+        this.attachmentDownloadMapper = attachmentDownloadMapper;
+        this.noteDownloadMapper = noteDownloadMapper;
+        this.noteResponseMapper = noteResponseMapper;
     }
 
     // CRUD Operations for RmaCase
@@ -237,7 +245,7 @@ public class RmaCaseServiceImpl implements RmaCaseService {
         rmaCase.addAttachment(attachmentEntity);
         rmaCaseAttachmentRepository.save(attachmentEntity);
 
-        return responseMapper.mapTo(attachmentEntity);
+        return attachmentResponseMapper.mapTo(attachmentEntity);
     }
 
     @Override
@@ -247,7 +255,7 @@ public class RmaCaseServiceImpl implements RmaCaseService {
                 .orElseThrow(() -> new ResourceNotFoundException("RMA Case not found with id " + caseId));
 
         return rmaCase.getAttachments().stream()
-                .map(responseMapper::mapTo)
+                .map(attachmentResponseMapper::mapTo)
                 .collect(Collectors.toList());
     }
 
@@ -258,7 +266,7 @@ public class RmaCaseServiceImpl implements RmaCaseService {
                 .filter(a -> a.getRmaCase().getId().equals(caseId))
                 .orElseThrow(() -> new ResourceNotFoundException("Attachment not found with id " + attachmentId + " for RMA Case " + caseId));
 
-        return responseMapper.mapTo(attachment);
+        return attachmentResponseMapper.mapTo(attachment);
     }
 
     @Override
@@ -268,7 +276,7 @@ public class RmaCaseServiceImpl implements RmaCaseService {
                 .filter(a -> a.getRmaCase().getId().equals(caseId))
                 .orElseThrow(() -> new ResourceNotFoundException("Attachment not found with id " + attachmentId + " for RMA Case " + caseId));
 
-        return downloadMapper.mapTo(attachment);
+        return attachmentDownloadMapper.mapTo(attachment);
     }
 
     @Override
@@ -293,6 +301,74 @@ public class RmaCaseServiceImpl implements RmaCaseService {
             rmaCaseAttachmentRepository.deleteAll(attachments);
         }
     }
+
+        /* Note Ops
+        Fixme for this exposes weirdness in the API. Why navigate by caseId if we only require the attachmentId in these operations
+    */
+
+    @Override
+    @Transactional
+    public RmaCaseNoteResponseDto addNote(Long caseId, RmaCaseNoteUploadDto uploadDto) {
+        RmaCaseEntity rmaCase = rmaCaseRepository.findById(caseId)
+                .orElseThrow(() -> new ResourceNotFoundException("RMA Case not found with id " + caseId));
+
+        RmaCaseNoteEntity noteEntity = RmaCaseNoteEntity.builder()
+                .author(uploadDto.getAuthor())
+                .date(uploadDto.getDate())
+                .text(uploadDto.getText())
+                .rmaCase(rmaCase)
+                .build();
+
+        rmaCase.addRmaCaseNote(noteEntity);
+        rmaCaseNoteRepository.save(noteEntity);
+
+        return noteResponseMapper.mapTo(noteEntity);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RmaCaseNoteResponseDto> getAllNotes(Long caseId) {
+        RmaCaseEntity tacCase = rmaCaseRepository.findById(caseId)
+                .orElseThrow(() -> new ResourceNotFoundException("RMA Case not found with id " + caseId));
+
+        return tacCase.getRmaCaseNotes().stream()
+                .map(noteResponseMapper::mapTo)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public RmaCaseNoteDownloadDto getNote(Long caseId, Long noteId) {
+        RmaCaseNoteEntity note = rmaCaseNoteRepository.findById(noteId)
+                .filter(a -> a.getRmaCase().getId().equals(caseId))
+                .orElseThrow(() -> new ResourceNotFoundException("Note not found with id " + noteId + " for RMA Case " + caseId));
+
+        return noteDownloadMapper.mapTo(note);
+    }
+
+    @Override
+    @Transactional
+    public void deleteNote(Long caseId, Long noteId) {
+        RmaCaseNoteEntity note = rmaCaseNoteRepository.findById(noteId)
+                .filter(a -> a.getRmaCase().getId().equals(caseId))
+                .orElseThrow(() -> new ResourceNotFoundException("Note not found with id " + noteId + " for RMA Case " + caseId));
+
+        rmaCaseNoteRepository.delete(note);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllNotes(Long caseId) {
+        RmaCaseEntity rmaCase = rmaCaseRepository.findById(caseId)
+                .orElseThrow(() -> new ResourceNotFoundException("RMA Case not found with id " + caseId));
+
+        List<RmaCaseNoteEntity> notes = rmaCase.getRmaCaseNotes();
+        if (!notes.isEmpty()) {
+            rmaCaseNoteRepository.deleteAll(notes);
+        }
+    }
+
+
 
     /**
      * Validates the MIME type of the uploaded file.

@@ -12,7 +12,7 @@ import lombok.*;
 @Entity
 @Table(
         name = "rma_case_attachments",
-        indexes = {@Index(name = "idx_rma_case_id", columnList = "rma_case_id")}
+        indexes = {@Index(name = "idx_rma_case_id", columnList = "rma_case_id")} //fixme
 )
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class RmaCaseAttachmentEntity {

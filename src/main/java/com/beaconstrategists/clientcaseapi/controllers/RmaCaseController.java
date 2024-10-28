@@ -1,9 +1,6 @@
 package com.beaconstrategists.clientcaseapi.controllers;
 
-import com.beaconstrategists.clientcaseapi.controllers.dto.RmaCaseAttachmentDownloadDto;
-import com.beaconstrategists.clientcaseapi.controllers.dto.RmaCaseAttachmentResponseDto;
-import com.beaconstrategists.clientcaseapi.controllers.dto.RmaCaseAttachmentUploadDto;
-import com.beaconstrategists.clientcaseapi.controllers.dto.RmaCaseDto;
+import com.beaconstrategists.clientcaseapi.controllers.dto.*;
 import com.beaconstrategists.clientcaseapi.model.CaseStatus;
 import com.beaconstrategists.clientcaseapi.services.RmaCaseService;
 import jakarta.validation.Valid;
@@ -39,7 +36,7 @@ public class RmaCaseController {
 */
 
     @GetMapping(path = "")
-    public ResponseEntity<List<RmaCaseDto>> listAllTacCases(
+    public ResponseEntity<List<RmaCaseDto>> listAllRmaCases(
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             OffsetDateTime caseCreateDateFrom,
@@ -172,6 +169,59 @@ public class RmaCaseController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + downloadDto.getName() + "\"")
                 .contentType(MediaType.parseMediaType(downloadDto.getMimeType()))
                 .body(downloadDto.getResource());
+    }
+
+    @PostMapping("/{id}/notes")
+    public ResponseEntity<RmaCaseNoteResponseDto> uploadNote(
+            @PathVariable Long id,
+            @Valid @ModelAttribute RmaCaseNoteUploadDto uploadDto) {
+
+        try {
+            RmaCaseNoteResponseDto responseDto = rmaCaseService.addNote(id, uploadDto);
+            return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            // Handle validation errors
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (IOException e) {
+            // Handle file processing exceptions
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/{id}/notes")
+    public ResponseEntity<List<RmaCaseNoteResponseDto>> getAllNotes(@PathVariable Long id) {
+        List<RmaCaseNoteResponseDto> notes = rmaCaseService.getAllNotes(id);
+        return new ResponseEntity<>(notes, HttpStatus.OK);
+    }
+
+    @GetMapping("/{caseId}/notes/{noteId}")
+    public ResponseEntity<RmaCaseNoteDownloadDto> getNote(
+            @PathVariable Long caseId, @PathVariable Long noteId) {
+        RmaCaseNoteDownloadDto dto = rmaCaseService.getNote(caseId, noteId);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{caseId}/notes/{noteId}")
+    public ResponseEntity<Void> deleteNote(
+            @PathVariable Long caseId,
+            @PathVariable Long noteId) {
+        rmaCaseService.deleteNote(caseId, noteId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/{id}/notes")
+    public ResponseEntity<Void> deleteAllNotes(@PathVariable Long id) {
+        rmaCaseService.deleteAllNotes(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{caseId}/notes/{noteId}/download")
+    public ResponseEntity<RmaCaseNoteDownloadDto> downloadNote(
+            @PathVariable Long caseId,
+            @PathVariable Long noteId) {
+        RmaCaseNoteDownloadDto downloadDto = rmaCaseService.getNote(caseId, noteId);
+
+        return new ResponseEntity<>(downloadDto, HttpStatus.OK);
     }
 
 }
