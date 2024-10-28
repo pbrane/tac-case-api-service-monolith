@@ -41,4 +41,6 @@ public interface TacCaseService {
                                   OffsetDateTime caseCreateDateSince,
                                   List<CaseStatus> caseStatus,
                                   String logic);
+
+    List<RmaCaseDto> listRmaCases(Long id);
 }

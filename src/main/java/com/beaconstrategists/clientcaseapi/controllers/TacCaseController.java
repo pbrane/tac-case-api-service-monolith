@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -113,6 +112,13 @@ public class TacCaseController {
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
 
+    //RMAs
+
+    @GetMapping("/{id}/rmaCases")
+    public ResponseEntity<List<RmaCaseDto>> listAllRmasForTacCase(@PathVariable Long id) {
+        List<RmaCaseDto> rmaCases = tacCaseService.listRmaCases(id);
+        return new ResponseEntity<>(rmaCases, HttpStatus.OK);
+    }
 
 
     //Attachments

@@ -6,9 +6,9 @@ import com.beaconstrategists.clientcaseapi.mappers.TacCaseAttachmentDownloadMapp
 import com.beaconstrategists.clientcaseapi.mappers.TacCaseAttachmentResponseMapper;
 import com.beaconstrategists.clientcaseapi.mappers.TacCaseNoteDownloadMapper;
 import com.beaconstrategists.clientcaseapi.mappers.TacCaseNoteResponseMapper;
+import com.beaconstrategists.clientcaseapi.mappers.impl.RmaCaseMapperImpl;
 import com.beaconstrategists.clientcaseapi.mappers.impl.TacCaseMapperImpl;
 import com.beaconstrategists.clientcaseapi.model.CaseStatus;
-import com.beaconstrategists.clientcaseapi.model.entities.RmaCaseAttachmentEntity;
 import com.beaconstrategists.clientcaseapi.model.entities.TacCaseAttachmentEntity;
 import com.beaconstrategists.clientcaseapi.model.entities.TacCaseEntity;
 import com.beaconstrategists.clientcaseapi.model.entities.TacCaseNoteEntity;
@@ -36,6 +36,7 @@ public class TacCaseServiceImpl implements TacCaseService {
     private final TacCaseRepository tacCaseRepository;
     private final TacCaseAttachmentRepository tacCaseAttachmentRepository;
     private final TacCaseMapperImpl tacCaseMapper;
+    private final RmaCaseMapperImpl rmaCaseMapper;
     private final TacCaseAttachmentResponseMapper tacCaseAttachmentResponseMapper;
     private final TacCaseAttachmentDownloadMapper tacCaseAttachmentDownloadMapper;
     private final TacCaseNoteResponseMapper tacCaseNoteResponseMapper;
@@ -45,12 +46,13 @@ public class TacCaseServiceImpl implements TacCaseService {
 
     public TacCaseServiceImpl(TacCaseRepository tacCaseRepository,
                               TacCaseAttachmentRepository tacCaseAttachmentRepository,
-                              TacCaseMapperImpl tacCaseMapper,
+                              TacCaseMapperImpl tacCaseMapper, RmaCaseMapperImpl rmaCaseMapper,
                               TacCaseAttachmentResponseMapper tacCaseAttachmentResponseMapper,
                               TacCaseAttachmentDownloadMapper tacCaseAttachmentDownloadMapper, TacCaseNoteResponseMapper tacCaseNoteResponseMapper, TacCaseNoteDownloadMapper tacCaseNoteDownloadMapper, TacCaseNoteRepository tacCaseNoteRepository) {
         this.tacCaseRepository = tacCaseRepository;
         this.tacCaseAttachmentRepository = tacCaseAttachmentRepository;
         this.tacCaseMapper = tacCaseMapper;
+        this.rmaCaseMapper = rmaCaseMapper;
         this.tacCaseAttachmentResponseMapper = tacCaseAttachmentResponseMapper;
         this.tacCaseAttachmentDownloadMapper = tacCaseAttachmentDownloadMapper;
         this.tacCaseNoteResponseMapper = tacCaseNoteResponseMapper;
@@ -210,6 +212,17 @@ public TacCaseDto partialUpdate(Long id, TacCaseDto tacCaseDto) {
     }
 
 
+    // RMAs
+
+    @Override
+    public List<RmaCaseDto> listRmaCases(Long id) {
+        TacCaseEntity tacCase = tacCaseRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("TacCase not found with id " + id));
+        return tacCase.getRmaCases().stream()
+                .map(rmaCaseMapper::mapTo)
+                .collect(Collectors.toList());
+    }
+
+
     /* Attachment Ops
         Fixme for this exposes weirdness in the API. Why navigate by caseId if we only require the attachmentId in these operations
     */
@@ -305,7 +318,7 @@ public TacCaseDto partialUpdate(Long id, TacCaseDto tacCaseDto) {
 
     @Override
     @Transactional
-    public TacCaseNoteResponseDto addNote(Long caseId, TacCaseNoteUploadDto uploadDto) throws IOException {
+    public TacCaseNoteResponseDto addNote(Long caseId, TacCaseNoteUploadDto uploadDto) {
         TacCaseEntity tacCase = tacCaseRepository.findById(caseId)
                 .orElseThrow(() -> new ResourceNotFoundException("TAC Case not found with id " + caseId));
 
