@@ -120,13 +120,13 @@ public class TacCaseServiceImpl implements TacCaseService {
 
     @Override
     @Transactional
-    public boolean isExists(Long id) {
+    public boolean exists(Long id) {
         return tacCaseRepository.existsById(id);
     }
 
     @Override
     @Transactional
-    public boolean isExists(String caseNumber) {
+    public boolean exists(String caseNumber) {
         return tacCaseRepository.existsByCaseNumber(caseNumber);
     }
 
@@ -280,12 +280,12 @@ public TacCaseDto partialUpdate(Long id, TacCaseDto tacCaseDto) {
 
     @Override
     @Transactional(readOnly = true)
-    public TacCaseAttachmentResponseDto getAttachment(Long caseId, Long attachmentId) {
+    public void getAttachment(Long caseId, Long attachmentId) {
         TacCaseAttachmentEntity attachment = tacCaseAttachmentRepository.findById(attachmentId)
                 .filter(a -> a.getTacCase().getId().equals(caseId))
                 .orElseThrow(() -> new ResourceNotFoundException("Attachment not found with id " + attachmentId + " for TAC Case " + caseId));
 
-        return tacCaseAttachmentResponseMapper.mapTo(attachment);
+        tacCaseAttachmentResponseMapper.mapTo(attachment);
     }
 
     @Override

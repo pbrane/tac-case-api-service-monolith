@@ -83,7 +83,7 @@ public class TacCaseController {
             @PathVariable Long id,
             @Valid @RequestBody TacCaseDto tacCaseDto) {
 
-        if (!tacCaseService.isExists(id)) {
+        if (!tacCaseService.exists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -96,7 +96,7 @@ public class TacCaseController {
             @PathVariable Long id,
             @Valid @RequestBody TacCaseDto tacCaseDto) {
 
-        if (!tacCaseService.isExists(id)) {
+        if (!tacCaseService.exists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 

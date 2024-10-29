@@ -14,8 +14,8 @@ public interface TacCaseService {
     List<TacCaseDto> findAll();
     Optional<TacCaseDto> findById(Long id);
     Optional<TacCaseDto> findByCaseNumber(String caseNumber);
-    boolean isExists(Long id);
-    boolean isExists(String caseNumber);
+    boolean exists(Long id);
+    boolean exists(String caseNumber);
     TacCaseDto partialUpdate(Long id, TacCaseDto tacCaseDto);
     TacCaseDto partialUpdate(String caseNumber, TacCaseDto tacCaseDto);
     void delete(Long id);
@@ -24,7 +24,7 @@ public interface TacCaseService {
     // Attachment Operations
     TacCaseAttachmentResponseDto addAttachment(Long caseId, TacCaseAttachmentUploadDto uploadDto) throws IOException;
     List<TacCaseAttachmentResponseDto> getAllAttachments(Long caseId);
-    TacCaseAttachmentResponseDto getAttachment(Long caseId, Long attachmentId);
+    void getAttachment(Long caseId, Long attachmentId);
     TacCaseAttachmentDownloadDto getAttachmentDownload(Long caseId, Long attachmentId);
     void deleteAttachment(Long caseId, Long attachmentId);
     void deleteAllAttachments(Long caseId);
