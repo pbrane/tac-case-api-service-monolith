@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.beaconstrategists</groupId>
-    <artifactId>client-api-demo</artifactId>
+    <artifactId>tac-case-api-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>client-api-demo</name>
-    <description>client-api-demo</description>
+    <name>tac-case-api-demo</name>
+    <description>TAC/RMA Case ReST API Service</description>
     <url/>
     <licenses>
         <license>
@@ -47,10 +47,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+<!--
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+-->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -65,10 +67,12 @@
             <artifactId>jackson-databind-nullable</artifactId>
             <version>0.2.6</version>
         </dependency>
+<!--
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
         </dependency>
+-->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -77,8 +81,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.34</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.modelmapper</groupId>
@@ -89,52 +92,74 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
         </dependency>
+<!--
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
+-->
     </dependencies>
+
+<!--
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.beaconstrategists.clientcaseapi.ClientApiDemoApplication</mainClass>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
                 </configuration>
             </plugin>
-<!--
-            <plugin>
-                <groupId>org.openapitools</groupId>
-                <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.8.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/api/client-case-api-0.0.7.yml</inputSpec>
-                            <generatorName>spring</generatorName>
-                            <library>spring-boot</library>
-                            <configOptions>
-                                <useJakartaEe>true</useJakartaEe>
-                                <interfaceOnly>true</interfaceOnly>
-                                <useController>false</useController>
-                                <useTags>true</useTags>
-                                <useLombok>false</useLombok>
-                                &lt;!&ndash;suppress UnresolvedMavenProperty &ndash;&gt;
-                                &lt;!&ndash;<additionalModelTypeAnnotations>@lombok.Data @lombok.Builder @lombok.NoArgsConstructor @lombok.AllArgsConstructor</additionalModelTypeAnnotations>&ndash;&gt;
-                            </configOptions>
-                            <packageName>com.beaconstrategists</packageName>
-                            <apiPackage>com.beaconstrategists.clientcaseapi.api</apiPackage>
-                            <modelPackage>com.beaconstrategists.clientcaseapi.model</modelPackage>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
--->
         </plugins>
     </build>
+-->
+
+    <!--
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <mainClass>com.beaconstrategists.taccaseapiservice.TacCaseApiServiceApplication</mainClass>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.openapitools</groupId>
+                    <artifactId>openapi-generator-maven-plugin</artifactId>
+                    <version>7.8.0</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                            <configuration>
+                                <inputSpec>${project.basedir}/src/main/resources/api/client-case-api-0.0.7.yml</inputSpec>
+                                <generatorName>spring</generatorName>
+                                <library>spring-boot</library>
+                                <configOptions>
+                                    <useJakartaEe>true</useJakartaEe>
+                                    <interfaceOnly>true</interfaceOnly>
+                                    <useController>false</useController>
+                                    <useTags>true</useTags>
+                                    <useLombok>false</useLombok>
+                                    <suppress>UnresolvedMavenProperty</suppress>
+                                    <additionalModelTypeAnnotations>@lombok.Data @lombok.Builder @lombok.NoArgsConstructor @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
+                                </configOptions>
+                                <packageName>com.beaconstrategists</packageName>
+                                <apiPackage>com.beaconstrategists.taccaseapiservice.api</apiPackage>
+                                <modelPackage>com.beaconstrategists.taccaseapiservice.model</modelPackage>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+    -->
 </project>
