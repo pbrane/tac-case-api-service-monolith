@@ -52,8 +52,8 @@ az account set --subscription <your-subscription-id>
 export ENV_NAME=demo-environment
 export RESOURCE_GROUP=MolexProject
 export AZURE_LOCATION=westus
-export CONTAINER_NAME=client-api-demo
-export CONTAINER_IMG=pbranestrategy/tac-case-api-service:0.0.5
+export CONTAINER_NAME=tac-case-api-service
+export CONTAINER_IMG=pbranestrategy/$CONTAINER_NAME:0.0.5
 export API_PORT=8080
 ```
 
@@ -82,5 +82,5 @@ az containerapp create \
 When you need to update the current running container with a new version, in this case, (0.0.4):
 ```bash
 export CONTAINER_IMG=pbranestrategy/tac-case-api-service:0.0.5
-az containerapp update --name client-api-demo --resource-group MolexProject --image $CONTAINER_IMG
+az containerapp update --name $CONTAINER_NAME --resource-group MolexProject --image $CONTAINER_IMG
 ```
