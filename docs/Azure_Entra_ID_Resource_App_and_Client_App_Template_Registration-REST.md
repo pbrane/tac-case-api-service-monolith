@@ -49,7 +49,7 @@ The `{tenant-id}` is the unique identifier of your Azure AD tenant. To find your
 ### Set a variable to store the Resource application's (Spring Boot App) Display Name
 
 ```bash
-export RESOURCE_APP_DISPLAY_NAME="TAC/RMA Case API Demo"
+export RESOURCE_APP_DISPLAY_NAME="TAC/RMA Case API"
 ```
 The Resource Application represents your backend service (e.g., Spring Boot REST API) 
 and defines the API permissions (scopes) that client applications can request.
@@ -59,7 +59,7 @@ and defines the API permissions (scopes) that client applications can request.
 ```bash
 az rest --method POST --uri "https://graph.microsoft.com/v1.0/applications" --body '{
         "displayName": "'$RESOURCE_APP_DISPLAY_NAME'",
-        "identifierUris": ["api://'$TENANT_ID'/client-api-demo"],
+        "identifierUris": ["api://'$TENANT_ID'/tac-case-api-service"],
         "signInAudience": "AzureADMyOrg",
         "api": {
             "requestedAccessTokenVersion": 2,
@@ -132,14 +132,14 @@ The Client Application Template is used by external users to create their own cl
 
 ### Set a variable for the Client App Display Name
 ```bash
-export CLIENT_APP_DISPLAY_NAME="Client TAC/RMA Case Demo"
+export CLIENT_APP_DISPLAY_NAME="TAC/RMA Case Client"
 ```
 
 ### Create the Client Application Template
 ```bash
 az rest --method POST --uri "https://graph.microsoft.com/v1.0/applications" --body '{
         "displayName": "'$CLIENT_APP_DISPLAY_NAME'",
-        "identifierUris": ["api://'$TENANT_ID'/client-tac-rma-case-demo"],
+        "identifierUris": ["api://'$TENANT_ID'/tac-case-api-client"],
     "signInAudience": "AzureADMyOrg",
     "api": {
       "requestedAccessTokenVersion": 2
