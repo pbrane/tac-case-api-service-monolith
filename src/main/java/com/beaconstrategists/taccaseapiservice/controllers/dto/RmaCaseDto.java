@@ -1,6 +1,7 @@
 package com.beaconstrategists.taccaseapiservice.controllers.dto;
 
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class RmaCaseDto {
 
     private Long id;
 
+    @NotEmpty
     private Long tacCaseId;
 
     private String href;

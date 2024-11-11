@@ -1,0 +1,38 @@
+logging:
+  level:
+    org:
+      springdoc:
+        api:
+          OpenApiResource: info
+    web: info
+server:
+  port: '8080'
+spring:
+  application:
+    name: tac-case-api-service
+  datasource:
+    driverClassName: org.h2.Driver
+    password: ''
+    url: jdbc:h2:mem:taccase-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+  h2:
+    console:
+      enabled: 'true'
+      path: /h2-console
+      settings:
+        web-allow-others: 'true'
+  jmx:
+    enabled: 'true'
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: 'true'
+    show-sql: 'true'
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8080/oauth2/jwks # Replace with your authorization server's JWK Set URI
