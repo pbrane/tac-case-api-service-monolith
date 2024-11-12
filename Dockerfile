@@ -46,4 +46,4 @@ COPY --from=builder /app/target/tac-case-api-service-*.jar /app/tac-case-api-ser
 EXPOSE 8080
 
 # Define the command to run the application
-ENTRYPOINT ["java", "-jar", "/app/client-api-demo.jar"]
+ENTRYPOINT ["java", "-jar", "/app/tac-case-api-service.jar"]
