@@ -26,7 +26,7 @@ public class ResourceServerConfig {
 
         return http.build();
     }
-    
+
     @Bean
     public JwtDecoder jwtDecoder() {
         // Replace the "issuer-uri" with your actual issuer URL

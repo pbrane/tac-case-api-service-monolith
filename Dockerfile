@@ -31,7 +31,7 @@ RUN mvn dependency:go-offline
 COPY src src
 
 # Build the application
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests -P container-build
 
 # Use a minimal runtime image for the final stage
 FROM openjdk:21-jdk-slim
@@ -40,7 +40,7 @@ FROM openjdk:21-jdk-slim
 WORKDIR /app
 
 # Copy the JAR file from the builder stage to the runtime stage
-COPY --from=builder /app/target/client-api-demo-*.jar /app/client-api-demo.jar
+COPY --from=builder /app/target/tac-case-api-service-*.jar /app/tac-case-api-service.jar
 
 # Expose the port the application runs on
 EXPOSE 8080
