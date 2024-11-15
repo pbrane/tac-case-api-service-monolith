@@ -1,10 +1,3 @@
-logging:
-  level:
-    org:
-      springdoc:
-        api:
-          OpenApiResource: info
-    web: info
 server:
   port: '8080'
 spring:
@@ -35,4 +28,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:8080/oauth2/jwks # Replace with your authorization server's JWK Set URI
+          issuer-uri: http://localhost:9081/auth-server
+          jwk-set-uri: http://localhost:9081/oauth2/jwks # Replace with your authorization server's JWK Set URI
+logging:
+  level:
+    root: debug

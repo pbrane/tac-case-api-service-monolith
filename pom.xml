@@ -11,7 +11,7 @@
     <groupId>com.beaconstrategists</groupId>
     <artifactId>tac-case-api-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>tac-case-api-demo</name>
+    <name>tac-case-api-service</name>
     <description>TAC/RMA Case ReST API Service</description>
     <url/>
     <licenses>
