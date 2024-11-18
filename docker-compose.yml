@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  api-server:
+  apisvr:
     container_name: tac-case-api-server-prod
     build:
       context: .
@@ -9,9 +9,10 @@ services:
     tty: true
     stdin_open: true
     environment:
-      SERVER_PORT: 8080
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: http://localhost:9080/auth-server
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: http://localhost:9080/oauth2/jwks
+      SERVER_PORT: "8080:${SERVER_PORT}"
+      AUTH_SV_ISSUER_URI: ${AUTH_SV_ISSUER_URI}
+#      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: http://localhost:9080/auth-server
+#      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: http://localhost:9080/oauth2/jwks
     ports:
       - "8080:8080"
     networks:
@@ -20,7 +21,7 @@ services:
     profiles:
       - production
 
-  api-server-dev:
+  apisvr-dev:
     container_name: tac-case-api-server-dev
     build:
       context: .
@@ -28,11 +29,12 @@ services:
     tty: true
     stdin_open: true
     environment:
-      - SERVER_PORT=8080
-      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI="http://localhost:9081/auth-server"
-      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI="http://localhost:9081/oauth2/jwks"
+      SERVER_PORT: ${SERVER_PORT}
+      AUTH_SV_ISSUER_URI: ${AUTH_SV_ISSUER_URI}
+#      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI="http://localhost:9081/auth-server"
+#      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI="http://localhost:9081/oauth2/jwks"
     ports:
-      - "8081:8080"
+      - "8080:${SERVER_PORT}"
     networks:
       - backend
 #    restart: unless-stopped
