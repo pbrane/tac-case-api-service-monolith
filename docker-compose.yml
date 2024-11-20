@@ -1,18 +1,18 @@
 version: '3.8'
 
 services:
-  apisvr:
-    container_name: tac-case-api-server-prod
+
+  apisvc-prod:
+    container_name: tac-case-api-svc
+    image: tac-case-api-svc
+    env_file: 
+      - path: ./apisvc-prod.env
+        required: true
     build:
       context: .
       dockerfile: Dockerfile
     tty: true
     stdin_open: true
-    environment:
-      SERVER_PORT: "8080:${SERVER_PORT}"
-      AUTH_SV_ISSUER_URI: ${AUTH_SV_ISSUER_URI}
-#      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: http://localhost:9080/auth-server
-#      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: http://localhost:9080/oauth2/jwks
     ports:
       - "8080:8080"
     networks:
@@ -21,30 +21,24 @@ services:
     profiles:
       - production
 
-  apisvr-dev:
-    container_name: tac-case-api-server-dev
+  apisvc-dev:
+    container_name: tac-case-api-svc
+    image: tac-case-api-svc
+    env_file: 
+      - path: ./apisvc-dev.env
+        required: true
     build:
-      context: .
+      context: ./tac-case-api-service
       dockerfile: Dockerfile
     tty: true
     stdin_open: true
-    environment:
-      SERVER_PORT: ${SERVER_PORT}
-      AUTH_SV_ISSUER_URI: ${AUTH_SV_ISSUER_URI}
-#      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI="http://localhost:9081/auth-server"
-#      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI="http://localhost:9081/oauth2/jwks"
     ports:
-      - "8080:${SERVER_PORT}"
+      - 8080:8080
     networks:
       - backend
-#    restart: unless-stopped
     profiles:
       - development
 
 networks:
   backend:
     driver: bridge
-
-#volumes:
-#  authdb_data:
-
