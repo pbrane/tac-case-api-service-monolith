@@ -113,6 +113,7 @@
         <profile>
             <id>container-build</id>
             <build>
+                <finalName>app</finalName>
                 <plugins>
                     <plugin>
                         <groupId>org.springframework.boot</groupId>

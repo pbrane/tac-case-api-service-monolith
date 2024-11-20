@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class ResourceServerConfig {
 
-    @Value("${AUTH_SV_ISSUER_URI:http://localhost:9000/oauth2/jwks}")
+    @Value("${AUTH_SVC_ISSUER_URI:http://localhost:9000/oauth2/jwks}")
     private String issuerUri;
 
     @Bean(name = "ProdSecurityFilterChain")
@@ -34,7 +34,7 @@ public class ResourceServerConfig {
     }
 
     @Bean(name = "DevSecurityFilterChain")
-    @ConditionalOnProperty(name = "API_SVR_ENV", havingValue = "production", matchIfMissing = true)
+    @ConditionalOnProperty(name = "API_SVR_ENV", havingValue = "development", matchIfMissing = true)
     public SecurityFilterChain devSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/swagger-ui.html").permitAll()
