@@ -49,8 +49,8 @@ az account set --subscription <your-subscription-id>
 
 ### A few variables
 ```bash
-export ENV_NAME=tac-case-api-env
-export RESOURCE_GROUP=MolexProject
+export ENV_NAME=MyEnv
+export RESOURCE_GROUP=MyProject
 export AZURE_LOCATION=westus
 export CONTAINER_NAME=tac-case-api-service
 export CONTAINER_IMG=pbranestrategy/tac-case-api-service:0.0.5
