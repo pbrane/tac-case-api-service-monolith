@@ -24,12 +24,16 @@ spring:
       hibernate:
         format_sql: 'true'
     show-sql: 'true'
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:9000
-          jwk-set-uri: http://localhost:9000/oauth2/jwks
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          issuer-uri: http://localhost:9000
+#          jwk-set-uri: http://localhost:9000/oauth2/jwks
+#logging:
+#  level:
+#    root: info
 logging:
   level:
-    root: info
+    org.springframework.security: trace
+

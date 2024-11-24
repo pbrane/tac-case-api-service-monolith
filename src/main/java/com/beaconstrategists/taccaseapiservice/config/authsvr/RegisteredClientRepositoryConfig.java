@@ -1,10 +1,8 @@
 package com.beaconstrategists.taccaseapiservice.config.authsvr;
 
-import com.beaconstrategists.taccaseapiservice.config.authsvr.AuthServerUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -13,6 +11,7 @@ import org.springframework.security.oauth2.server.authorization.client.InMemoryR
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 
 import javax.sql.DataSource;
 import java.util.Set;
@@ -37,6 +36,12 @@ public class RegisteredClientRepositoryConfig {
     @Value("${CLIENT_NAME:client-name}")
     private String clientName;
 
+    private final TokenSettings tokenSettings;
+
+    public RegisteredClientRepositoryConfig(TokenSettings tokenSettings) {
+        this.tokenSettings = tokenSettings;
+    }
+
     @Bean(name = "InMemoryClientRepo")
 //    @ConditionalOnProperty(name = "AUTH_SVR_ENV", havingValue = "development", matchIfMissing = true)
 //    @Conditional(DevelopmentOrMonolithCondition.class) //AUTH_SVR_ENV = development or monolith
@@ -44,14 +49,14 @@ public class RegisteredClientRepositoryConfig {
     public RegisteredClientRepository devRegisteredClientRepository() {
 
         //fixme: this needs to be configurable
-
         RegisteredClient client = AuthServerUtils.createRegisteredClient(
                 clientId,
                 clientSecret,
                 clientName,
                 ClientAuthenticationMethod.CLIENT_SECRET_BASIC,
                 AuthorizationGrantType.CLIENT_CREDENTIALS,
-                clientScopes
+                clientScopes,
+                tokenSettings
         );
 
         return new InMemoryRegisteredClientRepository(client);
@@ -69,8 +74,8 @@ public class RegisteredClientRepositoryConfig {
                 clientName,
                 ClientAuthenticationMethod.CLIENT_SECRET_BASIC,
                 AuthorizationGrantType.CLIENT_CREDENTIALS,
-                clientScopes
-        );
+                clientScopes,
+                tokenSettings);
 
         registeredClientRepository.save(client);
         return registeredClientRepository;

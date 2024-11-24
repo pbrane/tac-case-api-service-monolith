@@ -43,9 +43,12 @@ public class AuthServerUtils {
     private final RegisteredClientRepository registeredClientRepository;
     private final JdbcTemplate jdbcTemplate;
 
-    public AuthServerUtils(RegisteredClientRepository registeredClientRepository, JdbcTemplate jdbcTemplate) {
+    private final TokenSettings tokenSettings;
+
+    public AuthServerUtils(TokenSettings tokenSettings, RegisteredClientRepository registeredClientRepository, JdbcTemplate jdbcTemplate, TokenSettings tokenSettings1) {
         this.registeredClientRepository = registeredClientRepository;
         this.jdbcTemplate = jdbcTemplate;
+        this.tokenSettings = tokenSettings1;
     }
 
     @ShellMethod(key = "registerOrUpdateClient", value = "Register new client or update existing")
@@ -110,7 +113,7 @@ public class AuthServerUtils {
         The save method in the repository checks for exiting client and updates
         so we don't need to check here.
          */
-        RegisteredClient client = createRegisteredClient(clientId, clientSecret, clientName, AuthServerUtils.AUTHENTICATION_METHOD, AuthServerUtils.GRANT_TYPE, scopes);
+        RegisteredClient client = createRegisteredClient(clientId, clientSecret, clientName, AuthServerUtils.AUTHENTICATION_METHOD, AuthServerUtils.GRANT_TYPE, scopes, tokenSettings);
         registeredClientRepository.save(client);
         return client;
     }
@@ -120,7 +123,7 @@ public class AuthServerUtils {
                                                           String clientName,
                                                           ClientAuthenticationMethod clientAuthenticationMethod,
                                                           AuthorizationGrantType grantType,
-                                                          Consumer<Set<String>> scopes) {
+                                                          Consumer<Set<String>> scopes, TokenSettings tokenSettings) {
 
         //fixme: should probably throw exception if any of these are null and/or we should provide defaults where possible
         return RegisteredClient.withId(UUID.randomUUID().toString())
@@ -133,9 +136,7 @@ public class AuthServerUtils {
                 .clientIdIssuedAt(Instant.now())
                 .clientSecretExpiresAt(Instant.now().plus(Duration.ofDays(30)))
                 .scopes(scopes)
-                .tokenSettings(TokenSettings.builder()
-                        .accessTokenTimeToLive(Duration.ofMinutes(5))
-                        .build())
+                .tokenSettings(tokenSettings)
                 .build();
     }
 
