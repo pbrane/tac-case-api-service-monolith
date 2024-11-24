@@ -1,4 +1,4 @@
-package com.beaconstrategists.taccaseapiservice.config;
+package com.beaconstrategists.taccaseapiservice.config.api;
 
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import org.springframework.core.convert.converter.Converter;
