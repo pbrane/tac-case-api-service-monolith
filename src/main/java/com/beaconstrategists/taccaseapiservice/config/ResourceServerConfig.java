@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class ResourceServerConfig {
 
-    @Value("${AUTH_SVC_ISSUER_URI:http://localhost:9000/oauth2/jwks}")
+    @Value("${AUTH_SVC_ISSUER_URI:http://localhost:8080/oauth2/jwks}")
     private String issuerUri;
 
     @Bean(name = "ProdSecurityFilterChain")
