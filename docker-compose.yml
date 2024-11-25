@@ -1,7 +1,7 @@
 services:
   apisvc-prod-mono:
     container_name: apisvc-prod-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.1.7
+    image: pbranestrategy/tac-case-api-service-mono:0.1.8
     env_file:
       - monolith-prod.env
     build:
@@ -19,7 +19,7 @@ services:
 
   apisvc-dev-mono:
     container_name: apisvc-dev-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.1.7
+    image: pbranestrategy/tac-case-api-service-mono:0.1.8
     env_file:
       - monolith-dev.env
     build:
