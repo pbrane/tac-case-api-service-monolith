@@ -19,35 +19,36 @@
 
 ## Run it from DockerHub
 ```
-docker pull pbranestrategy/client-api-demo:0.0.3
-docker run -p 8080:8080 pbranestrategy/client-api-demo:0.0.3
+docker pull pbranestrategy/tac-case-api-service-mono:0.1.8
+docker run -p 8080:8080 pbranestrategy/tac-case-api-service-mono:0.1.8
 ```
 
-#### On MacOS
+### On MacOS
 ```
-docker run --privileged -m 1g --cpus="2.0" -p 8080:8080 pbranestrategy/client-api-demo:latest
+docker run --privileged -m 1g --cpus="2.0" -p 8080:8080 pbranestrategy/tac-case-api-service-mono:0.1.8
 ```
 
-## Ubuntu Instructions
+## Build and Run
+### Ubuntu Instructions
 
-### Making sure the OS is up to date
+#### Making sure the OS is up to date
 ```
 $ sudo apt update
 $ sudo apt upgrade -y
 ```
 
-### Install Java 21 JDK
+#### Install Java 21 JDK
 ```
 $ sudo add-apt-repository ppa:openjdk-r/ppa
 $ sudo apt install openjdk-21-jdk -y
 ```
 
-### Install Maven
+#### Install Maven
 ```
 $ sudo apt install maven -y
 ```
 
-### Install Docker
+#### Install Docker
 ```
 $ sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - \
@@ -56,12 +57,12 @@ $ sudo usermod -aG docker $USER
 $ sudo systemctl start docker
 ```
 
-### Install Git and Curl
+#### Install Git and Curl
 ```
 $ sudo apt install git curl wget -y
 ```
 
-### Clone the Repo
+#### Clone the Repo
 ```
 $ cd
 $ mkdir -p development
@@ -69,21 +70,21 @@ $ cd development
 $ git clone https://github.com/pbrane/tac-case-api-service.git
 ```
 
-### Build the Container
+#### Build the Container
 ```
 $ cd tac-case-api-service/
 $ ./mvnw clean
 $ docker build -t tac-case-api-service .
 ```
 
-### Now Run it
+#### Now Run it
 ```
 $ docker run -p 8080:8080 tac-case-api-service
 ```
 
-### Try it out:
+#### Try it out:
 ```
-$ curl -X 'GET' 'http://localhost:8080/api/v1/tacCases/CN004' -H 'accept: */*'
+$ curl -X 'GET' 'http://localhost:8080/api/v1/tacCases/4' -H 'accept: */*'
 ```
 
 #### Swagger: API Documentation
