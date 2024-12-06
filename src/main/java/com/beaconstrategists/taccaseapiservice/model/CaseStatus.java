@@ -5,35 +5,45 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum CaseStatus {
 
-  OPEN("open"),
-  ACKNOWLEDGED("acknowledged"),
-  REJECTED("rejected"),
-  PENDING("pending"),
-  HELD("held"),
-  INPROGRESS("inprogress"),
-  CANCELLED("cancelled"),
-  CLOSED("closed"),
-  RESOLVED("resolved");
+    Open("Open"),
+    //  ACKNOWLEDGED("Acknowledged"),
+//  REJECTED("Rejected"),
+//  HELD("Held"),
+//  INPROGRESS("In Progress"),
+//  CANCELED("Canceled"),
+    Pending("Pending"),
+    Closed("Closed"),
+    Resolved("Resolved");
 
-  @JsonValue
-  private final String value;
+    @JsonValue
+    private final String value;
 
-  CaseStatus(String value) {
-    this.value = value;
-  }
-
-  @Override
-  public String toString() {
-    return String.valueOf(value);
-  }
-
-  @JsonCreator
-  public static CaseStatus fromValue(String value) {
-    for (CaseStatus b : CaseStatus.values()) {
-      if (b.value.equalsIgnoreCase(value)) { // Case-insensitive matching
-        return b;
-      }
+    CaseStatus(String value) {
+        this.value = value;
     }
-    throw new IllegalArgumentException("Unexpected value '" + value + "'");
-  }
+
+    @JsonValue
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static CaseStatus fromValue(String value) {
+        for (CaseStatus b : CaseStatus.values()) {
+            if (b.value.equalsIgnoreCase(value)) { // Case-insensitive matching
+                return b;
+            }
+        }
+        throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+
+    public static CaseStatus valueOfEnum(String value) {
+        return fromValue(value);
+    }
+
 }

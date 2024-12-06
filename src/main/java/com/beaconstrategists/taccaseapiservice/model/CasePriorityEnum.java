@@ -4,16 +4,18 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * The priorty assigned by TAC to this Case
+ * The priority assigned by TAC to this Case
  */
 public enum CasePriorityEnum {
-    CRITICAL("Critical"),
+//    CRITICAL("Critical"),
+//    MAJOR("Major"),
+//    MINOR("Minor"),
+    Low("Low"),
+    Medium("Medium"),
+    High("High"),
+    Urgent("Urgent");
 
-    MAJOR("Major"),
-
-    MINOR("Minor");
-
-    private String value;
+    private final String value;
 
     CasePriorityEnum(String value) {
         this.value = value;
@@ -37,5 +39,9 @@ public enum CasePriorityEnum {
             }
         }
         throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+
+    public static CasePriorityEnum valueOfEnum(String value) {
+        return fromValue(value);
     }
 }

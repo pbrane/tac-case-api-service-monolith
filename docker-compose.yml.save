@@ -1,0 +1,64 @@
+services:
+  apisvc-prod-mono:
+    container_name: apisvc-prod-mono
+    image: pbranestrategy/tac-case-api-service-mono:0.1.9
+    env_file:
+      - monolith-prod.env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    ports:
+      - 8080:8080
+    networks:
+      - backend
+    #    restart: unless-stopped
+    profiles:
+      - production
+
+  apisvc-dev-mono:
+    container_name: apisvc-dev-mono
+    image: pbranestrategy/tac-case-api-service-mono:0.1.9
+    env_file:
+      - monolith-dev.env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    ports:
+      - 8080:8080
+    networks:
+      - backend
+    #    restart: unless-stopped
+    profiles:
+      - development
+
+  client-prod:
+    container_name: client-prod-mono
+    env_file:
+      - client-prod.env
+    image: pbranestrategy/tac-case-api-oauth2-sample-client:0.1.7
+    tty: true
+    stdin_open: true
+    networks:
+      - backend
+    profiles:
+      - production
+
+  client-dev:
+    container_name: client-dev
+    image: pbranestrategy/tac-case-api-oauth2-sample-client:0.1.7
+    env_file:
+      - client-dev.env
+    tty: true
+    stdin_open: true
+    networks:
+      - backend
+    profiles:
+      - development
+
+networks:
+  backend:
+    driver: bridge

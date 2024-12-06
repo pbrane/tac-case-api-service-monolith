@@ -23,12 +23,13 @@ public class ResourceServerSecurityConfig {
     }
 
     @Bean(name = "ProdSecurityFilterChain")
+    @Order(1)
     @ConditionalOnProperty(name = "API_SVR_ENV", havingValue = "production", matchIfMissing = false)
     public SecurityFilterChain prodResourceServerSecurityFilterChain(HttpSecurity http) throws Exception {
         // Apply security specifically for API endpoints
         http.securityMatcher("/api/**") // Match only Resource Server endpoints
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs*/**", "/h2-console/**").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs*/**", "/h2-console/**").permitAll()
                         .requestMatchers("/api/**").authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
@@ -38,12 +39,13 @@ public class ResourceServerSecurityConfig {
     }
 
     @Bean(name = "DevSecurityFilterChain")
+    @Order(2)
     @ConditionalOnProperty(name = "API_SVR_ENV", havingValue = "development", matchIfMissing = true)
     public SecurityFilterChain devResourceServerSecurityFilterChain(HttpSecurity http) throws Exception {
         // Apply security specifically for API endpoints
         http.securityMatcher("/api/**") // Match only Resource Server endpoints
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs*/**", "/h2-console/**").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**","/v3/api-docs/**", "/v3/api-docs*/**", "/h2-console/**").permitAll()
                         .requestMatchers("/api/**").permitAll())
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))

@@ -24,6 +24,13 @@ spring:
       hibernate:
         format_sql: 'true'
     show-sql: 'true'
+#  shell:
+#    interactive:
+#      enabled: false
+
+#    command:
+#      clear:
+#        enabled: true
 #  security:
 #    oauth2:
 #      resourceserver:
@@ -33,7 +40,10 @@ spring:
 #logging:
 #  level:
 #    root: info
+#logging:
+#  level:
+#    root: debug
 logging:
   level:
-    org.springframework.security: trace
-
+    org:
+      springframework: debug

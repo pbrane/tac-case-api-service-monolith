@@ -4,11 +4,7 @@ import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.OffsetDateTime;
@@ -18,13 +14,16 @@ import java.util.List;
 /**
  * An RMA Case
  */
-@Log
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "rma_cases", indexes = {@Index(name = "rma_cn_idx", columnList = "caseNumber", unique = true)})
+@Table(
+        name = "rma_cases",
+        indexes = {@Index(name = "rma_cn_idx", columnList = "caseNumber", unique = true)})
+
 public class RmaCaseEntity {
 
   @Id
@@ -52,6 +51,7 @@ public class RmaCaseEntity {
 
   private String returnedPartNumber;
 
+  @Enumerated(EnumType.STRING)
   private CaseStatus caseStatus;
 
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

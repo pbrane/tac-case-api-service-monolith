@@ -27,14 +27,6 @@ public class RmaCaseController {
         this.rmaCaseService = rmaCaseService;
     }
 
-/*
-    @GetMapping(path = "")
-    public ResponseEntity<List<RmaCaseDto>> listRmaCases() {
-        List<RmaCaseDto> rmaCaseDtos = rmaCaseService.findAll();
-        return ResponseEntity.ok(rmaCaseDtos);
-    }
-*/
-
     @GetMapping(path = "")
     public ResponseEntity<List<RmaCaseDto>> listAllRmaCases(
             @RequestParam(required = false)
@@ -73,8 +65,8 @@ public class RmaCaseController {
     }
 
     @PostMapping(path = "")
-    public ResponseEntity<RmaCaseDto> createRmaCase(@Valid @RequestBody RmaCaseDto rmaCaseDto) {
-        RmaCaseDto rmaCaseDtoSaved = rmaCaseService.save(rmaCaseDto);
+    public ResponseEntity<RmaCaseDto> createRmaCase(@Valid @RequestBody RmaCaseCreateDto dto) {
+        RmaCaseDto rmaCaseDtoSaved = rmaCaseService.save(dto);
         return new ResponseEntity<>(rmaCaseDtoSaved, HttpStatus.CREATED);
     }
 

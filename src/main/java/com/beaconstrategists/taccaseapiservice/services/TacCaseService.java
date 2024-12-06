@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface TacCaseService {
     // CRUD Operations for TacCase
+    TacCaseDto save(TacCaseCreateDto tacCaseDto);
     TacCaseDto save(TacCaseDto tacCaseDto);
     List<TacCaseDto> findAll();
     Optional<TacCaseDto> findById(Long id);

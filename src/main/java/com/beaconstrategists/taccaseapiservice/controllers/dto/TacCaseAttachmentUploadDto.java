@@ -3,6 +3,7 @@ package com.beaconstrategists.taccaseapiservice.controllers.dto;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
+//fixme: should be immutable
 @Data
 public class TacCaseAttachmentUploadDto {
 //    private Long id;

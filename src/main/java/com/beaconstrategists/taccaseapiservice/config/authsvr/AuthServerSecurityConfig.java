@@ -40,7 +40,7 @@ public class AuthServerSecurityConfig {
     private int refreshTokenExpirationMin;
 
     @Bean
-    @Order(1)
+    @Order(3)
     public SecurityFilterChain webSecurity(HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)

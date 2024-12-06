@@ -31,7 +31,7 @@ public class TacCaseEntity {
 
   private String href;
 
-  @Column(nullable = false, unique = true)
+//  @Column(nullable = false, unique = true)
   private String caseNumber;
 
   @Enumerated(EnumType.STRING)

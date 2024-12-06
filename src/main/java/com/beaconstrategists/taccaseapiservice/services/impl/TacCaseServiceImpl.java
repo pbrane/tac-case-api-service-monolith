@@ -7,6 +7,7 @@ import com.beaconstrategists.taccaseapiservice.mappers.TacCaseAttachmentResponse
 import com.beaconstrategists.taccaseapiservice.mappers.TacCaseNoteDownloadMapper;
 import com.beaconstrategists.taccaseapiservice.mappers.TacCaseNoteResponseMapper;
 import com.beaconstrategists.taccaseapiservice.mappers.impl.RmaCaseMapperImpl;
+import com.beaconstrategists.taccaseapiservice.mappers.impl.TacCaseCreateMapperImpl;
 import com.beaconstrategists.taccaseapiservice.mappers.impl.TacCaseMapperImpl;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.beaconstrategists.taccaseapiservice.model.entities.TacCaseAttachmentEntity;
@@ -36,6 +37,7 @@ public class TacCaseServiceImpl implements TacCaseService {
     private final TacCaseRepository tacCaseRepository;
     private final TacCaseAttachmentRepository tacCaseAttachmentRepository;
     private final TacCaseMapperImpl tacCaseMapper;
+    private final TacCaseCreateMapperImpl tacCaseCreateMapper;
     private final RmaCaseMapperImpl rmaCaseMapper;
     private final TacCaseAttachmentResponseMapper tacCaseAttachmentResponseMapper;
     private final TacCaseAttachmentDownloadMapper tacCaseAttachmentDownloadMapper;
@@ -46,12 +48,17 @@ public class TacCaseServiceImpl implements TacCaseService {
 
     public TacCaseServiceImpl(TacCaseRepository tacCaseRepository,
                               TacCaseAttachmentRepository tacCaseAttachmentRepository,
-                              TacCaseMapperImpl tacCaseMapper, RmaCaseMapperImpl rmaCaseMapper,
+                              TacCaseMapperImpl tacCaseMapper, TacCaseCreateMapperImpl tacCaseCreateMapper, RmaCaseMapperImpl rmaCaseMapper,
                               TacCaseAttachmentResponseMapper tacCaseAttachmentResponseMapper,
-                              TacCaseAttachmentDownloadMapper tacCaseAttachmentDownloadMapper, TacCaseNoteResponseMapper tacCaseNoteResponseMapper, TacCaseNoteDownloadMapper tacCaseNoteDownloadMapper, TacCaseNoteRepository tacCaseNoteRepository) {
+                              TacCaseAttachmentDownloadMapper tacCaseAttachmentDownloadMapper,
+                              TacCaseNoteResponseMapper tacCaseNoteResponseMapper,
+                              TacCaseNoteDownloadMapper tacCaseNoteDownloadMapper,
+                              TacCaseNoteRepository tacCaseNoteRepository) {
+
         this.tacCaseRepository = tacCaseRepository;
         this.tacCaseAttachmentRepository = tacCaseAttachmentRepository;
         this.tacCaseMapper = tacCaseMapper;
+        this.tacCaseCreateMapper = tacCaseCreateMapper;
         this.rmaCaseMapper = rmaCaseMapper;
         this.tacCaseAttachmentResponseMapper = tacCaseAttachmentResponseMapper;
         this.tacCaseAttachmentDownloadMapper = tacCaseAttachmentDownloadMapper;
@@ -66,6 +73,14 @@ public class TacCaseServiceImpl implements TacCaseService {
     @Transactional
     public TacCaseDto save(TacCaseDto tacCaseDto) {
         TacCaseEntity tacCaseEntity = tacCaseMapper.mapFrom(tacCaseDto);
+        TacCaseEntity savedEntity = tacCaseRepository.save(tacCaseEntity);
+        return tacCaseMapper.mapTo(savedEntity);
+    }
+
+    @Override
+    @Transactional
+    public TacCaseDto save(TacCaseCreateDto tacCaseDto) {
+        TacCaseEntity tacCaseEntity = tacCaseCreateMapper.mapFrom(tacCaseDto);
         TacCaseEntity savedEntity = tacCaseRepository.save(tacCaseEntity);
         return tacCaseMapper.mapTo(savedEntity);
     }
@@ -144,6 +159,8 @@ public class TacCaseServiceImpl implements TacCaseService {
         return tacCaseMapper.mapTo(updatedTacCase);
     }
 */
+
+//fixme: Use a mapper instead, can just use a put instead of a patch
 @Override
 public TacCaseDto partialUpdate(Long id, TacCaseDto tacCaseDto) {
     return tacCaseRepository.findById(id).map(existingTacCase -> {

@@ -6,12 +6,14 @@ import com.beaconstrategists.taccaseapiservice.mappers.RmaCaseAttachmentDownload
 import com.beaconstrategists.taccaseapiservice.mappers.RmaCaseAttachmentResponseMapper;
 import com.beaconstrategists.taccaseapiservice.mappers.RmaCaseNoteDownloadMapper;
 import com.beaconstrategists.taccaseapiservice.mappers.RmaCaseNoteResponseMapper;
+import com.beaconstrategists.taccaseapiservice.mappers.impl.RmaCaseCreateMapperImpl;
 import com.beaconstrategists.taccaseapiservice.mappers.impl.RmaCaseMapperImpl;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.beaconstrategists.taccaseapiservice.model.entities.*;
 import com.beaconstrategists.taccaseapiservice.repositories.RmaCaseAttachmentRepository;
 import com.beaconstrategists.taccaseapiservice.repositories.RmaCaseNoteRepository;
 import com.beaconstrategists.taccaseapiservice.repositories.RmaCaseRepository;
+import com.beaconstrategists.taccaseapiservice.repositories.TacCaseRepository;
 import com.beaconstrategists.taccaseapiservice.services.RmaCaseService;
 import com.beaconstrategists.taccaseapiservice.specifications.RmaCaseSpecification;
 import org.springframework.data.jpa.domain.Specification;
@@ -34,27 +36,32 @@ public class RmaCaseServiceImpl implements RmaCaseService {
     private final RmaCaseAttachmentRepository rmaCaseAttachmentRepository;
     private final RmaCaseNoteRepository rmaCaseNoteRepository;
     private final RmaCaseMapperImpl rmaCaseMapper;
+    private final RmaCaseCreateMapperImpl rmaCaseCreateMapper;
     private final RmaCaseAttachmentResponseMapper attachmentResponseMapper;
     private final RmaCaseAttachmentDownloadMapper attachmentDownloadMapper;
     private final RmaCaseNoteDownloadMapper noteDownloadMapper;
     private final RmaCaseNoteResponseMapper noteResponseMapper;
+    private final TacCaseRepository tacCaseRepository;
 
     public RmaCaseServiceImpl(RmaCaseRepository rmaCaseRepository,
                               RmaCaseAttachmentRepository rmaCaseAttachmentRepository,
                               RmaCaseNoteRepository rmaCaseNoteRepository,
                               RmaCaseMapperImpl rmaCaseMapper,
+                              RmaCaseCreateMapperImpl rmaCaseCreateMapper,
                               RmaCaseAttachmentResponseMapper attachmentResponseMapper,
                               RmaCaseAttachmentDownloadMapper attachmentDownloadMapper,
                               RmaCaseNoteDownloadMapper noteDownloadMapper,
-                              RmaCaseNoteResponseMapper noteResponseMapper) {
+                              RmaCaseNoteResponseMapper noteResponseMapper, TacCaseRepository tacCaseRepository) {
         this.rmaCaseRepository = rmaCaseRepository;
         this.rmaCaseAttachmentRepository = rmaCaseAttachmentRepository;
         this.rmaCaseNoteRepository = rmaCaseNoteRepository;
         this.rmaCaseMapper = rmaCaseMapper;
+        this.rmaCaseCreateMapper = rmaCaseCreateMapper;
         this.attachmentResponseMapper = attachmentResponseMapper;
         this.attachmentDownloadMapper = attachmentDownloadMapper;
         this.noteDownloadMapper = noteDownloadMapper;
         this.noteResponseMapper = noteResponseMapper;
+        this.tacCaseRepository = tacCaseRepository;
     }
 
     // CRUD Operations for RmaCase
@@ -62,7 +69,27 @@ public class RmaCaseServiceImpl implements RmaCaseService {
     @Override
     @Transactional
     public RmaCaseDto save(RmaCaseDto rmaCaseDto) {
+        Long caseId = rmaCaseDto.getTacCaseId();
+        TacCaseEntity tacCase = tacCaseRepository.findById(caseId)
+                .orElseThrow(() -> new ResourceNotFoundException("TAC Case not found with id " + caseId));
+
         RmaCaseEntity rmaCaseEntity = rmaCaseMapper.mapFrom(rmaCaseDto);
+        rmaCaseEntity.setTacCase(tacCase);
+
+        RmaCaseEntity savedEntity = rmaCaseRepository.save(rmaCaseEntity);
+        return rmaCaseMapper.mapTo(savedEntity);
+    }
+
+    @Override
+    @Transactional
+    public RmaCaseDto save(RmaCaseCreateDto rmaCaseCreateDto) {
+        Long caseId = rmaCaseCreateDto.getTacCaseId();
+        TacCaseEntity tacCase = tacCaseRepository.findById(caseId)
+                .orElseThrow(() -> new ResourceNotFoundException("TAC Case not found with id " + caseId));
+
+        RmaCaseEntity rmaCaseEntity = rmaCaseCreateMapper.mapFrom(rmaCaseCreateDto);
+        rmaCaseEntity.setTacCase(tacCase);
+
         RmaCaseEntity savedEntity = rmaCaseRepository.save(rmaCaseEntity);
         return rmaCaseMapper.mapTo(savedEntity);
     }

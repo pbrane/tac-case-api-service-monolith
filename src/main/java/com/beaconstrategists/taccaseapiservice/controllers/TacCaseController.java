@@ -27,14 +27,6 @@ public class TacCaseController {
         this.tacCaseService = tacCaseService;
     }
 
-/*
-    @GetMapping(path = "")
-    public ResponseEntity<List<TacCaseDto>> listTacCases() {
-            List<TacCaseDto> tacCaseDtos = tacCaseService.findAll();
-            return ResponseEntity.ok(tacCaseDtos);
-    }
-*/
-
     @GetMapping(path = "")
     public ResponseEntity<List<TacCaseDto>> listAllTacCases(
             @RequestParam(required = false)
@@ -73,8 +65,8 @@ public class TacCaseController {
     }
 
     @PostMapping(path = "")
-    public ResponseEntity<TacCaseDto> createTacCase(@Valid @RequestBody TacCaseDto tacCaseDto) {
-        TacCaseDto tacCaseDtoSaved = tacCaseService.save(tacCaseDto);
+    public ResponseEntity<TacCaseDto> createTacCase(@Valid @RequestBody TacCaseCreateDto dto) {
+        TacCaseDto tacCaseDtoSaved = tacCaseService.save(dto);
         return new ResponseEntity<>(tacCaseDtoSaved, HttpStatus.CREATED);
     }
 
