@@ -11,23 +11,19 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * An RMA Case
- */
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(
-        name = "rma_cases",
-        indexes = {@Index(name = "rma_cn_idx", columnList = "caseNumber", unique = true)})
-
+@Table(name = "rma_cases")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true) //fixme: analyze this
 public class RmaCaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @EqualsAndHashCode.Include
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)

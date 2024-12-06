@@ -9,6 +9,7 @@ import com.beaconstrategists.taccaseapiservice.mappers.TacCaseNoteResponseMapper
 import com.beaconstrategists.taccaseapiservice.mappers.impl.RmaCaseMapperImpl;
 import com.beaconstrategists.taccaseapiservice.mappers.impl.TacCaseCreateMapperImpl;
 import com.beaconstrategists.taccaseapiservice.mappers.impl.TacCaseMapperImpl;
+import com.beaconstrategists.taccaseapiservice.mappers.impl.TacCaseUpdateMapperImpl;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.beaconstrategists.taccaseapiservice.model.entities.TacCaseAttachmentEntity;
 import com.beaconstrategists.taccaseapiservice.model.entities.TacCaseEntity;
@@ -38,6 +39,7 @@ public class TacCaseServiceImpl implements TacCaseService {
     private final TacCaseAttachmentRepository tacCaseAttachmentRepository;
     private final TacCaseMapperImpl tacCaseMapper;
     private final TacCaseCreateMapperImpl tacCaseCreateMapper;
+    private final TacCaseUpdateMapperImpl tacCaseUpdateMapper;
     private final RmaCaseMapperImpl rmaCaseMapper;
     private final TacCaseAttachmentResponseMapper tacCaseAttachmentResponseMapper;
     private final TacCaseAttachmentDownloadMapper tacCaseAttachmentDownloadMapper;
@@ -48,7 +50,10 @@ public class TacCaseServiceImpl implements TacCaseService {
 
     public TacCaseServiceImpl(TacCaseRepository tacCaseRepository,
                               TacCaseAttachmentRepository tacCaseAttachmentRepository,
-                              TacCaseMapperImpl tacCaseMapper, TacCaseCreateMapperImpl tacCaseCreateMapper, RmaCaseMapperImpl rmaCaseMapper,
+                              TacCaseMapperImpl tacCaseMapper,
+                              TacCaseCreateMapperImpl tacCaseCreateMapper,
+                              TacCaseUpdateMapperImpl tacCaseUpdateMapper,
+                              RmaCaseMapperImpl rmaCaseMapper,
                               TacCaseAttachmentResponseMapper tacCaseAttachmentResponseMapper,
                               TacCaseAttachmentDownloadMapper tacCaseAttachmentDownloadMapper,
                               TacCaseNoteResponseMapper tacCaseNoteResponseMapper,
@@ -59,6 +64,7 @@ public class TacCaseServiceImpl implements TacCaseService {
         this.tacCaseAttachmentRepository = tacCaseAttachmentRepository;
         this.tacCaseMapper = tacCaseMapper;
         this.tacCaseCreateMapper = tacCaseCreateMapper;
+        this.tacCaseUpdateMapper = tacCaseUpdateMapper;
         this.rmaCaseMapper = rmaCaseMapper;
         this.tacCaseAttachmentResponseMapper = tacCaseAttachmentResponseMapper;
         this.tacCaseAttachmentDownloadMapper = tacCaseAttachmentDownloadMapper;
@@ -69,6 +75,7 @@ public class TacCaseServiceImpl implements TacCaseService {
 
     // CRUD Operations for TacCase
 
+    //fixme: figure out where this is still being used
     @Override
     @Transactional
     public TacCaseDto save(TacCaseDto tacCaseDto) {
@@ -81,6 +88,23 @@ public class TacCaseServiceImpl implements TacCaseService {
     @Transactional
     public TacCaseDto save(TacCaseCreateDto tacCaseDto) {
         TacCaseEntity tacCaseEntity = tacCaseCreateMapper.mapFrom(tacCaseDto);
+        TacCaseEntity savedEntity = tacCaseRepository.save(tacCaseEntity);
+        return tacCaseMapper.mapTo(savedEntity);
+    }
+
+    @Override
+    @Transactional
+    public TacCaseDto update(Long id, TacCaseUpdateDto updateDto) {
+
+        /*
+        This appears redundant because the controller checks before
+        making this call. However, the case could be deleted between
+        then the save. This is all wrapped in a transaction to handle
+        that situation gracefully.
+        */
+        TacCaseEntity tacCaseEntity = tacCaseRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No TAC Case found with ID: " + id));
+        tacCaseUpdateMapper.map(updateDto, tacCaseEntity);
         TacCaseEntity savedEntity = tacCaseRepository.save(tacCaseEntity);
         return tacCaseMapper.mapTo(savedEntity);
     }
@@ -163,7 +187,8 @@ public class TacCaseServiceImpl implements TacCaseService {
 //fixme: Use a mapper instead, can just use a put instead of a patch
 @Override
 public TacCaseDto partialUpdate(Long id, TacCaseDto tacCaseDto) {
-    return tacCaseRepository.findById(id).map(existingTacCase -> {
+    Optional<TacCaseEntity> entity = tacCaseRepository.findById(id);
+    return entity.map(existingTacCase -> {
         Optional.ofNullable(tacCaseDto.getCaseOwner()).ifPresent(existingTacCase::setCaseOwner);
         Optional.ofNullable(tacCaseDto.getCasePriority()).ifPresent(existingTacCase::setCasePriority);
         Optional.ofNullable(tacCaseDto.getCaseStatus()).ifPresent(existingTacCase::setCaseStatus);

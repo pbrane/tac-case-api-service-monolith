@@ -47,6 +47,13 @@ public class TacCaseMapperImpl implements Mapper<TacCaseEntity, TacCaseDto> {
 
     @Override
     public TacCaseEntity mapFrom(TacCaseDto tacCaseDto) {
+
+        //fixme: should we be doing this here?
+        modelMapper.getConfiguration()
+                .setSkipNullEnabled(true) // Skip null values
+                .setFieldMatchingEnabled(true) // Enable field matching
+                .setAmbiguityIgnored(true); // Ignore ambiguous mappings
+
         return modelMapper.map(tacCaseDto, TacCaseEntity.class);
     }
 

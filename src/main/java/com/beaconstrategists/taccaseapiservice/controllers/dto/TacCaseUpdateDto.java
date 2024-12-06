@@ -3,7 +3,6 @@ package com.beaconstrategists.taccaseapiservice.controllers.dto;
 import com.beaconstrategists.taccaseapiservice.model.CasePriorityEnum;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,20 +17,32 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@JsonIgnoreProperties(ignoreUnknown = true) //fixme: really?
-public class TacCaseCreateDto {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class TacCaseUpdateDto {
 
-    @NotEmpty
+    private String href;
+
+    private String caseNumber;
+
+    private CaseStatus caseStatus;
+
+    private Boolean rmaNeeded;
+
     private String subject;
 
-    @NotEmpty
+    private Integer relatedRmaCount;
+
+    private Integer relatedDispatchCount;
+
     private String problemDescription;
 
     private String installationCountry;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private OffsetDateTime firstResponseDate;
+
     private String customerTrackingNumber;
 
-    @NotEmpty
     private String contactEmail;
 
     private String productName;
@@ -42,8 +53,27 @@ public class TacCaseCreateDto {
 
     private String productSoftwareVersion;
 
+    private String caseSolutionDescription;
+
     private CasePriorityEnum casePriority;
 
+    private String caseOwner;
+
+    //fixme: should be getting rid of this
+    private Integer caseNoteCount;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private OffsetDateTime caseCreatedDate;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private OffsetDateTime caseClosedDate;
+
     private String businessImpact;
+
+    private String accountNumber;
+
+    private String faultySerialNumber;
+
+    private String faultyPartNumber;
 
 }

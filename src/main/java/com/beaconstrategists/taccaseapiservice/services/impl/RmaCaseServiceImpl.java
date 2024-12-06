@@ -8,8 +8,12 @@ import com.beaconstrategists.taccaseapiservice.mappers.RmaCaseNoteDownloadMapper
 import com.beaconstrategists.taccaseapiservice.mappers.RmaCaseNoteResponseMapper;
 import com.beaconstrategists.taccaseapiservice.mappers.impl.RmaCaseCreateMapperImpl;
 import com.beaconstrategists.taccaseapiservice.mappers.impl.RmaCaseMapperImpl;
+import com.beaconstrategists.taccaseapiservice.mappers.impl.RmaCaseUpdateMapperImpl;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
-import com.beaconstrategists.taccaseapiservice.model.entities.*;
+import com.beaconstrategists.taccaseapiservice.model.entities.RmaCaseAttachmentEntity;
+import com.beaconstrategists.taccaseapiservice.model.entities.RmaCaseEntity;
+import com.beaconstrategists.taccaseapiservice.model.entities.RmaCaseNoteEntity;
+import com.beaconstrategists.taccaseapiservice.model.entities.TacCaseEntity;
 import com.beaconstrategists.taccaseapiservice.repositories.RmaCaseAttachmentRepository;
 import com.beaconstrategists.taccaseapiservice.repositories.RmaCaseNoteRepository;
 import com.beaconstrategists.taccaseapiservice.repositories.RmaCaseRepository;
@@ -37,6 +41,7 @@ public class RmaCaseServiceImpl implements RmaCaseService {
     private final RmaCaseNoteRepository rmaCaseNoteRepository;
     private final RmaCaseMapperImpl rmaCaseMapper;
     private final RmaCaseCreateMapperImpl rmaCaseCreateMapper;
+    private final RmaCaseUpdateMapperImpl rmaCaseUpdateMapper;
     private final RmaCaseAttachmentResponseMapper attachmentResponseMapper;
     private final RmaCaseAttachmentDownloadMapper attachmentDownloadMapper;
     private final RmaCaseNoteDownloadMapper noteDownloadMapper;
@@ -47,7 +52,7 @@ public class RmaCaseServiceImpl implements RmaCaseService {
                               RmaCaseAttachmentRepository rmaCaseAttachmentRepository,
                               RmaCaseNoteRepository rmaCaseNoteRepository,
                               RmaCaseMapperImpl rmaCaseMapper,
-                              RmaCaseCreateMapperImpl rmaCaseCreateMapper,
+                              RmaCaseCreateMapperImpl rmaCaseCreateMapper, RmaCaseUpdateMapperImpl rmaCaseUpdateMapper,
                               RmaCaseAttachmentResponseMapper attachmentResponseMapper,
                               RmaCaseAttachmentDownloadMapper attachmentDownloadMapper,
                               RmaCaseNoteDownloadMapper noteDownloadMapper,
@@ -57,6 +62,7 @@ public class RmaCaseServiceImpl implements RmaCaseService {
         this.rmaCaseNoteRepository = rmaCaseNoteRepository;
         this.rmaCaseMapper = rmaCaseMapper;
         this.rmaCaseCreateMapper = rmaCaseCreateMapper;
+        this.rmaCaseUpdateMapper = rmaCaseUpdateMapper;
         this.attachmentResponseMapper = attachmentResponseMapper;
         this.attachmentDownloadMapper = attachmentDownloadMapper;
         this.noteDownloadMapper = noteDownloadMapper;
@@ -90,6 +96,23 @@ public class RmaCaseServiceImpl implements RmaCaseService {
         RmaCaseEntity rmaCaseEntity = rmaCaseCreateMapper.mapFrom(rmaCaseCreateDto);
         rmaCaseEntity.setTacCase(tacCase);
 
+        RmaCaseEntity savedEntity = rmaCaseRepository.save(rmaCaseEntity);
+        return rmaCaseMapper.mapTo(savedEntity);
+    }
+
+    @Override
+    @Transactional
+    public RmaCaseDto update(Long id, RmaCaseUpdateDto updateDto) {
+
+        /*
+        This appears redundant because the controller checks before
+        making this call. However, the case could be deleted between
+        then the save. This is all wrapped in a transaction to handle
+        that situation gracefully.
+        */
+        RmaCaseEntity rmaCaseEntity = rmaCaseRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No RMA Case found with ID: " + id));
+        rmaCaseUpdateMapper.map(updateDto, rmaCaseEntity);
         RmaCaseEntity savedEntity = rmaCaseRepository.save(rmaCaseEntity);
         return rmaCaseMapper.mapTo(savedEntity);
     }

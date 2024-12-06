@@ -71,18 +71,20 @@ public class RmaCaseController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<RmaCaseDto> fullUpdateRmaCase(
+    public ResponseEntity<RmaCaseDto> updateTacCase(
             @PathVariable Long id,
-            @Valid @RequestBody RmaCaseDto rmaCaseDto) {
+            @Valid @RequestBody RmaCaseUpdateDto updateDto) {
 
+        //fixme: make sure this isn't redundant
         if (!rmaCaseService.isExists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        RmaCaseDto rmaCaseDtoSaved = rmaCaseService.save(rmaCaseDto);
-        return new ResponseEntity<>(rmaCaseDtoSaved, HttpStatus.OK);
+        RmaCaseDto rmaCaseSavedDto = rmaCaseService.update(id, updateDto);
+        return new ResponseEntity<>(rmaCaseSavedDto, HttpStatus.OK);
     }
 
+/*
     @PatchMapping(path = "/{id}")
     public ResponseEntity<RmaCaseDto> partialUpdate(
             @PathVariable Long id,
@@ -95,6 +97,7 @@ public class RmaCaseController {
         RmaCaseDto rmaCaseDtoSaved = rmaCaseService.partialUpdate(id, rmaCaseDto);
         return new ResponseEntity<>(rmaCaseDtoSaved, HttpStatus.OK);
     }
+*/
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> deleteRmaCase(@PathVariable Long id) {

@@ -17,12 +17,9 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RmaCaseDto {
+public class RmaCaseUpdateDto {
 
-    private Long id;
-
-    @NotEmpty
-    private Long tacCaseId;
+//    private Long tacCaseId;
 
     private String href;
 
@@ -98,6 +95,4 @@ public class RmaCaseDto {
     private String contactEmail;
 
     private Integer vendorRmaNumber;
-
-    private List<Long> attachmentIds;
 }

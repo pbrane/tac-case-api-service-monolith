@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface RmaCaseService {
     // CRUD Operations for RmaCase
     RmaCaseDto save(RmaCaseCreateDto rmaCaseCreateDto);
+    RmaCaseDto update(Long id, RmaCaseUpdateDto rmaCaseUpdateDto);
     RmaCaseDto save(RmaCaseDto rmaCaseDto);
     List<RmaCaseDto> findAll();
     Optional<RmaCaseDto> findById(Long id);

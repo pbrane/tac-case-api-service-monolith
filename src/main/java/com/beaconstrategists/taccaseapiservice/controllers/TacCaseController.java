@@ -71,18 +71,20 @@ public class TacCaseController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<TacCaseDto> fullUpdateTacCase(
+    public ResponseEntity<TacCaseDto> updateTacCase(
             @PathVariable Long id,
-            @Valid @RequestBody TacCaseDto tacCaseDto) {
+            @Valid @RequestBody TacCaseUpdateDto updateDto) {
 
+        //fixme: make sure this isn't redundant
         if (!tacCaseService.exists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        TacCaseDto tacCaseDtoSaved = tacCaseService.save(tacCaseDto);
-        return new ResponseEntity<>(tacCaseDtoSaved, HttpStatus.OK);
+        TacCaseDto tacCaseSavedDto = tacCaseService.update(id, updateDto);
+        return new ResponseEntity<>(tacCaseSavedDto, HttpStatus.OK);
     }
 
+/*
     @PatchMapping(path = "/{id}")
     public ResponseEntity<TacCaseDto> partialUpdate(
             @PathVariable Long id,
@@ -95,6 +97,7 @@ public class TacCaseController {
         TacCaseDto tacCaseDtoSaved = tacCaseService.partialUpdate(id, tacCaseDto);
         return new ResponseEntity<>(tacCaseDtoSaved, HttpStatus.OK);
     }
+*/
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> deleteTacCase(@PathVariable Long id) {
