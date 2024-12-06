@@ -10,16 +10,16 @@ import java.util.Optional;
 
 public interface RmaCaseService {
     // CRUD Operations for RmaCase
-    RmaCaseDto save(RmaCaseCreateDto rmaCaseCreateDto);
-    RmaCaseDto update(Long id, RmaCaseUpdateDto rmaCaseUpdateDto);
-    RmaCaseDto save(RmaCaseDto rmaCaseDto);
-    List<RmaCaseDto> findAll();
-    Optional<RmaCaseDto> findById(Long id);
-    Optional<RmaCaseDto> findByCaseNumber(String caseNumber);
+    RmaCaseResponseDto save(RmaCaseCreateDto rmaCaseCreateDto);
+    RmaCaseResponseDto update(Long id, RmaCaseUpdateDto rmaCaseUpdateDto);
+    RmaCaseResponseDto save(RmaCaseResponseDto rmaCaseResponseDto);
+    List<RmaCaseResponseDto> findAll();
+    Optional<RmaCaseResponseDto> findById(Long id);
+    Optional<RmaCaseResponseDto> findByCaseNumber(String caseNumber);
     boolean isExists(Long id);
     boolean isExists(String caseNumber);
-    RmaCaseDto partialUpdate(Long id, RmaCaseDto rmaCaseDto);
-    RmaCaseDto partialUpdate(String caseNumber, RmaCaseDto rmaCaseDto);
+    RmaCaseResponseDto partialUpdate(Long id, RmaCaseResponseDto rmaCaseResponseDto);
+    RmaCaseResponseDto partialUpdate(String caseNumber, RmaCaseResponseDto rmaCaseResponseDto);
     void delete(Long id);
     void delete(String caseNumber);
 
@@ -38,10 +38,10 @@ public interface RmaCaseService {
     void deleteNote(Long caseId, Long noteId);
     void deleteAllNotes(Long caseId);
 
-    List<RmaCaseDto> listRmaCases(OffsetDateTime caseCreateDateFrom,
-                                  OffsetDateTime caseCreateDateTo,
-                                  OffsetDateTime caseCreateDateSince,
-                                  List<CaseStatus> caseStatus,
-                                  String logic);
+    List<RmaCaseResponseDto> listRmaCases(OffsetDateTime caseCreateDateFrom,
+                                          OffsetDateTime caseCreateDateTo,
+                                          OffsetDateTime caseCreateDateSince,
+                                          List<CaseStatus> caseStatus,
+                                          String logic);
 
 }

@@ -28,7 +28,7 @@ public class TacCaseController {
     }
 
     @GetMapping(path = "")
-    public ResponseEntity<List<TacCaseDto>> listAllTacCases(
+    public ResponseEntity<List<TacCaseResponseDto>> listAllTacCases(
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             OffsetDateTime caseCreateDateFrom,
@@ -47,7 +47,7 @@ public class TacCaseController {
             @RequestParam(required = false, defaultValue = "AND")
             String logic
     ) {
-        List<TacCaseDto> tacCases = tacCaseService.listTacCases(
+        List<TacCaseResponseDto> tacCases = tacCaseService.listTacCases(
                 caseCreateDateFrom,
                 caseCreateDateTo,
                 caseCreateDateSince,
@@ -58,20 +58,20 @@ public class TacCaseController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<TacCaseDto> getTacCase(@PathVariable Long id) {
-        Optional<TacCaseDto> foundTacCase = tacCaseService.findById(id);
-        return foundTacCase.map(tacCaseDto -> new ResponseEntity<>(tacCaseDto, HttpStatus.OK))
+    public ResponseEntity<TacCaseResponseDto> getTacCase(@PathVariable Long id) {
+        Optional<TacCaseResponseDto> foundTacCase = tacCaseService.findById(id);
+        return foundTacCase.map(tacCaseResponseDto -> new ResponseEntity<>(tacCaseResponseDto, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping(path = "")
-    public ResponseEntity<TacCaseDto> createTacCase(@Valid @RequestBody TacCaseCreateDto dto) {
-        TacCaseDto tacCaseDtoSaved = tacCaseService.save(dto);
-        return new ResponseEntity<>(tacCaseDtoSaved, HttpStatus.CREATED);
+    public ResponseEntity<TacCaseResponseDto> createTacCase(@Valid @RequestBody TacCaseCreateDto dto) {
+        TacCaseResponseDto tacCaseResponseDtoSaved = tacCaseService.save(dto);
+        return new ResponseEntity<>(tacCaseResponseDtoSaved, HttpStatus.CREATED);
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<TacCaseDto> updateTacCase(
+    public ResponseEntity<TacCaseResponseDto> updateTacCase(
             @PathVariable Long id,
             @Valid @RequestBody TacCaseUpdateDto updateDto) {
 
@@ -80,21 +80,21 @@ public class TacCaseController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        TacCaseDto tacCaseSavedDto = tacCaseService.update(id, updateDto);
-        return new ResponseEntity<>(tacCaseSavedDto, HttpStatus.OK);
+        TacCaseResponseDto tacCaseResponseDto = tacCaseService.update(id, updateDto);
+        return new ResponseEntity<>(tacCaseResponseDto, HttpStatus.OK);
     }
 
 /*
     @PatchMapping(path = "/{id}")
-    public ResponseEntity<TacCaseDto> partialUpdate(
+    public ResponseEntity<TacCaseResponseDto> partialUpdate(
             @PathVariable Long id,
-            @Valid @RequestBody TacCaseDto tacCaseDto) {
+            @Valid @RequestBody TacCaseResponseDto tacCaseDto) {
 
         if (!tacCaseService.exists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        TacCaseDto tacCaseDtoSaved = tacCaseService.partialUpdate(id, tacCaseDto);
+        TacCaseResponseDto tacCaseDtoSaved = tacCaseService.partialUpdate(id, tacCaseDto);
         return new ResponseEntity<>(tacCaseDtoSaved, HttpStatus.OK);
     }
 */
@@ -110,8 +110,8 @@ public class TacCaseController {
     //RMAs
 
     @GetMapping("/{id}/rmaCases")
-    public ResponseEntity<List<RmaCaseDto>> listAllRmasForTacCase(@PathVariable Long id) {
-        List<RmaCaseDto> rmaCases = tacCaseService.listRmaCases(id);
+    public ResponseEntity<List<RmaCaseResponseDto>> listAllRmasForTacCase(@PathVariable Long id) {
+        List<RmaCaseResponseDto> rmaCases = tacCaseService.listRmaCases(id);
         return new ResponseEntity<>(rmaCases, HttpStatus.OK);
     }
 

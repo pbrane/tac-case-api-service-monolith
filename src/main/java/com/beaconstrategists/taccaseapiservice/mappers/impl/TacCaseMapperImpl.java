@@ -1,6 +1,6 @@
 package com.beaconstrategists.taccaseapiservice.mappers.impl;
 
-import com.beaconstrategists.taccaseapiservice.controllers.dto.TacCaseDto;
+import com.beaconstrategists.taccaseapiservice.controllers.dto.TacCaseResponseDto;
 import com.beaconstrategists.taccaseapiservice.mappers.Mapper;
 import com.beaconstrategists.taccaseapiservice.model.entities.RmaCaseEntity;
 import com.beaconstrategists.taccaseapiservice.model.entities.TacCaseAttachmentEntity;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class TacCaseMapperImpl implements Mapper<TacCaseEntity, TacCaseDto> {
+public class TacCaseMapperImpl implements Mapper<TacCaseEntity, TacCaseResponseDto> {
 
     private final ModelMapper modelMapper;
 
@@ -22,31 +22,31 @@ public class TacCaseMapperImpl implements Mapper<TacCaseEntity, TacCaseDto> {
     }
 
     @Override
-    public TacCaseDto mapTo(TacCaseEntity tacCaseEntity) {
-        TacCaseDto tacCaseDto = modelMapper.map(tacCaseEntity, TacCaseDto.class);
+    public TacCaseResponseDto mapTo(TacCaseEntity tacCaseEntity) {
+        TacCaseResponseDto tacCaseResponseDto = modelMapper.map(tacCaseEntity, TacCaseResponseDto.class);
 
         // Populate rmaCaseIds
         List<Long> rmaCaseIds = tacCaseEntity.getRmaCases().stream()
                 .map(RmaCaseEntity::getId)
                 .collect(Collectors.toList());
-        tacCaseDto.setRmaCaseIds(rmaCaseIds);
+        tacCaseResponseDto.setRmaCaseIds(rmaCaseIds);
 
         // Populate attachmentIds or attachments
         List<Long> attachmentIds = tacCaseEntity.getAttachments().stream()
                 .map(TacCaseAttachmentEntity::getId)
                 .collect(Collectors.toList());
-        tacCaseDto.setAttachmentIds(attachmentIds);
+        tacCaseResponseDto.setAttachmentIds(attachmentIds);
 
         List<Long> noteIds = tacCaseEntity.getTacCaseNotes().stream()
                 .map(TacCaseNoteEntity::getId)
                 .collect(Collectors.toList());
-        tacCaseDto.setNoteIds(noteIds);
+        tacCaseResponseDto.setNoteIds(noteIds);
 
-        return tacCaseDto;
+        return tacCaseResponseDto;
     }
 
     @Override
-    public TacCaseEntity mapFrom(TacCaseDto tacCaseDto) {
+    public TacCaseEntity mapFrom(TacCaseResponseDto tacCaseResponseDto) {
 
         //fixme: should we be doing this here?
         modelMapper.getConfiguration()
@@ -54,10 +54,10 @@ public class TacCaseMapperImpl implements Mapper<TacCaseEntity, TacCaseDto> {
                 .setFieldMatchingEnabled(true) // Enable field matching
                 .setAmbiguityIgnored(true); // Ignore ambiguous mappings
 
-        return modelMapper.map(tacCaseDto, TacCaseEntity.class);
+        return modelMapper.map(tacCaseResponseDto, TacCaseEntity.class);
     }
 
-    public void mapFrom(TacCaseDto tacCaseDto, TacCaseEntity tacCaseEntity) {
-        modelMapper.map(tacCaseDto, tacCaseEntity);
+    public void mapFrom(TacCaseResponseDto tacCaseResponseDto, TacCaseEntity tacCaseEntity) {
+        modelMapper.map(tacCaseResponseDto, tacCaseEntity);
     }
 }

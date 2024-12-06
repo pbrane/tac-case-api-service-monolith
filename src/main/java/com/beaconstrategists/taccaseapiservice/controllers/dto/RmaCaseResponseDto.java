@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RmaCaseDto {
+public class RmaCaseResponseDto {
 
     private Long id;
 

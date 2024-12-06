@@ -78,15 +78,15 @@ public class TacCaseServiceImpl implements TacCaseService {
     //fixme: figure out where this is still being used
     @Override
     @Transactional
-    public TacCaseDto save(TacCaseDto tacCaseDto) {
-        TacCaseEntity tacCaseEntity = tacCaseMapper.mapFrom(tacCaseDto);
+    public TacCaseResponseDto save(TacCaseResponseDto tacCaseResponseDto) {
+        TacCaseEntity tacCaseEntity = tacCaseMapper.mapFrom(tacCaseResponseDto);
         TacCaseEntity savedEntity = tacCaseRepository.save(tacCaseEntity);
         return tacCaseMapper.mapTo(savedEntity);
     }
 
     @Override
     @Transactional
-    public TacCaseDto save(TacCaseCreateDto tacCaseDto) {
+    public TacCaseResponseDto save(TacCaseCreateDto tacCaseDto) {
         TacCaseEntity tacCaseEntity = tacCaseCreateMapper.mapFrom(tacCaseDto);
         TacCaseEntity savedEntity = tacCaseRepository.save(tacCaseEntity);
         return tacCaseMapper.mapTo(savedEntity);
@@ -94,7 +94,7 @@ public class TacCaseServiceImpl implements TacCaseService {
 
     @Override
     @Transactional
-    public TacCaseDto update(Long id, TacCaseUpdateDto updateDto) {
+    public TacCaseResponseDto update(Long id, TacCaseUpdateDto updateDto) {
 
         /*
         This appears redundant because the controller checks before
@@ -111,7 +111,7 @@ public class TacCaseServiceImpl implements TacCaseService {
 
     @Override
     @Transactional
-    public List<TacCaseDto> findAll() {
+    public List<TacCaseResponseDto> findAll() {
         List<TacCaseEntity> tacCases = StreamSupport.stream(tacCaseRepository.findAll().spliterator(), false)
                 .toList();
         return tacCases.stream()
@@ -121,21 +121,21 @@ public class TacCaseServiceImpl implements TacCaseService {
 
     @Override
     @Transactional
-    public Optional<TacCaseDto> findById(Long id) {
+    public Optional<TacCaseResponseDto> findById(Long id) {
         return tacCaseRepository.findById(id)
                 .map(tacCaseMapper::mapTo);
     }
 
     @Override
     @Transactional
-    public Optional<TacCaseDto> findByCaseNumber(String caseNumber) {
+    public Optional<TacCaseResponseDto> findByCaseNumber(String caseNumber) {
         return tacCaseRepository.findByCaseNumber(caseNumber)
                 .map(tacCaseMapper::mapTo);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<TacCaseDto> listTacCases(
+    public List<TacCaseResponseDto> listTacCases(
             OffsetDateTime caseCreateDateFrom,
             OffsetDateTime caseCreateDateTo,
             OffsetDateTime caseCreateDateSince,
@@ -172,7 +172,7 @@ public class TacCaseServiceImpl implements TacCaseService {
 /*
     @Override
     @Transactional
-    public TacCaseDto partialUpdate(Long id, TacCaseDto tacCaseDto) {
+    public TacCaseResponseDto partialUpdate(Long id, TacCaseResponseDto tacCaseDto) {
         TacCaseEntity existingTacCase = tacCaseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("TAC Case does not exist with id " + id));
 
@@ -186,38 +186,38 @@ public class TacCaseServiceImpl implements TacCaseService {
 
 //fixme: Use a mapper instead, can just use a put instead of a patch
 @Override
-public TacCaseDto partialUpdate(Long id, TacCaseDto tacCaseDto) {
+public TacCaseResponseDto partialUpdate(Long id, TacCaseResponseDto tacCaseResponseDto) {
     Optional<TacCaseEntity> entity = tacCaseRepository.findById(id);
     return entity.map(existingTacCase -> {
-        Optional.ofNullable(tacCaseDto.getCaseOwner()).ifPresent(existingTacCase::setCaseOwner);
-        Optional.ofNullable(tacCaseDto.getCasePriority()).ifPresent(existingTacCase::setCasePriority);
-        Optional.ofNullable(tacCaseDto.getCaseStatus()).ifPresent(existingTacCase::setCaseStatus);
-        Optional.ofNullable(tacCaseDto.getAccountNumber()).ifPresent(existingTacCase::setAccountNumber);
-        Optional.ofNullable(tacCaseDto.getCaseNumber()).ifPresent(existingTacCase::setCaseNumber);
-        Optional.ofNullable(tacCaseDto.getAccountNumber()).ifPresent(existingTacCase::setAccountNumber);
-        Optional.ofNullable(tacCaseDto.getBusinessImpact()).ifPresent(existingTacCase::setBusinessImpact);
-        Optional.ofNullable(tacCaseDto.getCaseClosedDate()).ifPresent(existingTacCase::setCaseClosedDate);
-        Optional.ofNullable(tacCaseDto.getCaseCreatedDate()).ifPresent(existingTacCase::setCaseCreatedDate);
-        Optional.ofNullable(tacCaseDto.getCaseNoteCount()).ifPresent(existingTacCase::setCaseNoteCount);
-        Optional.ofNullable(tacCaseDto.getCaseSolutionDescription()).ifPresent(existingTacCase::setCaseSolutionDescription);
-        Optional.ofNullable(tacCaseDto.getContactEmail()).ifPresent(existingTacCase::setContactEmail);
-        Optional.ofNullable(tacCaseDto.getCustomerTrackingNumber()).ifPresent(existingTacCase::setCustomerTrackingNumber);
-        Optional.ofNullable(tacCaseDto.getFaultyPartNumber()).ifPresent(existingTacCase::setFaultyPartNumber);
-        Optional.ofNullable(tacCaseDto.getFaultySerialNumber()).ifPresent(existingTacCase::setFaultySerialNumber);
-        Optional.ofNullable(tacCaseDto.getFirstResponseDate()).ifPresent(existingTacCase::setFirstResponseDate);
-        Optional.ofNullable(tacCaseDto.getHref()).ifPresent(existingTacCase::setHref); //fixme
-        Optional.ofNullable(tacCaseDto.getCustomerTrackingNumber()).ifPresent(existingTacCase::setCustomerTrackingNumber);
-        Optional.ofNullable(tacCaseDto.getInstallationCountry()).ifPresent(existingTacCase::setInstallationCountry);
-        Optional.ofNullable(tacCaseDto.getProblemDescription()).ifPresent(existingTacCase::setProblemDescription);
-        Optional.ofNullable(tacCaseDto.getCaseNoteCount()).ifPresent(existingTacCase::setCaseNoteCount);
-        Optional.ofNullable(tacCaseDto.getProductFirmwareVersion()).ifPresent(existingTacCase::setProductFirmwareVersion);
-        Optional.ofNullable(tacCaseDto.getProductSerialNumber()).ifPresent(existingTacCase::setProductSerialNumber);
-        Optional.ofNullable(tacCaseDto.getProductName()).ifPresent(existingTacCase::setProductName);
-        Optional.ofNullable(tacCaseDto.getProductSoftwareVersion()).ifPresent(existingTacCase::setProductSoftwareVersion);
-        Optional.ofNullable(tacCaseDto.getRelatedDispatchCount()).ifPresent(existingTacCase::setRelatedDispatchCount);
-        Optional.ofNullable(tacCaseDto.getRelatedRmaCount()).ifPresent(existingTacCase::setRelatedRmaCount);
-        Optional.ofNullable(tacCaseDto.getRmaNeeded()).ifPresent(existingTacCase::setRmaNeeded);
-        Optional.ofNullable(tacCaseDto.getSubject()).ifPresent(existingTacCase::setSubject);
+        Optional.ofNullable(tacCaseResponseDto.getCaseOwner()).ifPresent(existingTacCase::setCaseOwner);
+        Optional.ofNullable(tacCaseResponseDto.getCasePriority()).ifPresent(existingTacCase::setCasePriority);
+        Optional.ofNullable(tacCaseResponseDto.getCaseStatus()).ifPresent(existingTacCase::setCaseStatus);
+        Optional.ofNullable(tacCaseResponseDto.getAccountNumber()).ifPresent(existingTacCase::setAccountNumber);
+        Optional.ofNullable(tacCaseResponseDto.getCaseNumber()).ifPresent(existingTacCase::setCaseNumber);
+        Optional.ofNullable(tacCaseResponseDto.getAccountNumber()).ifPresent(existingTacCase::setAccountNumber);
+        Optional.ofNullable(tacCaseResponseDto.getBusinessImpact()).ifPresent(existingTacCase::setBusinessImpact);
+        Optional.ofNullable(tacCaseResponseDto.getCaseClosedDate()).ifPresent(existingTacCase::setCaseClosedDate);
+        Optional.ofNullable(tacCaseResponseDto.getCaseCreatedDate()).ifPresent(existingTacCase::setCaseCreatedDate);
+        Optional.ofNullable(tacCaseResponseDto.getCaseNoteCount()).ifPresent(existingTacCase::setCaseNoteCount);
+        Optional.ofNullable(tacCaseResponseDto.getCaseSolutionDescription()).ifPresent(existingTacCase::setCaseSolutionDescription);
+        Optional.ofNullable(tacCaseResponseDto.getContactEmail()).ifPresent(existingTacCase::setContactEmail);
+        Optional.ofNullable(tacCaseResponseDto.getCustomerTrackingNumber()).ifPresent(existingTacCase::setCustomerTrackingNumber);
+        Optional.ofNullable(tacCaseResponseDto.getFaultyPartNumber()).ifPresent(existingTacCase::setFaultyPartNumber);
+        Optional.ofNullable(tacCaseResponseDto.getFaultySerialNumber()).ifPresent(existingTacCase::setFaultySerialNumber);
+        Optional.ofNullable(tacCaseResponseDto.getFirstResponseDate()).ifPresent(existingTacCase::setFirstResponseDate);
+        Optional.ofNullable(tacCaseResponseDto.getHref()).ifPresent(existingTacCase::setHref); //fixme
+        Optional.ofNullable(tacCaseResponseDto.getCustomerTrackingNumber()).ifPresent(existingTacCase::setCustomerTrackingNumber);
+        Optional.ofNullable(tacCaseResponseDto.getInstallationCountry()).ifPresent(existingTacCase::setInstallationCountry);
+        Optional.ofNullable(tacCaseResponseDto.getProblemDescription()).ifPresent(existingTacCase::setProblemDescription);
+        Optional.ofNullable(tacCaseResponseDto.getCaseNoteCount()).ifPresent(existingTacCase::setCaseNoteCount);
+        Optional.ofNullable(tacCaseResponseDto.getProductFirmwareVersion()).ifPresent(existingTacCase::setProductFirmwareVersion);
+        Optional.ofNullable(tacCaseResponseDto.getProductSerialNumber()).ifPresent(existingTacCase::setProductSerialNumber);
+        Optional.ofNullable(tacCaseResponseDto.getProductName()).ifPresent(existingTacCase::setProductName);
+        Optional.ofNullable(tacCaseResponseDto.getProductSoftwareVersion()).ifPresent(existingTacCase::setProductSoftwareVersion);
+        Optional.ofNullable(tacCaseResponseDto.getRelatedDispatchCount()).ifPresent(existingTacCase::setRelatedDispatchCount);
+        Optional.ofNullable(tacCaseResponseDto.getRelatedRmaCount()).ifPresent(existingTacCase::setRelatedRmaCount);
+        Optional.ofNullable(tacCaseResponseDto.getRmaNeeded()).ifPresent(existingTacCase::setRmaNeeded);
+        Optional.ofNullable(tacCaseResponseDto.getSubject()).ifPresent(existingTacCase::setSubject);
 
         TacCaseEntity updatedTacCase = tacCaseRepository.save(existingTacCase);
         return tacCaseMapper.mapTo(updatedTacCase);
@@ -226,12 +226,12 @@ public TacCaseDto partialUpdate(Long id, TacCaseDto tacCaseDto) {
 
     @Override
     @Transactional
-    public TacCaseDto partialUpdate(String caseNumber, TacCaseDto tacCaseDto) {
+    public TacCaseResponseDto partialUpdate(String caseNumber, TacCaseResponseDto tacCaseResponseDto) {
         TacCaseEntity existingTacCase = tacCaseRepository.findByCaseNumber(caseNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("TAC Case does not exist with case number " + caseNumber));
 
         // Map updated fields from DTO to existing entity
-        tacCaseMapper.mapFrom(tacCaseDto, existingTacCase);
+        tacCaseMapper.mapFrom(tacCaseResponseDto, existingTacCase);
 
         TacCaseEntity updatedTacCase = tacCaseRepository.save(existingTacCase);
         return tacCaseMapper.mapTo(updatedTacCase);
@@ -257,7 +257,7 @@ public TacCaseDto partialUpdate(Long id, TacCaseDto tacCaseDto) {
     // RMAs
 
     @Override
-    public List<RmaCaseDto> listRmaCases(Long id) {
+    public List<RmaCaseResponseDto> listRmaCases(Long id) {
         TacCaseEntity tacCase = tacCaseRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("TacCase not found with id " + id));
         return tacCase.getRmaCases().stream()
                 .map(rmaCaseMapper::mapTo)

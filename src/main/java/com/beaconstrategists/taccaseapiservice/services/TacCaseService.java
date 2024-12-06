@@ -10,16 +10,16 @@ import java.util.Optional;
 
 public interface TacCaseService {
     // CRUD Operations for TacCase
-    TacCaseDto save(TacCaseCreateDto tacCaseDto);
-    TacCaseDto update(Long id, TacCaseUpdateDto tacCaseUpdateDto);
-    TacCaseDto save(TacCaseDto tacCaseDto);
-    List<TacCaseDto> findAll();
-    Optional<TacCaseDto> findById(Long id);
-    Optional<TacCaseDto> findByCaseNumber(String caseNumber);
+    TacCaseResponseDto save(TacCaseCreateDto tacCaseDto);
+    TacCaseResponseDto update(Long id, TacCaseUpdateDto tacCaseUpdateDto);
+    TacCaseResponseDto save(TacCaseResponseDto tacCaseResponseDto);
+    List<TacCaseResponseDto> findAll();
+    Optional<TacCaseResponseDto> findById(Long id);
+    Optional<TacCaseResponseDto> findByCaseNumber(String caseNumber);
     boolean exists(Long id);
     boolean exists(String caseNumber);
-    TacCaseDto partialUpdate(Long id, TacCaseDto tacCaseDto);
-    TacCaseDto partialUpdate(String caseNumber, TacCaseDto tacCaseDto);
+    TacCaseResponseDto partialUpdate(Long id, TacCaseResponseDto tacCaseResponseDto);
+    TacCaseResponseDto partialUpdate(String caseNumber, TacCaseResponseDto tacCaseResponseDto);
     void delete(Long id);
     void delete(String caseNumber);
 
@@ -38,11 +38,11 @@ public interface TacCaseService {
     void deleteNote(Long caseId, Long noteId);
     void deleteAllNotes(Long caseId);
 
-    List<TacCaseDto> listTacCases(OffsetDateTime caseCreateDateFrom,
-                                  OffsetDateTime caseCreateDateTo,
-                                  OffsetDateTime caseCreateDateSince,
-                                  List<CaseStatus> caseStatus,
-                                  String logic);
+    List<TacCaseResponseDto> listTacCases(OffsetDateTime caseCreateDateFrom,
+                                          OffsetDateTime caseCreateDateTo,
+                                          OffsetDateTime caseCreateDateSince,
+                                          List<CaseStatus> caseStatus,
+                                          String logic);
 
-    List<RmaCaseDto> listRmaCases(Long id);
+    List<RmaCaseResponseDto> listRmaCases(Long id);
 }

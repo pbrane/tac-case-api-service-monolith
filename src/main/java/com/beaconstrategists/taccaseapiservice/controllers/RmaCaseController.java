@@ -28,7 +28,7 @@ public class RmaCaseController {
     }
 
     @GetMapping(path = "")
-    public ResponseEntity<List<RmaCaseDto>> listAllRmaCases(
+    public ResponseEntity<List<RmaCaseResponseDto>> listAllRmaCases(
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             OffsetDateTime caseCreateDateFrom,
@@ -47,7 +47,7 @@ public class RmaCaseController {
             @RequestParam(required = false, defaultValue = "AND")
             String logic
     ) {
-        List<RmaCaseDto> rmaCases = rmaCaseService.listRmaCases(
+        List<RmaCaseResponseDto> rmaCases = rmaCaseService.listRmaCases(
                 caseCreateDateFrom,
                 caseCreateDateTo,
                 caseCreateDateSince,
@@ -58,20 +58,20 @@ public class RmaCaseController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<RmaCaseDto> getRmaCase(@PathVariable Long id) {
-        Optional<RmaCaseDto> foundRmaCase = rmaCaseService.findById(id);
+    public ResponseEntity<RmaCaseResponseDto> getRmaCase(@PathVariable Long id) {
+        Optional<RmaCaseResponseDto> foundRmaCase = rmaCaseService.findById(id);
         return foundRmaCase.map(rmaCaseDto -> new ResponseEntity<>(rmaCaseDto, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping(path = "")
-    public ResponseEntity<RmaCaseDto> createRmaCase(@Valid @RequestBody RmaCaseCreateDto dto) {
-        RmaCaseDto rmaCaseDtoSaved = rmaCaseService.save(dto);
-        return new ResponseEntity<>(rmaCaseDtoSaved, HttpStatus.CREATED);
+    public ResponseEntity<RmaCaseResponseDto> createRmaCase(@Valid @RequestBody RmaCaseCreateDto dto) {
+        RmaCaseResponseDto rmaCaseResponseDto = rmaCaseService.save(dto);
+        return new ResponseEntity<>(rmaCaseResponseDto, HttpStatus.CREATED);
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<RmaCaseDto> updateTacCase(
+    public ResponseEntity<RmaCaseResponseDto> updateTacCase(
             @PathVariable Long id,
             @Valid @RequestBody RmaCaseUpdateDto updateDto) {
 
@@ -80,21 +80,21 @@ public class RmaCaseController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        RmaCaseDto rmaCaseSavedDto = rmaCaseService.update(id, updateDto);
+        RmaCaseResponseDto rmaCaseSavedDto = rmaCaseService.update(id, updateDto);
         return new ResponseEntity<>(rmaCaseSavedDto, HttpStatus.OK);
     }
 
 /*
     @PatchMapping(path = "/{id}")
-    public ResponseEntity<RmaCaseDto> partialUpdate(
+    public ResponseEntity<RmaCaseResponseDto> partialUpdate(
             @PathVariable Long id,
-            @Valid @RequestBody RmaCaseDto rmaCaseDto) {
+            @Valid @RequestBody RmaCaseResponseDto rmaCaseDto) {
 
         if (!rmaCaseService.isExists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        RmaCaseDto rmaCaseDtoSaved = rmaCaseService.partialUpdate(id, rmaCaseDto);
+        RmaCaseResponseDto rmaCaseDtoSaved = rmaCaseService.partialUpdate(id, rmaCaseDto);
         return new ResponseEntity<>(rmaCaseDtoSaved, HttpStatus.OK);
     }
 */

@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TacCaseDto {
+public class TacCaseResponseDto {
 
     private Long id;
 
