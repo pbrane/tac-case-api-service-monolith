@@ -42,13 +42,14 @@ public class AuthServerSecurityConfig {
     @Bean
     @Order(3)
     public SecurityFilterChain webSecurity(HttpSecurity http) throws Exception {
-        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);  //fixme!
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults());
         http.exceptionHandling(Customizer.withDefaults());
         return http.build();
     }
 
+    //fixme: someday
     @Bean
     PasswordEncoder passwordEncoder() {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();

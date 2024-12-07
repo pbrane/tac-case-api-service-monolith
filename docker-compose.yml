@@ -1,7 +1,7 @@
 services:
   apisvc-prod-mono:
     container_name: apisvc-prod-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.1.9
+    image: pbranestrategy/tac-case-api-service-mono:0.1.10
     environment:
       - API_SVR_ENV=production
       - AUTH_SVR_ENV=production
@@ -26,7 +26,7 @@ services:
 
   apisvc-dev-mono:
     container_name: apisvc-dev-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.1.9
+    image: pbranestrategy/tac-case-api-service-mono:0.1.10
     environment:
       - API_SVR_ENV=development
       - AUTH_SVR_ENV=development
@@ -85,6 +85,7 @@ services:
       - TAC_AUTH_HOST=apisvc-dev-mono
       - TAC_AUTH_HOST_PORT=8080
       - AUTH_BASE_URI=http://apisvc-dev-mono:8080
+      - RESOURCE_BASE_URI=http://apisvc-dev-mono:8080/api/v1
       - TOKEN_EP_URI=/oauth2/token
       - AUTH_EP_URI=/oauth2/authorize
       - USER_INFO_EP_URI=/oauth2/userinfo
