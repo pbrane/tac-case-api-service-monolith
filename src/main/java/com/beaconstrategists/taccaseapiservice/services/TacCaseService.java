@@ -10,18 +10,23 @@ import java.util.Optional;
 
 public interface TacCaseService {
     // CRUD Operations for TacCase
-    TacCaseResponseDto save(TacCaseCreateDto tacCaseDto);
-    TacCaseResponseDto update(Long id, TacCaseUpdateDto tacCaseUpdateDto);
-    TacCaseResponseDto save(TacCaseResponseDto tacCaseResponseDto);
-    List<TacCaseResponseDto> findAll();
+
+    //fixme: should all these responses be Optionals?
+    TacCaseResponseDto create(TacCaseCreateDto tacCaseDto);
     Optional<TacCaseResponseDto> findById(Long id);
-    Optional<TacCaseResponseDto> findByCaseNumber(String caseNumber);
+    TacCaseResponseDto update(Long id, TacCaseUpdateDto tacCaseUpdateDto);
+    void delete(Long id);
+
+    List<TacCaseResponseDto> listTacCases(OffsetDateTime caseCreateDateFrom,
+                                          OffsetDateTime caseCreateDateTo,
+                                          OffsetDateTime caseCreateDateSince,
+                                          List<CaseStatus> caseStatus,
+                                          String logic);
+
+    List<TacCaseResponseDto> findAll();
+
     boolean exists(Long id);
     boolean exists(String caseNumber);
-    TacCaseResponseDto partialUpdate(Long id, TacCaseResponseDto tacCaseResponseDto);
-    TacCaseResponseDto partialUpdate(String caseNumber, TacCaseResponseDto tacCaseResponseDto);
-    void delete(Long id);
-    void delete(String caseNumber);
 
     // Attachment Operations
     TacCaseAttachmentResponseDto addAttachment(Long caseId, TacCaseAttachmentUploadDto uploadDto) throws IOException;
@@ -38,11 +43,17 @@ public interface TacCaseService {
     void deleteNote(Long caseId, Long noteId);
     void deleteAllNotes(Long caseId);
 
-    List<TacCaseResponseDto> listTacCases(OffsetDateTime caseCreateDateFrom,
-                                          OffsetDateTime caseCreateDateTo,
-                                          OffsetDateTime caseCreateDateSince,
-                                          List<CaseStatus> caseStatus,
-                                          String logic);
 
     List<RmaCaseResponseDto> listRmaCases(Long id);
+
+/*
+    void delete(String caseNumber);
+    TacCaseResponseDto save(TacCaseResponseDto tacCaseResponseDto);
+    Optional<TacCaseResponseDto> findByCaseNumber(String caseNumber);
+    TacCaseResponseDto partialUpdate(Long id, TacCaseResponseDto tacCaseResponseDto);
+    TacCaseResponseDto partialUpdate(String caseNumber, TacCaseResponseDto tacCaseResponseDto);
+
+*/
+
+
 }

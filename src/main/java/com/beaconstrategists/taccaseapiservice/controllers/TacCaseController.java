@@ -66,7 +66,7 @@ public class TacCaseController {
 
     @PostMapping(path = "")
     public ResponseEntity<TacCaseResponseDto> createTacCase(@Valid @RequestBody TacCaseCreateDto dto) {
-        TacCaseResponseDto tacCaseResponseDtoSaved = tacCaseService.save(dto);
+        TacCaseResponseDto tacCaseResponseDtoSaved = tacCaseService.create(dto);
         return new ResponseEntity<>(tacCaseResponseDtoSaved, HttpStatus.CREATED);
     }
 
