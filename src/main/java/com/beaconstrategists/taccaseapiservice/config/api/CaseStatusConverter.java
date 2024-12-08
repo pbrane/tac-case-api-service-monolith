@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CaseStatusConverter implements Converter<String, CaseStatus> {
 
+    //fixme: perhaps this can be done better
     @Override
     public CaseStatus convert(@NonNull String source) {
         return CaseStatus.fromValue(source);

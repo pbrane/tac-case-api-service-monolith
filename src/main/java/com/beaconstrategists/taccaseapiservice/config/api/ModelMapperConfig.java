@@ -9,14 +9,6 @@ public class ModelMapperConfig {
 
     @Bean
     public ModelMapper modelMapper() {
-        ModelMapper modelMapper = new ModelMapper();
-//
-//        // Global settings
-//        modelMapper.getConfiguration()
-//                .setSkipNullEnabled(true) // Skip null values
-//                .setFieldMatchingEnabled(true) // Match fields by name
-//                .setAmbiguityIgnored(true); // Ignore ambiguous mappings
-
-        return modelMapper;
+        return new ModelMapper();
     }
 }
