@@ -2,6 +2,7 @@ package com.beaconstrategists.taccaseapiservice.controllers.dto;
 
 import com.beaconstrategists.taccaseapiservice.model.CasePriorityEnum;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,6 +25,12 @@ import java.util.List;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = false)
 public class TacCaseCreateDto {
+
+    @JsonIgnore
+    @Schema(hidden = true)
+    @JsonProperty("version")
+    private String version = "1.0.0";
+
 
     @NotNull(message = "Creating a TAC Case requires a non-null subject")
     @NotBlank(message = "Creating a TAC Case requires a non-blank subject")

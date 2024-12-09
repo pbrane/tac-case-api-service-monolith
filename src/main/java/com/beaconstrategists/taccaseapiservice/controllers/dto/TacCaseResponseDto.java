@@ -2,7 +2,10 @@ package com.beaconstrategists.taccaseapiservice.controllers.dto;
 
 import com.beaconstrategists.taccaseapiservice.model.CasePriorityEnum;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -22,6 +25,13 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TacCaseResponseDto {
 
+    @JsonIgnore
+    @Schema(hidden = true)
+    @JsonProperty("version")
+    private String version = "1.0.0";
+
+
+    @NotNull
     private Long id;
 
     private String href;
@@ -32,16 +42,12 @@ public class TacCaseResponseDto {
 
     private Boolean rmaNeeded;
 
-    @NotNull
-    @NotBlank
     private String subject;
 
     private Integer relatedRmaCount;
 
     private Integer relatedDispatchCount;
 
-    @NotNull
-    @NotBlank
     private String problemDescription;
 
     private String installationCountry;

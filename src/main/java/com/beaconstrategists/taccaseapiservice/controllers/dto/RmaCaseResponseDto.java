@@ -1,7 +1,10 @@
 package com.beaconstrategists.taccaseapiservice.controllers.dto;
 
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +22,13 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RmaCaseResponseDto {
 
+    @JsonIgnore
+    @Schema(hidden = true)
+    @JsonProperty("version")
+    private String version = "1.0.0";
+
+
+    @NotNull
     private Long id;
 
     @NotNull

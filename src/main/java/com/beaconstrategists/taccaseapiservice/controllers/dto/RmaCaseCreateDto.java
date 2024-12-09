@@ -1,7 +1,10 @@
 package com.beaconstrategists.taccaseapiservice.controllers.dto;
 
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -22,8 +25,24 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = false)
 public class RmaCaseCreateDto {
 
+    @JsonIgnore
+    @Schema(hidden = true)
+    @JsonProperty("version")
+    private String version = "1.0.0";
+
+
     @NotNull(message = "The tacCaseId field is required.")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "The ID of parent TAC Case to this RMA")
     private Long tacCaseId;
+
+    @Email(message = "The shipToContactEmail must be a valid email address")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Email address to whom the RMA is sent")
+    private String shipToContactEmail;
+
+    @Email(message = "The contactEmail must be a valid email address")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "The reply-to email address of this RMA")
+    private String contactEmail;
+
     private String requestType;
     private String faultySerialNumber;
     private String faultyPartNumber;
@@ -33,16 +52,14 @@ public class RmaCaseCreateDto {
     private String shipToPhone;
     private String shipToCountry;
     private String shipToCity;
-
-    @Email(message = "The shipToContactEmail must be a valid email address")
-    private String shipToContactEmail;
     private String shipToAttention;
-    private String shippedDate;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private OffsetDateTime shippedDate;
+
     private String shippedCarrier;
     private String problemDescription;
     private String installationCountry;
     private String customerTrackingNumber;
 
-    @Email(message = "The contactEmail must be a valid email address")
-    private String contactEmail;
 }
