@@ -1,5 +1,6 @@
 package com.beaconstrategists.taccaseapiservice.exceptions;
 
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -95,6 +96,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         body.put("path", request.getDescription(false).replace("uri=", ""));
 
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(UnrecognizedPropertyException.class)
+    public ResponseEntity<String> handleUnrecognizedPropertyException(UnrecognizedPropertyException ex) {
+        String errorMessage = String.format("Invalid field '%s' in request payload", ex.getPropertyName());
+        return ResponseEntity.badRequest().body(errorMessage);
     }
 
 }

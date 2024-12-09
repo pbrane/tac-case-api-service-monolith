@@ -3,7 +3,9 @@ package com.beaconstrategists.taccaseapiservice.controllers.dto;
 import com.beaconstrategists.taccaseapiservice.model.CasePriorityEnum;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,14 +32,16 @@ public class TacCaseResponseDto {
 
     private Boolean rmaNeeded;
 
-    @NotEmpty
+    @NotNull
+    @NotBlank
     private String subject;
 
     private Integer relatedRmaCount;
 
     private Integer relatedDispatchCount;
 
-    @NotEmpty
+    @NotNull
+    @NotBlank
     private String problemDescription;
 
     private String installationCountry;

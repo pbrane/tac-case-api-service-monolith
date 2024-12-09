@@ -2,7 +2,7 @@ package com.beaconstrategists.taccaseapiservice.controllers.dto;
 
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +21,7 @@ public class RmaCaseResponseDto {
 
     private Long id;
 
-    @NotEmpty
+    @NotNull
     private Long tacCaseId;
 
     private String href;

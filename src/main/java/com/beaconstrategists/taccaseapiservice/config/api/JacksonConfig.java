@@ -17,9 +17,11 @@ public class JacksonConfig {
     @Primary
     public ObjectMapper camelCaseObjectMapper() {
         // Default ObjectMapper for camelCase (used globally)
-        return new ObjectMapper()
-                .registerModule(new JavaTimeModule())
-                .findAndRegisterModules();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        //objectMapper.findAndRegisterModules();
+        return objectMapper;
     }
 
 
