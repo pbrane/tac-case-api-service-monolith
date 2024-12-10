@@ -148,4 +148,4 @@ Here is the documentation specifying the required HTTP headers for each endpoint
 
 ---
 
-This documentation assumes all endpoints use Bearer token-based authentication. Adjustments may be needed if other headers or configurations are required. Let me know if you want further customizations or a specific format for the documentation!
+This documentation assumes all endpoints use Bearer token-based authentication.
