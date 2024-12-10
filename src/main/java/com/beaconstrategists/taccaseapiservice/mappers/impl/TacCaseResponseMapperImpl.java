@@ -13,16 +13,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class TacCaseMapperImpl implements Mapper<TacCaseEntity, TacCaseResponseDto> {
+public class TacCaseResponseMapperImpl implements Mapper<TacCaseEntity, TacCaseResponseDto> {
 
     private final ModelMapper modelMapper;
 
-    public TacCaseMapperImpl(ModelMapper modelMapper) {
+    public TacCaseResponseMapperImpl(ModelMapper modelMapper) {
+
+//        ModelMapper modelMapper = new ModelMapper();
+//        modelMapper.getConfiguration()
+//                .setFieldMatchingEnabled(true)
+//                .setAmbiguityIgnored(true);
+//        modelMapper.typeMap(TacCaseEntity.class, TacCaseResponseDto.class)
+//                .addMappings(mapper -> mapper.skip(TacCaseResponseDto::setVersion));
+
         this.modelMapper = modelMapper;
     }
 
     @Override
     public TacCaseResponseDto mapTo(TacCaseEntity tacCaseEntity) {
+
         TacCaseResponseDto tacCaseResponseDto = modelMapper.map(tacCaseEntity, TacCaseResponseDto.class);
 
         // Populate rmaCaseIds

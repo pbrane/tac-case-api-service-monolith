@@ -34,7 +34,7 @@ public class TacCaseUpdateDto extends AbstractFieldPresenceAwareDto implements S
     @JsonIgnore
     @Schema(hidden = true)
     @JsonProperty("version")
-    private String version = "1.0.0";
+    private final String version = "1.0.0";
 
 
     @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "Intended to be an URI to the TAC Case")

@@ -6,14 +6,22 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 //fixme: should be immutable
 @Data
-public class TacCaseAttachmentUploadDto {
+public class TacCaseAttachmentUploadDto implements Serializable {
+
+    @Serial
+    @JsonIgnore
+    @Schema(hidden = true)
+    private static final long serialVersionUID = 1L;
 
     @JsonIgnore
     @Schema(hidden = true)
     @JsonProperty("version")
-    private String version = "1.0.0";
+    private final String version = "1.0.0";
 
     //    private Long id;
     private String name;

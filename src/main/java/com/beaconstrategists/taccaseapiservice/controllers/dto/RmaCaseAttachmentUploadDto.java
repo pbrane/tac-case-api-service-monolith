@@ -6,13 +6,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Data
-public class RmaCaseAttachmentUploadDto {
+public class RmaCaseAttachmentUploadDto implements Serializable {
+
+    @Serial
+    @JsonIgnore
+    @Schema(hidden = true)
+    private static final long serialVersionUID = 1L;
 
     @JsonIgnore
     @Schema(hidden = true)
     @JsonProperty("version")
-    private String version = "1.0.0";
+    private final String version = "1.0.0";
 
     private String name;
     private String mimeType;

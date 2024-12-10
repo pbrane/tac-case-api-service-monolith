@@ -8,7 +8,7 @@ import com.beaconstrategists.taccaseapiservice.mappers.TacCaseNoteDownloadMapper
 import com.beaconstrategists.taccaseapiservice.mappers.TacCaseNoteResponseMapper;
 import com.beaconstrategists.taccaseapiservice.mappers.impl.RmaCaseMapperImpl;
 import com.beaconstrategists.taccaseapiservice.mappers.impl.TacCaseCreateMapperImpl;
-import com.beaconstrategists.taccaseapiservice.mappers.impl.TacCaseMapperImpl;
+import com.beaconstrategists.taccaseapiservice.mappers.impl.TacCaseResponseMapperImpl;
 import com.beaconstrategists.taccaseapiservice.mappers.impl.TacCaseUpdateMapperImpl;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.beaconstrategists.taccaseapiservice.model.entities.TacCaseAttachmentEntity;
@@ -19,6 +19,8 @@ import com.beaconstrategists.taccaseapiservice.repositories.TacCaseNoteRepositor
 import com.beaconstrategists.taccaseapiservice.repositories.TacCaseRepository;
 import com.beaconstrategists.taccaseapiservice.services.TacCaseService;
 import com.beaconstrategists.taccaseapiservice.specifications.TacCaseSpecification;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +39,7 @@ public class TacCaseServiceImpl implements TacCaseService {
 
     private final TacCaseRepository tacCaseRepository;
     private final TacCaseAttachmentRepository tacCaseAttachmentRepository;
-    private final TacCaseMapperImpl tacCaseMapper;
+    private final TacCaseResponseMapperImpl tacCaseMapper;
     private final TacCaseCreateMapperImpl tacCaseCreateMapper;
     private final TacCaseUpdateMapperImpl tacCaseUpdateMapper;
     private final RmaCaseMapperImpl rmaCaseMapper;
@@ -47,10 +49,12 @@ public class TacCaseServiceImpl implements TacCaseService {
     private final TacCaseNoteDownloadMapper tacCaseNoteDownloadMapper;
     private final TacCaseNoteRepository tacCaseNoteRepository;
 
+    private final ObjectMapper tacCaseResponseObjectMapper;
+
 
     public TacCaseServiceImpl(TacCaseRepository tacCaseRepository,
                               TacCaseAttachmentRepository tacCaseAttachmentRepository,
-                              TacCaseMapperImpl tacCaseMapper,
+                              TacCaseResponseMapperImpl tacCaseMapper,
                               TacCaseCreateMapperImpl tacCaseCreateMapper,
                               TacCaseUpdateMapperImpl tacCaseUpdateMapper,
                               RmaCaseMapperImpl rmaCaseMapper,
@@ -58,7 +62,8 @@ public class TacCaseServiceImpl implements TacCaseService {
                               TacCaseAttachmentDownloadMapper tacCaseAttachmentDownloadMapper,
                               TacCaseNoteResponseMapper tacCaseNoteResponseMapper,
                               TacCaseNoteDownloadMapper tacCaseNoteDownloadMapper,
-                              TacCaseNoteRepository tacCaseNoteRepository) {
+                              TacCaseNoteRepository tacCaseNoteRepository,
+                              @Qualifier("snakeCaseObjectMapper") ObjectMapper tacCaseResponseObjectMapper) {
 
         this.tacCaseRepository = tacCaseRepository;
         this.tacCaseAttachmentRepository = tacCaseAttachmentRepository;
@@ -71,6 +76,7 @@ public class TacCaseServiceImpl implements TacCaseService {
         this.tacCaseNoteResponseMapper = tacCaseNoteResponseMapper;
         this.tacCaseNoteDownloadMapper = tacCaseNoteDownloadMapper;
         this.tacCaseNoteRepository = tacCaseNoteRepository;
+        this.tacCaseResponseObjectMapper = tacCaseResponseObjectMapper;
     }
 
     // CRUD Operations for TacCase

@@ -8,18 +8,26 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RmaCaseNoteDownloadDto {
+public class RmaCaseNoteDownloadDto implements Serializable {
+
+    @Serial
+    @JsonIgnore
+    @Schema(hidden = true)
+    private static final long serialVersionUID = 1L;
 
     @JsonIgnore
     @Schema(hidden = true)
     @JsonProperty("version")
-    private String version = "1.0.0";
+    private final String version = "1.0.0";
+
 
     private Long id;
     private Long rmaCaseId;

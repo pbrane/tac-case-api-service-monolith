@@ -15,6 +15,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -23,12 +25,17 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = false)
-public class RmaCaseCreateDto {
+public class RmaCaseCreateDto implements Serializable {
+
+    @Serial
+    @JsonIgnore
+    @Schema(hidden = true)
+    private static final long serialVersionUID = 1L;
 
     @JsonIgnore
     @Schema(hidden = true)
     @JsonProperty("version")
-    private String version = "1.0.0";
+    private final String version = "1.0.0";
 
 
     @NotNull(message = "The tacCaseId field is required.")
