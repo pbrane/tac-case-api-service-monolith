@@ -178,7 +178,7 @@ public class TacCaseController {
     @PostMapping("/{id}/notes")
     public ResponseEntity<TacCaseNoteResponseDto> uploadNote(
             @PathVariable Long id,
-            @Valid @ModelAttribute TacCaseNoteUploadDto uploadDto) {
+            @Valid @RequestBody TacCaseNoteUploadDto uploadDto) {
 
         try {
             TacCaseNoteResponseDto responseDto = tacCaseService.addNote(id, uploadDto);

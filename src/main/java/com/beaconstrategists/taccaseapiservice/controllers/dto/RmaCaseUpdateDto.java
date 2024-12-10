@@ -21,7 +21,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = false)
-@JsonSerialize(using = GenericSnakeCaseJsonSerializer.class)
+@JsonSerialize(using = GenericSnakeCaseJsonSerializer.class) //snake case for freshdesk
 public class RmaCaseUpdateDto extends AbstractFieldPresenceAwareDto implements Serializable {
 
     @Serial

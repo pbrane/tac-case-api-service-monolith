@@ -169,7 +169,7 @@ public class RmaCaseController {
     @PostMapping("/{id}/notes")
     public ResponseEntity<RmaCaseNoteResponseDto> uploadNote(
             @PathVariable Long id,
-            @Valid @ModelAttribute RmaCaseNoteUploadDto uploadDto) {
+            @Valid @RequestBody RmaCaseNoteUploadDto uploadDto) {
 
         try {
             RmaCaseNoteResponseDto responseDto = rmaCaseService.addNote(id, uploadDto);
