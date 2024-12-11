@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.Serial;
 import java.io.Serializable;
 
+//fixme: this Lombok configuration needs to be addressed
 @Data
 public class RmaCaseAttachmentUploadDto implements Serializable {
 

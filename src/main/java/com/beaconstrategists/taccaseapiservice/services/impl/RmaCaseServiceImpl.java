@@ -33,6 +33,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static org.springframework.shell.command.invocation.InvocableShellMethod.log;
+
 @Service
 public class RmaCaseServiceImpl implements RmaCaseService {
 
@@ -271,17 +273,25 @@ public class RmaCaseServiceImpl implements RmaCaseService {
     @Override
     @Transactional
     public RmaCaseAttachmentResponseDto addAttachment(Long caseId, RmaCaseAttachmentUploadDto uploadDto) throws IOException {
+
+
         RmaCaseEntity rmaCase = rmaCaseRepository.findById(caseId)
                 .orElseThrow(() -> new ResourceNotFoundException("RMA Case not found with id " + caseId));
 
         // Extract file and metadata
         MultipartFile file = uploadDto.getFile();
-        if (file == null || file.isEmpty()) {
-            throw new IllegalArgumentException("File must be provided and not empty.");
-        }
 
-        // Optional: Validate file type
-        validateFileType(file);
+        log.debug("uploadDto contents: {}", uploadDto);
+        log.debug("\n\tDTO field: name={}, \n\tDTO field: file={} \n\tDTO field: size={} \n\tDTO field: description={}", uploadDto.getName(),uploadDto.getFile(), uploadDto.getSize(), uploadDto.getDescription());
+        log.debug("MultipartFile: File received: {}, Size: {}, Content-type: {}", file.getOriginalFilename(), file.getSize(), file.getContentType());
+
+
+        try {
+            validateFileType(file);
+        } catch (IllegalArgumentException e) {
+            log.error("Unsupported file type: {}", file.getContentType(), e);
+            throw new IllegalArgumentException("Unsupported file type: " + file.getContentType());
+        }
 
         RmaCaseAttachmentEntity attachmentEntity = RmaCaseAttachmentEntity.builder()
                 .name(Optional.ofNullable(uploadDto.getName()).orElse(file.getOriginalFilename()))
@@ -291,9 +301,11 @@ public class RmaCaseServiceImpl implements RmaCaseService {
                 .size((float) file.getSize())
                 .rmaCase(rmaCase)
                 .build();
+        log.debug("Constructed Attachment Entity: {}", attachmentEntity);
 
         rmaCase.addAttachment(attachmentEntity);
         rmaCaseAttachmentRepository.save(attachmentEntity);
+        log.debug("Attachment {} saved successfully for RMA Case ID: {}", attachmentEntity.getId(), caseId);
 
         return attachmentResponseMapper.mapTo(attachmentEntity);
     }
@@ -420,16 +432,40 @@ public class RmaCaseServiceImpl implements RmaCaseService {
 
 
 
+    // fixme: Update this list with input from customer
     /**
      * Validates the MIME type of the uploaded file.
-     *
      * @param file the uploaded MultipartFile
      */
     private void validateFileType(MultipartFile file) {
-        List<String> allowedMimeTypes = Arrays.asList("application/pdf", "image/jpeg", "image/png"); // Extend as needed
+        List<String> allowedMimeTypes = Arrays.asList(
+                "application/pdf",
+                "application/msword",
+                "text/plain",
+                "image/jpeg",
+                "image/png",
+                "image/gif",
+                "application/zip",
+                "application/x-7z-compressed",
+                "application/x-rar-compressed",
+                "application/json",
+                "application/xml",
+                "text/csv"); // Extend as needed
+
+        long maxFileSize = 20 * 1024 * 1024;
+
+        // Validate file type
         if (!allowedMimeTypes.contains(file.getContentType())) {
-            throw new IllegalArgumentException("Unsupported file type: " + file.getContentType());
+            throw new IllegalArgumentException("Unsupported file type: " + file.getContentType()
+                    + ". Allowed types: " + String.join(", ", allowedMimeTypes));
         }
+
+        // Validate file size
+        if (file.getSize() > maxFileSize) {
+            throw new IllegalArgumentException("File size exceeds the maximum limit of 20MB. " +
+                    "Uploaded file size: " + (file.getSize() / (1024 * 1024)) + "MB");
+        }
+
     }
 
     /*

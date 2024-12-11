@@ -17,6 +17,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.shell.command.invocation.InvocableShellMethod.log;
+
 @RestController
 @RequestMapping("/api/v1/rmaCases")
 public class RmaCaseController {
@@ -117,6 +119,17 @@ public class RmaCaseController {
             @Valid @ModelAttribute RmaCaseAttachmentUploadDto uploadDto) {
 
         try {
+            //log.debug("uploadDto contents: {}", uploadDto);
+            log.debug("Received uploadDto: {}", uploadDto);
+            if (uploadDto.getFile() != null) {
+                log.debug("Uploaded file: Original Filename={}, Size={}, ContentType={}",
+                        uploadDto.getFile().getOriginalFilename(),
+                        uploadDto.getFile().getSize(),
+                        uploadDto.getFile().getContentType());
+            } else {
+                log.warn("No file received in the request!");
+            }
+
             RmaCaseAttachmentResponseDto responseDto = rmaCaseService.addAttachment(id, uploadDto);
             return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
