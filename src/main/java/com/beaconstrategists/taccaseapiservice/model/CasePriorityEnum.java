@@ -7,9 +7,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * The priority assigned by TAC to this Case
  */
 public enum CasePriorityEnum {
-//    CRITICAL("Critical"),
-//    MAJOR("Major"),
-//    MINOR("Minor"),
     Low("Low"),
     Medium("Medium"),
     High("High"),

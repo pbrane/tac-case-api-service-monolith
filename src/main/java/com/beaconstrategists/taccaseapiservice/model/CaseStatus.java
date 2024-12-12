@@ -6,11 +6,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum CaseStatus {
 
     Open("Open"),
-    //  ACKNOWLEDGED("Acknowledged"),
-//  REJECTED("Rejected"),
-//  HELD("Held"),
-//  INPROGRESS("In Progress"),
-//  CANCELED("Canceled"),
     Pending("Pending"),
     Closed("Closed"),
     Resolved("Resolved");
