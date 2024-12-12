@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.format.annotation.DateTimeFormat;
 
+//fixme: this can be deleted
 @Data
 @Builder
 @NoArgsConstructor

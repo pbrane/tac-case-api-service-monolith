@@ -273,4 +273,13 @@ public class RmaCaseUpdateDto extends AbstractFieldPresenceAwareDto implements S
         this.vendorRmaNumber = value;
         markFieldPresent("vendorRmaNumber");
     }
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private OffsetDateTime newPartDeliveryDateEta;
+    @JsonSetter
+    public void setnewPartDeliveryDateEta(OffsetDateTime value) {
+        this.newPartDeliveryDateEta = value;
+        markFieldPresent("newPartDeliveryDateEta");
+    }
+
 }

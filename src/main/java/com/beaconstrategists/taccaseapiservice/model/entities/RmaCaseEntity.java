@@ -107,6 +107,9 @@ public class RmaCaseEntity {
 
   private Integer vendorRmaNumber;
 
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+  private OffsetDateTime newPartDeliveryDateEta;
+
   @OneToMany(mappedBy = "rmaCase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   @JsonManagedReference
   private List<RmaCaseNoteEntity> rmaCaseNotes = new ArrayList<>();
