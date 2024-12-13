@@ -26,7 +26,6 @@ public interface TacCaseService {
     List<TacCaseResponseDto> findAll();
 
     boolean exists(Long id);
-    boolean exists(String caseNumber);
 
     // Attachment Operations
     TacCaseAttachmentResponseDto addAttachment(Long caseId, TacCaseAttachmentUploadDto uploadDto) throws IOException;
@@ -45,15 +44,5 @@ public interface TacCaseService {
 
 
     List<RmaCaseResponseDto> listRmaCases(Long id);
-
-/*
-    void delete(String caseNumber);
-    TacCaseResponseDto save(TacCaseResponseDto tacCaseResponseDto);
-    Optional<TacCaseResponseDto> findByCaseNumber(String caseNumber);
-    TacCaseResponseDto partialUpdate(Long id, TacCaseResponseDto tacCaseResponseDto);
-    TacCaseResponseDto partialUpdate(String caseNumber, TacCaseResponseDto tacCaseResponseDto);
-
-*/
-
 
 }

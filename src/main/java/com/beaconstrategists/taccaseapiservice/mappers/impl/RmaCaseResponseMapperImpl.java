@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class RmaCaseMapperImpl implements Mapper<RmaCaseEntity, RmaCaseResponseDto> {
+public class RmaCaseResponseMapperImpl implements Mapper<RmaCaseEntity, RmaCaseResponseDto> {
 
     private final ModelMapper modelMapper;
 
-    public RmaCaseMapperImpl(ModelMapper modelMapper) {
+    public RmaCaseResponseMapperImpl(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }
 

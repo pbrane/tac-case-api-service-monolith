@@ -6,7 +6,7 @@ import com.beaconstrategists.taccaseapiservice.mappers.TacCaseAttachmentDownload
 import com.beaconstrategists.taccaseapiservice.mappers.TacCaseAttachmentResponseMapper;
 import com.beaconstrategists.taccaseapiservice.mappers.TacCaseNoteDownloadMapper;
 import com.beaconstrategists.taccaseapiservice.mappers.TacCaseNoteResponseMapper;
-import com.beaconstrategists.taccaseapiservice.mappers.impl.RmaCaseMapperImpl;
+import com.beaconstrategists.taccaseapiservice.mappers.impl.RmaCaseResponseMapperImpl;
 import com.beaconstrategists.taccaseapiservice.mappers.impl.TacCaseCreateMapperImpl;
 import com.beaconstrategists.taccaseapiservice.mappers.impl.TacCaseResponseMapperImpl;
 import com.beaconstrategists.taccaseapiservice.mappers.impl.TacCaseUpdateMapperImpl;
@@ -19,8 +19,6 @@ import com.beaconstrategists.taccaseapiservice.repositories.TacCaseNoteRepositor
 import com.beaconstrategists.taccaseapiservice.repositories.TacCaseRepository;
 import com.beaconstrategists.taccaseapiservice.services.TacCaseService;
 import com.beaconstrategists.taccaseapiservice.specifications.TacCaseSpecification;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +32,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static org.springframework.shell.command.invocation.InvocableShellMethod.log;
+
 @Service
 public class TacCaseServiceImpl implements TacCaseService {
 
@@ -42,41 +42,38 @@ public class TacCaseServiceImpl implements TacCaseService {
     private final TacCaseResponseMapperImpl tacCaseMapper;
     private final TacCaseCreateMapperImpl tacCaseCreateMapper;
     private final TacCaseUpdateMapperImpl tacCaseUpdateMapper;
-    private final RmaCaseMapperImpl rmaCaseMapper;
     private final TacCaseAttachmentResponseMapper tacCaseAttachmentResponseMapper;
     private final TacCaseAttachmentDownloadMapper tacCaseAttachmentDownloadMapper;
     private final TacCaseNoteResponseMapper tacCaseNoteResponseMapper;
     private final TacCaseNoteDownloadMapper tacCaseNoteDownloadMapper;
     private final TacCaseNoteRepository tacCaseNoteRepository;
 
-    private final ObjectMapper tacCaseResponseObjectMapper;
-
+    private final RmaCaseResponseMapperImpl rmaCaseResponseMapper;
 
     public TacCaseServiceImpl(TacCaseRepository tacCaseRepository,
                               TacCaseAttachmentRepository tacCaseAttachmentRepository,
                               TacCaseResponseMapperImpl tacCaseMapper,
                               TacCaseCreateMapperImpl tacCaseCreateMapper,
                               TacCaseUpdateMapperImpl tacCaseUpdateMapper,
-                              RmaCaseMapperImpl rmaCaseMapper,
+                              RmaCaseResponseMapperImpl rmaCaseResponseMapper,
                               TacCaseAttachmentResponseMapper tacCaseAttachmentResponseMapper,
                               TacCaseAttachmentDownloadMapper tacCaseAttachmentDownloadMapper,
                               TacCaseNoteResponseMapper tacCaseNoteResponseMapper,
                               TacCaseNoteDownloadMapper tacCaseNoteDownloadMapper,
-                              TacCaseNoteRepository tacCaseNoteRepository,
-                              @Qualifier("snakeCaseObjectMapper") ObjectMapper tacCaseResponseObjectMapper) {
+                              TacCaseNoteRepository tacCaseNoteRepository) {
 
         this.tacCaseRepository = tacCaseRepository;
         this.tacCaseAttachmentRepository = tacCaseAttachmentRepository;
         this.tacCaseMapper = tacCaseMapper;
         this.tacCaseCreateMapper = tacCaseCreateMapper;
         this.tacCaseUpdateMapper = tacCaseUpdateMapper;
-        this.rmaCaseMapper = rmaCaseMapper;
         this.tacCaseAttachmentResponseMapper = tacCaseAttachmentResponseMapper;
         this.tacCaseAttachmentDownloadMapper = tacCaseAttachmentDownloadMapper;
         this.tacCaseNoteResponseMapper = tacCaseNoteResponseMapper;
         this.tacCaseNoteDownloadMapper = tacCaseNoteDownloadMapper;
         this.tacCaseNoteRepository = tacCaseNoteRepository;
-        this.tacCaseResponseObjectMapper = tacCaseResponseObjectMapper;
+
+        this.rmaCaseResponseMapper = rmaCaseResponseMapper;
     }
 
     // CRUD Operations for TacCase
@@ -155,12 +152,6 @@ public class TacCaseServiceImpl implements TacCaseService {
 
     @Override
     @Transactional
-    public boolean exists(String caseNumber) {
-        return tacCaseRepository.existsByCaseNumber(caseNumber);
-    }
-
-    @Override
-    @Transactional
     public void delete(Long id) {
         TacCaseEntity tacCase = tacCaseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("TacCase not found with id " + id));
@@ -173,7 +164,7 @@ public class TacCaseServiceImpl implements TacCaseService {
     public List<RmaCaseResponseDto> listRmaCases(Long id) {
         TacCaseEntity tacCase = tacCaseRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("TacCase not found with id " + id));
         return tacCase.getRmaCases().stream()
-                .map(rmaCaseMapper::mapTo)
+                .map(rmaCaseResponseMapper::mapTo)
                 .collect(Collectors.toList());
     }
 
@@ -194,8 +185,13 @@ public class TacCaseServiceImpl implements TacCaseService {
             throw new IllegalArgumentException("File must be provided and not empty.");
         }
 
-        // Optional: Validate file type
-        validateFileType(file);
+        //fixme: need better response body when invalid type is sent
+        try {
+            validateFileType(file);
+        } catch (IllegalArgumentException e) {
+            log.error("Unsupported file type: {}", file.getContentType(), e);
+            throw new IllegalArgumentException("Unsupported file type: " + file.getContentType());
+        }
 
         TacCaseAttachmentEntity attachmentEntity = TacCaseAttachmentEntity.builder()
                 .name(Optional.ofNullable(uploadDto.getName()).orElse(file.getOriginalFilename()))
@@ -333,116 +329,39 @@ public class TacCaseServiceImpl implements TacCaseService {
         }
     }
 
+    // fixme: Update this list with input from customer
     /**
      * Validates the MIME type of the uploaded file.
-     *
      * @param file the uploaded MultipartFile
      */
     private void validateFileType(MultipartFile file) {
-        List<String> allowedMimeTypes = Arrays.asList("application/pdf", "image/jpeg", "image/png"); // Extend as needed
+        List<String> allowedMimeTypes = Arrays.asList(
+                "application/pdf",
+                "application/msword",
+                "text/plain",
+                "image/jpeg",
+                "image/png",
+                "image/gif",
+                "application/zip",
+                "application/x-7z-compressed",
+                "application/x-rar-compressed",
+                "application/json",
+                "application/xml",
+                "text/csv"); // Extend as needed
+
+        long maxFileSize = 20 * 1024 * 1024;
+
+        // Validate file type
         if (!allowedMimeTypes.contains(file.getContentType())) {
-            throw new IllegalArgumentException("Unsupported file type: " + file.getContentType());
+            throw new IllegalArgumentException("Unsupported file type: " + file.getContentType()
+                    + ". Allowed types: " + String.join(", ", allowedMimeTypes));
         }
+
+        // Validate file size
+        if (file.getSize() > maxFileSize) {
+            throw new IllegalArgumentException("File size exceeds the maximum limit of 20MB. " +
+                    "Uploaded file size: " + (file.getSize() / (1024 * 1024)) + "MB");
+        }
+
     }
-
-
-/*
-    //fixme: figure out where this is still being used
-    @Override
-    @Transactional
-    public TacCaseResponseDto save(TacCaseResponseDto tacCaseResponseDto) {
-        TacCaseEntity tacCaseEntity = tacCaseMapper.mapFrom(tacCaseResponseDto);
-        TacCaseEntity savedEntity = tacCaseRepository.save(tacCaseEntity);
-        return tacCaseMapper.mapTo(savedEntity);
-    }
-*/
-
-/*
-    @Override
-    @Transactional
-    public Optional<TacCaseResponseDto> findByCaseNumber(String caseNumber) {
-        return tacCaseRepository.findByCaseNumber(caseNumber)
-                .map(tacCaseMapper::mapTo);
-    }
-*/
-
-/*
-    @Override
-    @Transactional
-    public TacCaseResponseDto partialUpdate(String caseNumber, TacCaseResponseDto tacCaseResponseDto) {
-        TacCaseEntity existingTacCase = tacCaseRepository.findByCaseNumber(caseNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("TAC Case does not exist with case number " + caseNumber));
-
-        // Map updated fields from DTO to existing entity
-        tacCaseMapper.mapFrom(tacCaseResponseDto, existingTacCase);
-
-        TacCaseEntity updatedTacCase = tacCaseRepository.save(existingTacCase);
-        return tacCaseMapper.mapTo(updatedTacCase);
-    }
-*/
-/*
-    @Override
-    @Transactional
-    public void delete(String caseNumber) {
-        TacCaseEntity tacCase = tacCaseRepository.findByCaseNumber(caseNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("TAC Case not found with case number " + caseNumber));
-        tacCaseRepository.delete(tacCase);
-    }
-*/
-
-/*
-    @Override
-    @Transactional
-    public TacCaseResponseDto partialUpdate(Long id, TacCaseResponseDto tacCaseDto) {
-        TacCaseEntity existingTacCase = tacCaseRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("TAC Case does not exist with id " + id));
-
-        // Map updated fields from DTO to existing entity
-        tacCaseMapper.mapFrom(tacCaseDto, existingTacCase);
-
-        TacCaseEntity updatedTacCase = tacCaseRepository.save(existingTacCase);
-        return tacCaseMapper.mapTo(updatedTacCase);
-    }
-*/
-
-/*  //fixme: Use a mapper instead, can just use a put instead of a patch
-    @Override
-    public TacCaseResponseDto partialUpdate(Long id, TacCaseResponseDto tacCaseResponseDto) {
-        Optional<TacCaseEntity> entity = tacCaseRepository.findById(id);
-        return entity.map(existingTacCase -> {
-            Optional.ofNullable(tacCaseResponseDto.getCaseOwner()).ifPresent(existingTacCase::setCaseOwner);
-            Optional.ofNullable(tacCaseResponseDto.getCasePriority()).ifPresent(existingTacCase::setCasePriority);
-            Optional.ofNullable(tacCaseResponseDto.getCaseStatus()).ifPresent(existingTacCase::setCaseStatus);
-            Optional.ofNullable(tacCaseResponseDto.getAccountNumber()).ifPresent(existingTacCase::setAccountNumber);
-            Optional.ofNullable(tacCaseResponseDto.getCaseNumber()).ifPresent(existingTacCase::setCaseNumber);
-            Optional.ofNullable(tacCaseResponseDto.getAccountNumber()).ifPresent(existingTacCase::setAccountNumber);
-            Optional.ofNullable(tacCaseResponseDto.getBusinessImpact()).ifPresent(existingTacCase::setBusinessImpact);
-            Optional.ofNullable(tacCaseResponseDto.getCaseClosedDate()).ifPresent(existingTacCase::setCaseClosedDate);
-            Optional.ofNullable(tacCaseResponseDto.getCaseCreatedDate()).ifPresent(existingTacCase::setCaseCreatedDate);
-            Optional.ofNullable(tacCaseResponseDto.getCaseNoteCount()).ifPresent(existingTacCase::setCaseNoteCount);
-            Optional.ofNullable(tacCaseResponseDto.getCaseSolutionDescription()).ifPresent(existingTacCase::setCaseSolutionDescription);
-            Optional.ofNullable(tacCaseResponseDto.getContactEmail()).ifPresent(existingTacCase::setContactEmail);
-            Optional.ofNullable(tacCaseResponseDto.getCustomerTrackingNumber()).ifPresent(existingTacCase::setCustomerTrackingNumber);
-            Optional.ofNullable(tacCaseResponseDto.getFaultyPartNumber()).ifPresent(existingTacCase::setFaultyPartNumber);
-            Optional.ofNullable(tacCaseResponseDto.getFaultySerialNumber()).ifPresent(existingTacCase::setFaultySerialNumber);
-            Optional.ofNullable(tacCaseResponseDto.getFirstResponseDate()).ifPresent(existingTacCase::setFirstResponseDate);
-            Optional.ofNullable(tacCaseResponseDto.getHref()).ifPresent(existingTacCase::setHref); //fixme
-            Optional.ofNullable(tacCaseResponseDto.getCustomerTrackingNumber()).ifPresent(existingTacCase::setCustomerTrackingNumber);
-            Optional.ofNullable(tacCaseResponseDto.getInstallationCountry()).ifPresent(existingTacCase::setInstallationCountry);
-            Optional.ofNullable(tacCaseResponseDto.getProblemDescription()).ifPresent(existingTacCase::setProblemDescription);
-            Optional.ofNullable(tacCaseResponseDto.getCaseNoteCount()).ifPresent(existingTacCase::setCaseNoteCount);
-            Optional.ofNullable(tacCaseResponseDto.getProductFirmwareVersion()).ifPresent(existingTacCase::setProductFirmwareVersion);
-            Optional.ofNullable(tacCaseResponseDto.getProductSerialNumber()).ifPresent(existingTacCase::setProductSerialNumber);
-            Optional.ofNullable(tacCaseResponseDto.getProductName()).ifPresent(existingTacCase::setProductName);
-            Optional.ofNullable(tacCaseResponseDto.getProductSoftwareVersion()).ifPresent(existingTacCase::setProductSoftwareVersion);
-            Optional.ofNullable(tacCaseResponseDto.getRelatedDispatchCount()).ifPresent(existingTacCase::setRelatedDispatchCount);
-            Optional.ofNullable(tacCaseResponseDto.getRelatedRmaCount()).ifPresent(existingTacCase::setRelatedRmaCount);
-            Optional.ofNullable(tacCaseResponseDto.getRmaNeeded()).ifPresent(existingTacCase::setRmaNeeded);
-            Optional.ofNullable(tacCaseResponseDto.getSubject()).ifPresent(existingTacCase::setSubject);
-
-            TacCaseEntity updatedTacCase = tacCaseRepository.save(existingTacCase);
-            return tacCaseMapper.mapTo(updatedTacCase);
-        }).orElseThrow(() -> new RuntimeException("TAC Case does not exist"));
-    }
-*/
 }

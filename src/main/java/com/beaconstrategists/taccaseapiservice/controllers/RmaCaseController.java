@@ -68,7 +68,7 @@ public class RmaCaseController {
 
     @PostMapping(path = "")
     public ResponseEntity<RmaCaseResponseDto> createRmaCase(@Valid @RequestBody RmaCaseCreateDto dto) {
-        RmaCaseResponseDto rmaCaseResponseDto = rmaCaseService.save(dto);
+        RmaCaseResponseDto rmaCaseResponseDto = rmaCaseService.create(dto);
         return new ResponseEntity<>(rmaCaseResponseDto, HttpStatus.CREATED);
     }
 
@@ -78,28 +78,13 @@ public class RmaCaseController {
             @Valid @RequestBody RmaCaseUpdateDto updateDto) {
 
         //fixme: make sure this isn't redundant
-        if (!rmaCaseService.isExists(id)) {
+        if (!rmaCaseService.exists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         RmaCaseResponseDto rmaCaseSavedDto = rmaCaseService.update(id, updateDto);
         return new ResponseEntity<>(rmaCaseSavedDto, HttpStatus.OK);
     }
-
-/*
-    @PatchMapping(path = "/{id}")
-    public ResponseEntity<RmaCaseResponseDto> partialUpdate(
-            @PathVariable Long id,
-            @Valid @RequestBody RmaCaseResponseDto rmaCaseDto) {
-
-        if (!rmaCaseService.isExists(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        RmaCaseResponseDto rmaCaseDtoSaved = rmaCaseService.partialUpdate(id, rmaCaseDto);
-        return new ResponseEntity<>(rmaCaseDtoSaved, HttpStatus.OK);
-    }
-*/
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> deleteRmaCase(@PathVariable Long id) {

@@ -84,21 +84,6 @@ public class TacCaseController {
         return new ResponseEntity<>(tacCaseResponseDto, HttpStatus.OK);
     }
 
-/*
-    @PatchMapping(path = "/{id}")
-    public ResponseEntity<TacCaseResponseDto> partialUpdate(
-            @PathVariable Long id,
-            @Valid @RequestBody TacCaseResponseDto tacCaseDto) {
-
-        if (!tacCaseService.exists(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        TacCaseResponseDto tacCaseDtoSaved = tacCaseService.partialUpdate(id, tacCaseDto);
-        return new ResponseEntity<>(tacCaseDtoSaved, HttpStatus.OK);
-    }
-*/
-
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> deleteTacCase(@PathVariable Long id) {
         tacCaseService.delete(id);
