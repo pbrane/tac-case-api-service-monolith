@@ -98,7 +98,7 @@ public class TacCaseUpdateDto extends AbstractFieldPresenceAwareDto implements S
     @JsonSetter
     public void setProblemDescription(String value) {
         this.problemDescription = value;
-        markFieldPresent(problemDescription);
+        markFieldPresent("problemDescription");
     }
 
     @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "The country where the product is physically installed")
@@ -106,7 +106,7 @@ public class TacCaseUpdateDto extends AbstractFieldPresenceAwareDto implements S
     @JsonSetter
     public void setInstallationCountry(String value) {
         this.installationCountry = value;
-        markFieldPresent(installationCountry);
+        markFieldPresent("installationCountry");
     }
 
     @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "A Timestamp indicating the first response to this case")
