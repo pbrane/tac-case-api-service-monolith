@@ -1,6 +1,6 @@
 package com.beaconstrategists.taccaseapiservice.controllers.dto;
 
-import com.beaconstrategists.taccaseapiservice.config.api.GenericSnakeCaseJsonSerializer;
+import com.beaconstrategists.taccaseapiservice.config.api.GenericFieldPresenceSnakeCaseJsonSerializer;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -21,7 +21,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = false)
-@JsonSerialize(using = GenericSnakeCaseJsonSerializer.class) //snake case for freshdesk
+@JsonSerialize(using = GenericFieldPresenceSnakeCaseJsonSerializer.class) //snake case for freshdesk
 public class RmaCaseUpdateDto extends AbstractFieldPresenceAwareDto implements Serializable {
 
     @Serial

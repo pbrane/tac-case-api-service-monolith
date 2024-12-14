@@ -24,20 +24,6 @@ public class JacksonConfig {
         return objectMapper;
     }
 
-
-/*
-    @Bean
-    @Qualifier("snakeCaseObjectMapper")
-    public ObjectMapper snakeCaseObjectMapper() {
-        // Configure ObjectMapper for snake_case
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
-                .registerModule(new JavaTimeModule())
-                .findAndRegisterModules();
-        return mapper;
-    }
-*/
-
     @Bean
     @Qualifier("snakeCaseObjectMapper")
     public ObjectMapper snakeCaseObjectMapper() {

@@ -14,11 +14,11 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-public class GenericSnakeCaseJsonSerializer<T> extends JsonSerializer<T> {
+public class GenericFieldPresenceSnakeCaseJsonSerializer<T> extends JsonSerializer<T> {
 
     private final ObjectMapper mapper;
 
-    public GenericSnakeCaseJsonSerializer(@Qualifier("snakeCaseObjectMapper") ObjectMapper mapper) {
+    public GenericFieldPresenceSnakeCaseJsonSerializer(@Qualifier("snakeCaseObjectMapper") ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
