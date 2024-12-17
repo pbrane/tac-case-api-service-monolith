@@ -1,10 +1,12 @@
 package com.beaconstrategists.taccaseapiservice.controllers.dto;
 
+import com.beaconstrategists.taccaseapiservice.config.api.CustomOffsetDateTimeDeserializer;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -61,30 +63,39 @@ public class RmaCaseResponseDto implements Serializable {
     private CaseStatus caseStatus;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonDeserialize(using = CustomOffsetDateTimeDeserializer.class)
     private OffsetDateTime caseCreatedDate;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonDeserialize(using = CustomOffsetDateTimeDeserializer.class)
     private OffsetDateTime caseClosedDate;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonDeserialize(using = CustomOffsetDateTimeDeserializer.class)
     private OffsetDateTime newPartShippedDate;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonDeserialize(using = CustomOffsetDateTimeDeserializer.class)
     private OffsetDateTime newPartDeliveredDate;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonDeserialize(using = CustomOffsetDateTimeDeserializer.class)
     private OffsetDateTime faultyPartShippedDate;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonDeserialize(using = CustomOffsetDateTimeDeserializer.class)
     private OffsetDateTime faultyPartDeliveredDate;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonDeserialize(using = CustomOffsetDateTimeDeserializer.class)
     private OffsetDateTime failureAnalysisStartDate;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonDeserialize(using = CustomOffsetDateTimeDeserializer.class)
     private OffsetDateTime failureAnalysisInProgressDate;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonDeserialize(using = CustomOffsetDateTimeDeserializer.class)
     private OffsetDateTime failureAnalysisFinishedDate;
 
     private String shipToStreet1;
@@ -103,7 +114,9 @@ public class RmaCaseResponseDto implements Serializable {
 
     private String shipToAttention;
 
-    private String shippedDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonDeserialize(using = CustomOffsetDateTimeDeserializer.class)
+    private OffsetDateTime shippedDate;
 
     private String shippedCarrier;
 
@@ -118,6 +131,7 @@ public class RmaCaseResponseDto implements Serializable {
     private Integer vendorRmaNumber;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonDeserialize(using = CustomOffsetDateTimeDeserializer.class)
     private OffsetDateTime newPartDeliveryDateEta;
 
     private List<Long> attachmentIds;

@@ -93,7 +93,8 @@ public class RmaCaseEntity {
 
   private String shipToAttention;
 
-  private String shippedDate;
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+  private OffsetDateTime shippedDate;
 
   private String shippedCarrier;
 
