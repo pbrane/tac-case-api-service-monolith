@@ -82,6 +82,7 @@ public class RmaCaseServiceImpl implements RmaCaseService {
     @Transactional
     public RmaCaseResponseDto create(RmaCaseCreateDto rmaCaseCreateDto) {
         RmaCaseEntity rmaCaseEntity = rmaCaseCreateMapper.mapFrom(rmaCaseCreateDto);
+        rmaCaseEntity.setCaseCreatedDate(OffsetDateTime.now());
         RmaCaseEntity savedEntity = rmaCaseRepository.save(rmaCaseEntity);
         return rmaCaseMapper.mapTo(savedEntity);
     }

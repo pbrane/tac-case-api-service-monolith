@@ -82,6 +82,7 @@ public class TacCaseServiceImpl implements TacCaseService {
     @Transactional
     public TacCaseResponseDto create(TacCaseCreateDto tacCaseDto) {
         TacCaseEntity tacCaseEntity = tacCaseCreateMapper.mapFrom(tacCaseDto);
+        tacCaseEntity.setCaseCreatedDate(OffsetDateTime.now());
         TacCaseEntity savedEntity = tacCaseRepository.save(tacCaseEntity);
         return tacCaseMapper.mapTo(savedEntity);
     }
