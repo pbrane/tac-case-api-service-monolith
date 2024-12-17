@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.introspect.AnnotatedField;
 import com.fasterxml.jackson.databind.introspect.TypeResolutionContext;
-import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -24,6 +24,7 @@ public class GenericFieldPresenceSnakeCaseJsonSerializer<T> extends JsonSerializ
     public GenericFieldPresenceSnakeCaseJsonSerializer() {
         //Can't use the bean when this call is used by external libraries
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new Jdk8Module());
         objectMapper.registerModule(new JavaTimeModule()); // Add support for Java 8+ date/time
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // Ensure dates are not serialized as arrays
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE); // Preserve snake_case

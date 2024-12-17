@@ -16,6 +16,10 @@ public abstract class AbstractFieldPresenceAwareDto {
         return fieldPresence.getOrDefault(fieldName, false);
     }
 
+    public int fieldPresenceCount() {
+        return fieldPresence.size();
+    }
+
     protected void markFieldPresent(String fieldName) {
         fieldPresence.put(fieldName, true);
     }
