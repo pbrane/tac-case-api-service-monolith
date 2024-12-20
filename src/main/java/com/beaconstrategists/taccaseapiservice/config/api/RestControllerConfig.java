@@ -17,7 +17,9 @@ public class RestControllerConfig {
     @ConfigurationProperties("spring.servlet.multipart")
     public MultipartProperties multipartProperties() {
         MultipartProperties properties = new MultipartProperties();
-        properties.setMaxFileSize(DataSize.ofMegabytes(maxFileSize)); // Set max file size to 10MB
+        properties.setMaxFileSize(DataSize.ofMegabytes(maxFileSize));
+        properties.setFileSizeThreshold(DataSize.ofMegabytes(maxFileSize));
+        properties.setMaxRequestSize(DataSize.ofMegabytes(maxFileSize));
         return properties;
     }
 }
