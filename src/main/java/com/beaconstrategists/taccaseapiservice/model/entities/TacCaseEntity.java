@@ -42,7 +42,6 @@ public class TacCaseEntity {
 
   private Integer relatedDispatchCount; //fixme this needs implementation
 
-//  @Lob  //fixme: does this really need to be a Lob?
   @Column(nullable = false, length = 65535)
   private String problemDescription;
 

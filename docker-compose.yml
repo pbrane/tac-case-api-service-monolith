@@ -1,7 +1,7 @@
 services:
   apisvc-prod-mono:
     container_name: apisvc-prod-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.1.14
+    image: pbranestrategy/tac-case-api-service-mono:0.1.15
     environment:
       - API_SVR_ENV=production
       - AUTH_SVR_ENV=production
@@ -26,7 +26,7 @@ services:
 
   apisvc-dev-mono:
     container_name: apisvc-dev-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.1.14
+    image: pbranestrategy/tac-case-api-service-mono:0.1.15
     environment:
       - API_SVR_ENV=development
       - AUTH_SVR_ENV=development

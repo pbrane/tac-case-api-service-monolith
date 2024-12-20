@@ -98,6 +98,7 @@ public class RmaCaseEntity {
 
   private String shippedCarrier;
 
+  @Column(nullable = false, length = 65535)
   private String problemDescription;
 
   private String installationCountry;
