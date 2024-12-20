@@ -32,6 +32,7 @@ public class RmaCaseNoteEntity {
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private OffsetDateTime date;
 
+  @Column(nullable = false, length = 65535)
   private String text;
 }
 
