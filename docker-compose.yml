@@ -4,6 +4,7 @@ services:
     image: pbranestrategy/tac-case-api-service-mono:0.1.15
     environment:
       - API_SVR_ENV=production
+      - API_SVR_MAX_FILE_SIZE_MB=20
       - AUTH_SVR_ENV=production
       - AUTH_SVR_REPO=inMemory
       - CLIENT_ID=client-id

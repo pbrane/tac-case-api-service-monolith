@@ -345,18 +345,10 @@ public class RmaCaseServiceImpl implements RmaCaseService {
                 "application/xml",
                 "text/csv"); // Extend as needed
 
-        long maxFileSize = 20 * 1024 * 1024;
-
         // Validate file type
         if (!allowedMimeTypes.contains(file.getContentType())) {
             throw new IllegalArgumentException("Unsupported file type: " + file.getContentType()
                     + ". Allowed types: " + String.join(", ", allowedMimeTypes));
-        }
-
-        // Validate file size
-        if (file.getSize() > maxFileSize) {
-            throw new IllegalArgumentException("File size exceeds the maximum limit of 20MB. " +
-                    "Uploaded file size: " + (file.getSize() / (1024 * 1024)) + "MB");
         }
 
     }
