@@ -1,4 +1,4 @@
-package com.beaconstrategists.taccaseapiservice.controllers.dto;
+package com.beaconstrategists.taccaseapiservice.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;

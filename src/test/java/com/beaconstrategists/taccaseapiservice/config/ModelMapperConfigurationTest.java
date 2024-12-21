@@ -1,6 +1,6 @@
 package com.beaconstrategists.taccaseapiservice.config;
 
-import com.beaconstrategists.taccaseapiservice.controllers.dto.TacCaseResponseDto;
+import com.beaconstrategists.taccaseapiservice.dtos.TacCaseResponseDto;
 import com.beaconstrategists.taccaseapiservice.mappers.impl.TacCaseResponseMapperImpl;
 import com.beaconstrategists.taccaseapiservice.model.entities.TacCaseEntity;
 import org.junit.jupiter.api.Test;

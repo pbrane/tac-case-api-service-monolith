@@ -1,8 +1,9 @@
-package com.beaconstrategists.taccaseapiservice.controllers.dto;
+package com.beaconstrategists.taccaseapiservice.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +17,7 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RmaCaseNoteUploadDto implements Serializable {
+public class TacCaseNoteResponseDto implements Serializable {
 
     @Serial
     @JsonIgnore
@@ -28,11 +29,10 @@ public class RmaCaseNoteUploadDto implements Serializable {
     @JsonProperty("version")
     private final String version = "1.0.0";
 
-    //fixme: this needs work, should probably be an email address
-    //fixme: should probably be "contactEmail"
+    @NotNull
+    private Long id;
+    private Long tacCaseId;
     private String author;
-
-
     private OffsetDateTime date;
-    private String text;
+
 }

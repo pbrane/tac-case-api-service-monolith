@@ -1,16 +1,22 @@
-package com.beaconstrategists.taccaseapiservice.controllers.dto;
+package com.beaconstrategists.taccaseapiservice.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import org.springframework.core.io.Resource;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 
 @Data
-public class RmaCaseAttachmentDownloadDto implements Serializable {
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class RmaCaseNoteDownloadDto implements Serializable {
 
     @Serial
     @JsonIgnore
@@ -22,7 +28,10 @@ public class RmaCaseAttachmentDownloadDto implements Serializable {
     @JsonProperty("version")
     private final String version = "1.0.0";
 
-    private String name;
-    private String mimeType;
-    private Resource resource;
+
+    private Long id;
+    private Long rmaCaseId;
+    private String author;
+    private OffsetDateTime date;
+    private String text;
 }

@@ -1,25 +1,20 @@
-package com.beaconstrategists.taccaseapiservice.controllers.dto;
+package com.beaconstrategists.taccaseapiservice.dtos;
 
 import com.beaconstrategists.taccaseapiservice.model.CasePriorityEnum;
-import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @Data
 @AllArgsConstructor

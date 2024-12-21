@@ -1,22 +1,17 @@
-package com.beaconstrategists.taccaseapiservice.controllers.dto;
+package com.beaconstrategists.taccaseapiservice.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.OffsetDateTime;
 
+//fixme: this Lombok configuration needs to be addressed
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class RmaCaseNoteDownloadDto implements Serializable {
+public class RmaCaseAttachmentUploadDto implements Serializable {
 
     @Serial
     @JsonIgnore
@@ -28,10 +23,9 @@ public class RmaCaseNoteDownloadDto implements Serializable {
     @JsonProperty("version")
     private final String version = "1.0.0";
 
-
-    private Long id;
-    private Long rmaCaseId;
-    private String author;
-    private OffsetDateTime date;
-    private String text;
+    private String name;
+    private String mimeType;
+    private String description;
+    private Float size;
+    private MultipartFile file; // Include binary data
 }

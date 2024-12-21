@@ -1,17 +1,16 @@
-package com.beaconstrategists.taccaseapiservice.controllers.dto;
+package com.beaconstrategists.taccaseapiservice.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.Resource;
 
 import java.io.Serial;
 import java.io.Serializable;
 
-//fixme: this Lombok configuration needs to be addressed
 @Data
-public class RmaCaseAttachmentUploadDto implements Serializable {
+public class TacCaseAttachmentDownloadDto implements Serializable {
 
     @Serial
     @JsonIgnore
@@ -25,7 +24,5 @@ public class RmaCaseAttachmentUploadDto implements Serializable {
 
     private String name;
     private String mimeType;
-    private String description;
-    private Float size;
-    private MultipartFile file; // Include binary data
+    private Resource resource;
 }

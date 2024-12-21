@@ -1,9 +1,10 @@
 package com.beaconstrategists.taccaseapiservice.controllers;
 
-import com.beaconstrategists.taccaseapiservice.controllers.dto.*;
+import com.beaconstrategists.taccaseapiservice.dtos.*;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.beaconstrategists.taccaseapiservice.services.RmaCaseService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +26,7 @@ public class RmaCaseController {
 
     private final RmaCaseService rmaCaseService;
 
-    public RmaCaseController(RmaCaseService rmaCaseService) {
+    public RmaCaseController(@Qualifier("JpaRmaCaseService") RmaCaseService rmaCaseService) {
         this.rmaCaseService = rmaCaseService;
     }
 

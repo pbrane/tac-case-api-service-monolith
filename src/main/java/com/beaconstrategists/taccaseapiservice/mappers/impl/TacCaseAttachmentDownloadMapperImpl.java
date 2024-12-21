@@ -1,6 +1,6 @@
 package com.beaconstrategists.taccaseapiservice.mappers.impl;
 
-import com.beaconstrategists.taccaseapiservice.controllers.dto.TacCaseAttachmentDownloadDto;
+import com.beaconstrategists.taccaseapiservice.dtos.TacCaseAttachmentDownloadDto;
 import com.beaconstrategists.taccaseapiservice.mappers.TacCaseAttachmentDownloadMapper;
 import com.beaconstrategists.taccaseapiservice.model.entities.TacCaseAttachmentEntity;
 import org.modelmapper.ModelMapper;

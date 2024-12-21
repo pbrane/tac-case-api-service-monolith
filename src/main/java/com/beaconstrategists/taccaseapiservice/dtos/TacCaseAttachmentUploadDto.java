@@ -1,16 +1,17 @@
-package com.beaconstrategists.taccaseapiservice.controllers.dto;
+package com.beaconstrategists.taccaseapiservice.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serial;
 import java.io.Serializable;
 
+//fixme: should be immutable
 @Data
-public class TacCaseAttachmentResponseDto implements Serializable {
+public class TacCaseAttachmentUploadDto implements Serializable {
 
     @Serial
     @JsonIgnore
@@ -22,10 +23,10 @@ public class TacCaseAttachmentResponseDto implements Serializable {
     @JsonProperty("version")
     private final String version = "1.0.0";
 
-    @NotNull
-    private Long id;
+    //    private Long id;
     private String name;
-    private String description;
     private String mimeType;
+    private String description;
     private Float size;
+    private MultipartFile file; // Include binary data
 }

@@ -1,6 +1,6 @@
 package com.beaconstrategists.taccaseapiservice.services;
 
-import com.beaconstrategists.taccaseapiservice.controllers.dto.*;
+import com.beaconstrategists.taccaseapiservice.dtos.*;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 
 import java.io.IOException;

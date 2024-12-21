@@ -1,6 +1,6 @@
 package com.beaconstrategists.taccaseapiservice.services.impl;
 
-import com.beaconstrategists.taccaseapiservice.controllers.dto.*;
+import com.beaconstrategists.taccaseapiservice.dtos.*;
 import com.beaconstrategists.taccaseapiservice.exceptions.ResourceNotFoundException;
 import com.beaconstrategists.taccaseapiservice.mappers.TacCaseAttachmentDownloadMapper;
 import com.beaconstrategists.taccaseapiservice.mappers.TacCaseAttachmentResponseMapper;
@@ -34,7 +34,7 @@ import java.util.stream.StreamSupport;
 
 import static org.springframework.shell.command.invocation.InvocableShellMethod.log;
 
-@Service
+@Service("JpaTacCaseService")
 public class TacCaseServiceImpl implements TacCaseService {
 
     private final TacCaseRepository tacCaseRepository;

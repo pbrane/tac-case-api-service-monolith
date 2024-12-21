@@ -1,23 +1,16 @@
-package com.beaconstrategists.taccaseapiservice.controllers.dto;
+package com.beaconstrategists.taccaseapiservice.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.OffsetDateTime;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class RmaCaseNoteResponseDto implements Serializable {
+public class RmaCaseAttachmentResponseDto implements Serializable {
 
     @Serial
     @JsonIgnore
@@ -29,11 +22,10 @@ public class RmaCaseNoteResponseDto implements Serializable {
     @JsonProperty("version")
     private final String version = "1.0.0";
 
-
     @NotNull
     private Long id;
-    private Long rmaCaseId;
-    private String author;
-    private OffsetDateTime date;
-
+    private String name;
+    private String description;
+    private String mimeType;
+    private Float size;
 }

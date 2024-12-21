@@ -1,4 +1,4 @@
-package com.beaconstrategists.taccaseapiservice.controllers.dto;
+package com.beaconstrategists.taccaseapiservice.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,7 +16,7 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TacCaseNoteDownloadDto implements Serializable {
+public class RmaCaseNoteUploadDto implements Serializable {
 
     @Serial
     @JsonIgnore
@@ -28,10 +28,11 @@ public class TacCaseNoteDownloadDto implements Serializable {
     @JsonProperty("version")
     private final String version = "1.0.0";
 
-
-    private Long id;
-    private Long tacCaseId;
+    //fixme: this needs work, should probably be an email address
+    //fixme: should probably be "contactEmail"
     private String author;
+
+
     private OffsetDateTime date;
     private String text;
 }

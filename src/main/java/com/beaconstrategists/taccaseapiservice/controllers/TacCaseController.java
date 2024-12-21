@@ -1,9 +1,10 @@
 package com.beaconstrategists.taccaseapiservice.controllers;
 
-import com.beaconstrategists.taccaseapiservice.controllers.dto.*;
+import com.beaconstrategists.taccaseapiservice.dtos.*;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.beaconstrategists.taccaseapiservice.services.TacCaseService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -23,7 +24,7 @@ public class TacCaseController {
 
     private final TacCaseService tacCaseService;
 
-    public TacCaseController(TacCaseService tacCaseService) {
+    public TacCaseController(@Qualifier("JpaTacCaseService") TacCaseService tacCaseService) {
         this.tacCaseService = tacCaseService;
     }
 

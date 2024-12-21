@@ -1,9 +1,8 @@
-package com.beaconstrategists.taccaseapiservice.controllers.dto;
+package com.beaconstrategists.taccaseapiservice.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +16,7 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TacCaseNoteResponseDto implements Serializable {
+public class TacCaseNoteUploadDto implements Serializable {
 
     @Serial
     @JsonIgnore
@@ -29,10 +28,8 @@ public class TacCaseNoteResponseDto implements Serializable {
     @JsonProperty("version")
     private final String version = "1.0.0";
 
-    @NotNull
-    private Long id;
-    private Long tacCaseId;
+    //fixme: really need to fix this
     private String author;
     private OffsetDateTime date;
-
+    private String text;
 }

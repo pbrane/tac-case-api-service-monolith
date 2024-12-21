@@ -1,6 +1,6 @@
 package com.beaconstrategists.taccaseapiservice.mappers.impl;
 
-import com.beaconstrategists.taccaseapiservice.controllers.dto.TacCaseNoteResponseDto;
+import com.beaconstrategists.taccaseapiservice.dtos.TacCaseNoteResponseDto;
 import com.beaconstrategists.taccaseapiservice.mappers.TacCaseNoteResponseMapper;
 import com.beaconstrategists.taccaseapiservice.model.entities.TacCaseNoteEntity;
 import org.modelmapper.ModelMapper;

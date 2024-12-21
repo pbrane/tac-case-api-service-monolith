@@ -1,6 +1,6 @@
 package com.beaconstrategists.taccaseapiservice.mappers.impl;
 
-import com.beaconstrategists.taccaseapiservice.controllers.dto.RmaCaseNoteDownloadDto;
+import com.beaconstrategists.taccaseapiservice.dtos.RmaCaseNoteDownloadDto;
 import com.beaconstrategists.taccaseapiservice.mappers.RmaCaseNoteDownloadMapper;
 import com.beaconstrategists.taccaseapiservice.model.entities.RmaCaseNoteEntity;
 import org.modelmapper.ModelMapper;

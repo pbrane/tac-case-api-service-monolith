@@ -1,6 +1,6 @@
 package com.beaconstrategists.taccaseapiservice.config.api;
 
-import com.beaconstrategists.taccaseapiservice.controllers.dto.AbstractFieldPresenceAwareDto;
+import com.beaconstrategists.taccaseapiservice.dtos.AbstractFieldPresenceAwareDto;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.introspect.AnnotatedField;
