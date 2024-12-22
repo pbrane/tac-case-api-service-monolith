@@ -30,7 +30,7 @@ public interface TacCaseService {
     // Attachment Operations
     TacCaseAttachmentResponseDto addAttachment(Long caseId, TacCaseAttachmentUploadDto uploadDto) throws IOException;
     List<TacCaseAttachmentResponseDto> getAllAttachments(Long caseId);
-    void getAttachment(Long caseId, Long attachmentId);
+    TacCaseAttachmentResponseDto getAttachment(Long caseId, Long attachmentId);
     TacCaseAttachmentDownloadDto getAttachmentDownload(Long caseId, Long attachmentId);
     void deleteAttachment(Long caseId, Long attachmentId);
     void deleteAllAttachments(Long caseId);

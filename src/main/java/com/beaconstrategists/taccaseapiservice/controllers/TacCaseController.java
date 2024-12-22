@@ -129,8 +129,8 @@ public class TacCaseController {
 
     @GetMapping("/{caseId}/attachments/{attachmentId}")
     public ResponseEntity<TacCaseAttachmentResponseDto> getAttachment(@PathVariable Long caseId, @PathVariable Long attachmentId) {
-        tacCaseService.getAttachment(caseId, attachmentId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        TacCaseAttachmentResponseDto attachment = tacCaseService.getAttachment(caseId, attachmentId);
+        return new ResponseEntity<>(attachment, HttpStatus.OK);
     }
 
     @DeleteMapping("/{caseId}/attachments/{attachmentId}")

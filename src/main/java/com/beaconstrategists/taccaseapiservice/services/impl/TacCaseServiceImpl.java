@@ -232,12 +232,12 @@ public class TacCaseServiceImpl implements TacCaseService {
 
     @Override
     @Transactional(readOnly = true)
-    public void getAttachment(Long caseId, Long attachmentId) {
+    public TacCaseAttachmentResponseDto getAttachment(Long caseId, Long attachmentId) {
         TacCaseAttachmentEntity attachment = tacCaseAttachmentRepository.findById(attachmentId)
                 .filter(a -> a.getTacCase().getId().equals(caseId))
                 .orElseThrow(() -> new ResourceNotFoundException("Attachment not found with id " + attachmentId + " for TAC Case " + caseId));
 
-        tacCaseAttachmentResponseMapper.mapTo(attachment);
+        return tacCaseAttachmentResponseMapper.mapTo(attachment);
     }
 
     @Override
