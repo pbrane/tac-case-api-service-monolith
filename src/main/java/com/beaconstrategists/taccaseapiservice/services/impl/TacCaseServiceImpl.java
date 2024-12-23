@@ -128,8 +128,8 @@ public class TacCaseServiceImpl implements TacCaseService {
             OffsetDateTime caseCreateDateTo,
             OffsetDateTime caseCreateDateSince,
             List<CaseStatus> caseStatus,
-            String logic
-    ) {
+            String logic) {
+
         Specification<TacCaseEntity> specification = TacCaseSpecification.buildSpecification(
                 caseCreateDateFrom,
                 caseCreateDateTo,
@@ -330,7 +330,7 @@ public class TacCaseServiceImpl implements TacCaseService {
         }
     }
 
-    // fixme: Update this list with input from customer
+
     /**
      * Validates the MIME type of the uploaded file.
      * @param file the uploaded MultipartFile
