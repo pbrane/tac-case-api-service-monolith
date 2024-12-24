@@ -1,7 +1,7 @@
 services:
   apisvc-prod-mono:
     container_name: apisvc-prod-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.1.15
+    image: pbranestrategy/tac-case-api-service-mono:0.1.16
     environment:
       - API_SVR_ENV=production
       - API_SVR_MAX_FILE_SIZE_MB=20
@@ -27,7 +27,7 @@ services:
 
   apisvc-dev-mono:
     container_name: apisvc-dev-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.1.15
+    image: pbranestrategy/tac-case-api-service-mono:0.1.16
     environment:
       - API_SVR_ENV=development
       - AUTH_SVR_ENV=development
