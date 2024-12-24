@@ -1,8 +1,8 @@
 package com.beaconstrategists.taccaseapiservice.dtos.freshdesk;
 
-import com.beaconstrategists.freshdeskapiclient.model.freshdesk.PriorityForTickets;
-import com.beaconstrategists.freshdeskapiclient.model.freshdesk.Source;
-import com.beaconstrategists.freshdeskapiclient.model.freshdesk.StatusForTickets;
+import com.beaconstrategists.taccaseapiservice.model.freshdesk.PriorityForTickets;
+import com.beaconstrategists.taccaseapiservice.model.freshdesk.Source;
+import com.beaconstrategists.taccaseapiservice.model.freshdesk.StatusForTickets;
 import lombok.Builder;
 import lombok.Value;
 

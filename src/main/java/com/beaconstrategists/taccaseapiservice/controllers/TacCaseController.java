@@ -24,7 +24,7 @@ public class TacCaseController {
 
     private final TacCaseService tacCaseService;
 
-    public TacCaseController(@Qualifier("JpaTacCaseService") TacCaseService tacCaseService) {
+    public TacCaseController(TacCaseService tacCaseService) {
         this.tacCaseService = tacCaseService;
     }
 

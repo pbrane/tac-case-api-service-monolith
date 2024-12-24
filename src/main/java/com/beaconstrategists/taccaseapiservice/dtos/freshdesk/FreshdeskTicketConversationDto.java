@@ -1,6 +1,6 @@
 package com.beaconstrategists.taccaseapiservice.dtos.freshdesk;
 
-import com.beaconstrategists.freshdeskapiclient.model.freshdesk.FreshdeskConversationSource;
+import com.beaconstrategists.taccaseapiservice.model.freshdesk.FreshdeskConversationSource;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

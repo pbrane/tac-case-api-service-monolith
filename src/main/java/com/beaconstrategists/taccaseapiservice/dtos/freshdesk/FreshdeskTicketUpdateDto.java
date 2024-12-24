@@ -1,8 +1,8 @@
 package com.beaconstrategists.taccaseapiservice.dtos.freshdesk;
 
-import com.beaconstrategists.freshdeskapiclient.model.freshdesk.PriorityForTickets;
-import com.beaconstrategists.freshdeskapiclient.model.freshdesk.Source;
-import com.beaconstrategists.freshdeskapiclient.model.freshdesk.StatusForTickets;
+import com.beaconstrategists.taccaseapiservice.model.freshdesk.PriorityForTickets;
+import com.beaconstrategists.taccaseapiservice.model.freshdesk.Source;
+import com.beaconstrategists.taccaseapiservice.model.freshdesk.StatusForTickets;
 import com.beaconstrategists.taccaseapiservice.dtos.AbstractFieldPresenceAwareDto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
