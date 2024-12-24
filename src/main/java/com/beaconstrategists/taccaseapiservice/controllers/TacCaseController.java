@@ -85,6 +85,7 @@ public class TacCaseController {
         return new ResponseEntity<>(tacCaseResponseDto, HttpStatus.OK);
     }
 
+/*
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> deleteTacCase(@PathVariable Long id) {
         tacCaseService.delete(id);
@@ -92,6 +93,7 @@ public class TacCaseController {
         headers.add("X-Message", "TAC Case ID: " + id + " deleted.");
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
+*/
 
     //RMAs
 
@@ -133,6 +135,7 @@ public class TacCaseController {
         return new ResponseEntity<>(attachment, HttpStatus.OK);
     }
 
+/*
     @DeleteMapping("/{caseId}/attachments/{attachmentId}")
     public ResponseEntity<Void> deleteAttachment(
             @PathVariable Long caseId,
@@ -146,6 +149,7 @@ public class TacCaseController {
         tacCaseService.deleteAllAttachments(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+*/
 
     @GetMapping("/{caseId}/attachments/{attachmentId}/download")
     public ResponseEntity<Resource> downloadAttachment(
@@ -191,6 +195,7 @@ public class TacCaseController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+/*
     @DeleteMapping("/{caseId}/notes/{noteId}")
     public ResponseEntity<Void> deleteNote(
             @PathVariable Long caseId,
@@ -204,6 +209,7 @@ public class TacCaseController {
         tacCaseService.deleteAllNotes(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+*/
 
     @GetMapping("/{caseId}/notes/{noteId}/download")
     public ResponseEntity<TacCaseNoteDownloadDto> downloadNote(
