@@ -76,10 +76,12 @@ public class TacCaseController {
             @PathVariable Long id,
             @Valid @RequestBody TacCaseUpdateDto updateDto) {
 
+/*
         //fixme: make sure this isn't redundant
         if (!tacCaseService.exists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+*/
 
         TacCaseResponseDto tacCaseResponseDto = tacCaseService.update(id, updateDto);
         return new ResponseEntity<>(tacCaseResponseDto, HttpStatus.OK);

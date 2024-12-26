@@ -114,6 +114,9 @@ public class FreshdeskTicketResponseDto {
      @JsonProperty("source_additional_info")
      private String sourceAdditionalInfo;
 
+     @JsonProperty("associated_tickets_list")
+     private List<Long> associatedTicketsList;
+
      @JsonProperty("stats")
      private FreshdeskTicketStats stats;
 

@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.beaconstrategists</groupId>
     <artifactId>tac-case-api-service-monolith</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.2.2-SNAPSHOT</version>
     <name>tac-case-api-service</name>
     <description>TAC/RMA Case ReST API Service</description>
     <url/>

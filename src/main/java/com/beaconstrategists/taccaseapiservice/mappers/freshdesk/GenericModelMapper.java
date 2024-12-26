@@ -1,17 +1,20 @@
 package com.beaconstrategists.taccaseapiservice.mappers.freshdesk;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.function.Consumer;
 
 //fixme: I don't think this is any better than the ModelMapperConfig
 //fixme: other than to add the LocalDate converter
 //fixme: look at getting rid of this class
 @Component
+@Qualifier("GenericModelMapper")
 public class GenericModelMapper {
 
     private final ModelMapper modelMapper;
@@ -42,4 +45,5 @@ public class GenericModelMapper {
             return source != null ? source.atStartOfDay().atOffset(ZoneOffset.UTC) : null;
         }, LocalDate.class, OffsetDateTime.class);
     }
+
 }

@@ -30,6 +30,7 @@ public class RmaCaseController {
         this.rmaCaseService = rmaCaseService;
     }
 
+/*
     @GetMapping(path = "")
     public ResponseEntity<List<RmaCaseResponseDto>> listAllRmaCases(
             @RequestParam(required = false)
@@ -59,6 +60,7 @@ public class RmaCaseController {
         );
         return new ResponseEntity<>(rmaCases, HttpStatus.OK);
     }
+*/
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<RmaCaseResponseDto> getRmaCase(@PathVariable Long id) {
@@ -74,14 +76,9 @@ public class RmaCaseController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<RmaCaseResponseDto> updateTacCase(
+    public ResponseEntity<RmaCaseResponseDto> updateRmaCase(
             @PathVariable Long id,
             @Valid @RequestBody RmaCaseUpdateDto updateDto) {
-
-        //fixme: make sure this isn't redundant
-        if (!rmaCaseService.exists(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
 
         RmaCaseResponseDto rmaCaseSavedDto = rmaCaseService.update(id, updateDto);
         return new ResponseEntity<>(rmaCaseSavedDto, HttpStatus.OK);
@@ -101,6 +98,7 @@ public class RmaCaseController {
 
     //Attachments
 
+/*
     @PostMapping("/{id}/attachments")
     public ResponseEntity<RmaCaseAttachmentResponseDto> uploadAttachment(
             @PathVariable Long id,
@@ -140,6 +138,7 @@ public class RmaCaseController {
         RmaCaseAttachmentResponseDto attachment = rmaCaseService.getAttachment(caseId, attachmentId);
         return new ResponseEntity<>(attachment, HttpStatus.OK);
     }
+*/
 
 /*
     @DeleteMapping("/{caseId}/attachments/{attachmentId}")
@@ -157,6 +156,7 @@ public class RmaCaseController {
     }
 */
 
+/*
     @GetMapping("/{caseId}/attachments/{attachmentId}/download")
     public ResponseEntity<Resource> downloadAttachment(
             @PathVariable Long caseId,
@@ -199,6 +199,7 @@ public class RmaCaseController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+*/
 /*
     @DeleteMapping("/{caseId}/notes/{noteId}")
     public ResponseEntity<Void> deleteNote(
@@ -215,6 +216,7 @@ public class RmaCaseController {
     }
 */
 
+/*
     @GetMapping("/{caseId}/notes/{noteId}/download")
     public ResponseEntity<RmaCaseNoteDownloadDto> downloadNote(
             @PathVariable Long caseId,
@@ -223,5 +225,6 @@ public class RmaCaseController {
 
         return new ResponseEntity<>(downloadDto, HttpStatus.OK);
     }
+*/
 
 }

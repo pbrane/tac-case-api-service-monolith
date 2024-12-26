@@ -220,7 +220,14 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
     }
 
     @Override
-    public List<RmaCaseResponseDto> listRmaCases(OffsetDateTime caseCreateDateFrom, OffsetDateTime caseCreateDateTo, OffsetDateTime caseCreateDateSince, List<CaseStatus> caseStatus, String logic) {
+    public List<RmaCaseResponseDto> listRmaCases(OffsetDateTime caseCreateDateFrom,
+                                                 OffsetDateTime caseCreateDateTo,
+                                                 OffsetDateTime caseCreateDateSince,
+                                                 List<CaseStatus> caseStatus,
+                                                 String logic) {
+
+
+
         return List.of();
     }
 
