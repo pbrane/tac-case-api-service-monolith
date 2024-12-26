@@ -13,7 +13,6 @@ public class RmaCaseServiceConfig {
     @Value("${API_SVC_MODE:Database}") // Default to JPA if not specified
     private String apiSvcMode;
 
-    //fixme: may rename TacCaseServiceImpl
     @Bean
     public RmaCaseService rmaCaseService(RmaCaseServiceImpl jpaRmaCaseService, FreshDeskRmaCaseService freshdeskCaseService) {
         if ("Freshdesk".equalsIgnoreCase(apiSvcMode)) {

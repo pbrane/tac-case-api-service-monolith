@@ -13,7 +13,6 @@ public class TacCaseServiceConfig {
     @Value("${API_SVC_MODE:Database}") // Default to JPA if not specified
     private String apiSvcMode;
 
-    //fixme: may rename TacCaseServiceImpl
     @Bean
     public TacCaseService tacCaseService(TacCaseServiceImpl jpaTacCaseService, FreshDeskTacCaseService freshdeskCaseService) {
         if ("Freshdesk".equalsIgnoreCase(apiSvcMode)) {

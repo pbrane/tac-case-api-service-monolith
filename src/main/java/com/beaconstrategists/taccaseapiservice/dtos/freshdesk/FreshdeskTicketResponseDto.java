@@ -114,6 +114,9 @@ public class FreshdeskTicketResponseDto {
      @JsonProperty("source_additional_info")
      private String sourceAdditionalInfo;
 
+     @JsonProperty("stats")
+     private FreshdeskTicketStats stats;
+
      @JsonProperty("nr_due_by")
      private OffsetDateTime nrDueBy;
 

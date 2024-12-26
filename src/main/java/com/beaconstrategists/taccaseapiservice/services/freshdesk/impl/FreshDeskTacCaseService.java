@@ -121,7 +121,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("custom_objects/schemas/" + schemaId + "/records") // No leading '/'
-                        .query(Objects.requireNonNull(uriComponentsBuilder.build().getQuery()))
+                        .query(uriComponentsBuilder.build().getQuery())
                         .build())
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {});
@@ -149,6 +149,8 @@ public class FreshDeskTacCaseService implements TacCaseService {
         tacCaseResponseDto.setCaseStatus(CaseStatus.valueOf(freshdeskTicketResponseDto.getStatusForTickets().name()));
         tacCaseResponseDto.setCasePriority(CasePriorityEnum.valueOf(freshdeskTicketResponseDto.getPriorityForTickets().name()));
         tacCaseResponseDto.setSubject(freshdeskTicketResponseDto.getSubject());
+        tacCaseResponseDto.setCaseNumber(freshdeskTacCaseResponse.getDisplayId());
+        tacCaseResponseDto.setFirstResponseDate(freshdeskTicketResponseDto.getStats().getFirstRespondedAt());
 
         return tacCaseResponseDto;
 
@@ -296,10 +298,14 @@ public class FreshDeskTacCaseService implements TacCaseService {
         tacCaseResponseDto.setId(id);
 
         FreshdeskTicketResponseDto ticketResponseDto = findFreshdeskTicketById(id);
-
         tacCaseResponseDto.setSubject(ticketResponseDto.getSubject());
         tacCaseResponseDto.setCaseStatus(CaseStatus.valueOf(ticketResponseDto.getStatusForTickets().name()));
         tacCaseResponseDto.setCasePriority(CasePriorityEnum.valueOf(ticketResponseDto.getPriorityForTickets().name()));
+        tacCaseResponseDto.setFirstResponseDate(ticketResponseDto.getStats().getFirstRespondedAt());
+
+
+        //fixme: We need to set the first response date which probably means getting the ticket conversations
+        //fixme: and figuring it out from there
 
         return Optional.of(tacCaseResponseDto);
     }
@@ -632,12 +638,17 @@ public class FreshDeskTacCaseService implements TacCaseService {
         FreshdeskCaseResponseRecords<FreshdeskTacCaseResponseDto> freshdeskTacCaseRecords = findFreshdeskTacCaseRecords(id);
         Optional<FreshdeskCaseResponse<FreshdeskTacCaseResponseDto>> record = freshdeskTacCaseRecords.getRecords().stream().findFirst();
         FreshdeskTacCaseResponseDto freshdeskTacCaseResponseDto = record.map(FreshdeskCaseResponse::getData).orElse(null);
-        return genericModelMapper.map(freshdeskTacCaseResponseDto, TacCaseResponseDto.class);
+        TacCaseResponseDto tacCaseResponseDto = genericModelMapper.map(freshdeskTacCaseResponseDto, TacCaseResponseDto.class);
+        tacCaseResponseDto.setCaseNumber(record.stream().findFirst().get().getDisplayId()); //fixme: 'Optional. get()' without 'isPresent()' check
+        return tacCaseResponseDto;
     }
 
+    /*
+      Always including stats in response to be able to send the "firstRespondedDated" field TAC Case Response
+     */
     private FreshdeskTicketResponseDto findFreshdeskTicketById(Long id) {
         return snakeCaseRestClient.get()
-                .uri("/tickets/{id}", id)
+                .uri("/tickets/{id}?include=stats", id)
                 .retrieve()
                 .body(FreshdeskTicketResponseDto.class);
     }
