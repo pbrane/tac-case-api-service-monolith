@@ -99,12 +99,14 @@ public class TacCaseController {
 
     //RMAs
 
+    //fixme: This is a nice to have, just not part of the spec, but nice to have
+/*
     @GetMapping("/{id}/rmaCases")
     public ResponseEntity<List<RmaCaseResponseDto>> listAllRmasForTacCase(@PathVariable Long id) {
         List<RmaCaseResponseDto> rmaCases = tacCaseService.listRmaCases(id);
         return new ResponseEntity<>(rmaCases, HttpStatus.OK);
     }
-
+*/
 
     //Attachments
 
@@ -153,6 +155,7 @@ public class TacCaseController {
     }
 */
 
+/*
     @GetMapping("/{caseId}/attachments/{attachmentId}/download")
     public ResponseEntity<Resource> downloadAttachment(
             @PathVariable Long caseId,
@@ -164,6 +167,7 @@ public class TacCaseController {
                 .contentType(MediaType.parseMediaType(downloadDto.getMimeType()))
                 .body(downloadDto.getResource());
     }
+*/
 
     // Notes
 
@@ -213,6 +217,7 @@ public class TacCaseController {
     }
 */
 
+/*
     @GetMapping("/{caseId}/notes/{noteId}/download")
     public ResponseEntity<TacCaseNoteDownloadDto> downloadNote(
             @PathVariable Long caseId,
@@ -221,5 +226,6 @@ public class TacCaseController {
 
         return new ResponseEntity<>(downloadDto, HttpStatus.OK);
     }
+*/
 
 }

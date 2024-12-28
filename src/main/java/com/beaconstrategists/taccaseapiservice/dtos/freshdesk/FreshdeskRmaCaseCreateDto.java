@@ -18,6 +18,7 @@ import java.time.OffsetDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)  //fixme: check on this
 public class FreshdeskRmaCaseCreateDto extends RmaCaseCreateDto {
     private String key;
+    private Long ticket;
     private String tacCase;
 
 

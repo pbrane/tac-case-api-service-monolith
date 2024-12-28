@@ -98,6 +98,7 @@ public class RmaCaseUpdateDto extends AbstractFieldPresenceAwareDto implements S
         markFieldPresent("caseStatus");
     }
 
+/*
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime caseCreatedDate;
     @JsonSetter
@@ -113,6 +114,7 @@ public class RmaCaseUpdateDto extends AbstractFieldPresenceAwareDto implements S
         this.caseClosedDate = value;
         markFieldPresent("caseClosedDate");
     }
+*/
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime newPartShippedDate;

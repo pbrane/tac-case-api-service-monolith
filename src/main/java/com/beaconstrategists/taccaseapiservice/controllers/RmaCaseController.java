@@ -30,7 +30,6 @@ public class RmaCaseController {
         this.rmaCaseService = rmaCaseService;
     }
 
-/*
     @GetMapping(path = "")
     public ResponseEntity<List<RmaCaseResponseDto>> listAllRmaCases(
             @RequestParam(required = false)
@@ -49,18 +48,17 @@ public class RmaCaseController {
             List<CaseStatus> caseStatus,
 
             @RequestParam(required = false, defaultValue = "AND")
-            String logic
-    ) {
+            String logic) {
+
         List<RmaCaseResponseDto> rmaCases = rmaCaseService.listRmaCases(
                 caseCreateDateFrom,
                 caseCreateDateTo,
                 caseCreateDateSince,
                 caseStatus,
-                logic
-        );
+                logic);
+
         return new ResponseEntity<>(rmaCases, HttpStatus.OK);
     }
-*/
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<RmaCaseResponseDto> getRmaCase(@PathVariable Long id) {
@@ -94,11 +92,8 @@ public class RmaCaseController {
     }
 */
 
-
-
     //Attachments
 
-/*
     @PostMapping("/{id}/attachments")
     public ResponseEntity<RmaCaseAttachmentResponseDto> uploadAttachment(
             @PathVariable Long id,
@@ -138,7 +133,6 @@ public class RmaCaseController {
         RmaCaseAttachmentResponseDto attachment = rmaCaseService.getAttachment(caseId, attachmentId);
         return new ResponseEntity<>(attachment, HttpStatus.OK);
     }
-*/
 
 /*
     @DeleteMapping("/{caseId}/attachments/{attachmentId}")
@@ -168,7 +162,7 @@ public class RmaCaseController {
                 .contentType(MediaType.parseMediaType(downloadDto.getMimeType()))
                 .body(downloadDto.getResource());
     }
-
+*/
     @PostMapping("/{id}/notes")
     public ResponseEntity<RmaCaseNoteResponseDto> uploadNote(
             @PathVariable Long id,
@@ -199,7 +193,7 @@ public class RmaCaseController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-*/
+
 /*
     @DeleteMapping("/{caseId}/notes/{noteId}")
     public ResponseEntity<Void> deleteNote(

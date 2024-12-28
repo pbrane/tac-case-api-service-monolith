@@ -3,6 +3,8 @@ package com.beaconstrategists.taccaseapiservice.dtos.freshdesk;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.PriorityForTickets;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.Source;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.StatusForTickets;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Value;
 
@@ -11,12 +13,8 @@ import java.time.OffsetDateTime;
 //fixme: check this Lombok configuration
 @Value
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL) //fixme: I did this trying to fix sending null parent_id.. could probably use the field tracker
 public class FreshdeskTicketCreateDto {
-
-    /*
-    ID
-     */
-//     Long id;
 
     /*
     Name of the requester.
@@ -52,12 +50,6 @@ public class FreshdeskTicketCreateDto {
      */
      String twitterId;
 
-//    /*
-//    External ID of the requester.
-//    If no contact exists with this external ID in Freshdesk, they will be added as a new contact.
-//     */
-//     String uniqueExternalId;
-
     /*
     Subject of the ticket.
     The default Value is null.
@@ -92,19 +84,6 @@ public class FreshdeskTicketCreateDto {
      */
      Long responderId;
 
-//    /*
-//    Ticket attachments.
-//    The total size of these attachments cannot exceed 20MB.
-//     */
-//     List<Object> attachments = new ArrayList<>();
-
-//    /*
-//    Email address added in the 'cc' field of the incoming ticket email.
-//     */
-//    String ccEmails;
-
-//    List<Object> customFields = new ArrayList<>();
-
     /*
     Timestamp that denotes when the ticket is due to be resolved.
      */
@@ -127,11 +106,11 @@ public class FreshdeskTicketCreateDto {
      */
      Long groupId;
 
-//    /*
-//    ID of the parent ticket that this ticket should be linked to.
-//    When passing this field, the current ticket actioned upon will be converted to a child ticket.
-//     */
-//     Long parentId;
+    /*
+    ID of the parent ticket that this ticket should be linked to.
+    When passing this field, the current ticket actioned upon will be converted to a child ticket.
+     */
+    Long parentId;
 
     /*
     ID of the product to which the ticket is associated.

@@ -13,6 +13,7 @@ import lombok.Setter;
 public class FreshdeskRmaCaseResponseDto extends RmaCaseResponseDto {
 
     private String key;
+    private Long ticket;
     private String tacCase;
 
 }

@@ -18,14 +18,16 @@ public class FreshdeskCaseResponse<T> {
     @JsonProperty("display_id")
     private String displayId;
 
+    //fixme: figure out why these are longs
     @JsonProperty("created_time")
     private Long createdTime;
 
+    //fixme: figure out why these are longs
     @JsonProperty("updated_time")
     private Long updatedTime;
 
     @JsonProperty("version")
-    private int version;
+    private Integer version;
 
     @JsonProperty("data")
     private T data;

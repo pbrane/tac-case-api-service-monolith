@@ -33,6 +33,13 @@ public class FreshdeskRmaCaseUpdateDto extends RmaCaseUpdateDto {
         markFieldPresent("tacCase");
     }
 
+    private Long ticket;
+    @JsonSetter
+    public void setTicket(Long value) {
+        this.ticket = value;
+        markFieldPresent("ticket");
+    }
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private OffsetDateTime shippedDate;
 

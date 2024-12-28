@@ -1,7 +1,7 @@
 services:
   apisvc-prod-mono:
     container_name: apisvc-prod-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.2
+    image: pbranestrategy/tac-case-api-service-mono:0.2.3
     environment:
       - API_SVC_ENV=production
       - API_SVR_MAX_FILE_SIZE_MB=20
@@ -16,6 +16,7 @@ services:
       - FD_API_KEY=0123456789ABCDEFGHI
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
       - FD_CUSTOMER_NAME=Beacon
+      - FD_DEFAULT_RESPONDER_ID=3043029172572
       - FD_TAC_CASE_ID_PREFIX=_2-
       - FD_RMA_CASE_ID_PREFIX=_3-
     build:
@@ -33,7 +34,7 @@ services:
 
   apisvc-dev-mono:
     container_name: apisvc-dev-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.2
+    image: pbranestrategy/tac-case-api-service-mono:0.2.3
     environment:
       - API_SVC_ENV=development
       - AUTH_SVR_ENV=development
@@ -47,6 +48,7 @@ services:
       - FD_API_KEY=0123456789ABCDEFGHI
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
       - FD_CUSTOMER_NAME=Beacon
+      - FD_DEFAULT_RESPONDER_ID=3043029172572
       - FD_TAC_CASE_ID_PREFIX=_2-
       - FD_RMA_CASE_ID_PREFIX=_3-
     build:
@@ -64,7 +66,7 @@ services:
 
   apisvc-test-mono:
     container_name: apisvc-test-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.2
+    image: pbranestrategy/tac-case-api-service-mono:0.2.3
     environment:
       - API_SVC_ENV=development
       - AUTH_SVR_ENV=development
@@ -77,7 +79,8 @@ services:
       - API_SVC_MODE=Freshdesk
       - FD_API_KEY=0123456789ABCDEFGHI
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
-      - FD_CUSTOMER_NAME=Microsoft
+      - FD_CUSTOMER_NAME=Beacon
+      - FD_DEFAULT_RESPONDER_ID=3043029172572
       - FD_TAC_CASE_ID_PREFIX=_2-
       - FD_RMA_CASE_ID_PREFIX=_3-
     build:
