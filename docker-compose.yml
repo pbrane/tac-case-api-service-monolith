@@ -77,9 +77,9 @@ services:
       - ACCESS_TOKEN_EXPIRATION_MIN=5
       - SERVER_PORT=8080
       - API_SVC_MODE=Freshdesk
-      - FD_API_KEY=0123456789ABCDEFGHI
-      - FD_BASE_URI=https://domain.freshdesk.com/api/v2
-      - FD_CUSTOMER_NAME=Beacon
+      - FD_API_KEY=257SAg6X6Ls4y0B96Z4g
+      - FD_BASE_URI=https://molexhelpsandbox.freshdesk.com/api/v2
+      - FD_CUSTOMER_NAME=Microsoft
       - FD_DEFAULT_RESPONDER_ID=3043029172572
       - FD_TAC_CASE_ID_PREFIX=_2-
       - FD_RMA_CASE_ID_PREFIX=_3-
