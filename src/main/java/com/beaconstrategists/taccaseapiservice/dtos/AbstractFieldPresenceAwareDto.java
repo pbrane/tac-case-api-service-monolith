@@ -1,12 +1,33 @@
 package com.beaconstrategists.taccaseapiservice.dtos;
 
+import com.beaconstrategists.taccaseapiservice.config.api.GenericFieldPresenceSnakeCaseJsonSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractFieldPresenceAwareDto {
+@Setter
+@Getter
+@JsonSerialize(using = GenericFieldPresenceSnakeCaseJsonSerializer.class) //snake case for Freshdesk
+public abstract class AbstractFieldPresenceAwareDto implements Serializable {
+
+    @Serial
+    @JsonIgnore
+    @Schema(hidden = true)
+    private static final long serialVersionUID = 1L;
+
+    @JsonIgnore
+    @Schema(hidden = true)
+    @JsonProperty("version")
+    private final String version = "1.0.0";
+
 
     @JsonIgnore
     @Schema(hidden = true)

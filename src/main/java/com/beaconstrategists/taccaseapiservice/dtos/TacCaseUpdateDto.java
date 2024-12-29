@@ -23,19 +23,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = false)
-@JsonSerialize(using = GenericFieldPresenceSnakeCaseJsonSerializer.class) //snake case for Freshdesk
-public class TacCaseUpdateDto extends AbstractFieldPresenceAwareDto implements Serializable {
-
-    @Serial
-    @JsonIgnore
-    @Schema(hidden = true)
-    private static final long serialVersionUID = 1L;
-
-    @JsonIgnore
-    @Schema(hidden = true)
-    @JsonProperty("version")
-    private final String version = "1.0.0";
-
+public class TacCaseUpdateDto extends AbstractFieldPresenceAwareDto {
 
     @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "Intended to be an URI to the TAC Case")
     private String href;
