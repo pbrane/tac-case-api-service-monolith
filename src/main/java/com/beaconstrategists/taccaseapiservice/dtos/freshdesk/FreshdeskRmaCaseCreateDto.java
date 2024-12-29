@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.time.OffsetDateTime;
 
@@ -14,7 +15,7 @@ import java.time.OffsetDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@Builder
+@SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)  //fixme: check on this
 public class FreshdeskRmaCaseCreateDto extends RmaCaseCreateDto {
     private String key;

@@ -9,6 +9,7 @@ import org.springframework.core.io.Resource;
 import java.io.Serial;
 import java.io.Serializable;
 
+//fixme: if this is intended to be immutable, use @Value instead
 @Data
 public class RmaCaseAttachmentDownloadDto implements Serializable {
 

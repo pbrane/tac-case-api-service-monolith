@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -15,6 +17,7 @@ import java.util.Map;
 
 @Setter
 @Getter
+@SuperBuilder
 @JsonSerialize(using = GenericFieldPresenceSnakeCaseJsonSerializer.class) //snake case for Freshdesk
 public abstract class AbstractFieldPresenceAwareDto implements Serializable {
 
@@ -26,12 +29,17 @@ public abstract class AbstractFieldPresenceAwareDto implements Serializable {
     @JsonIgnore
     @Schema(hidden = true)
     @JsonProperty("version")
-    private final String version = "1.0.0";
+    private final String version;
 
 
     @JsonIgnore
     @Schema(hidden = true)
     private final Map<String, Boolean> fieldPresence = new HashMap<>();
+
+    public AbstractFieldPresenceAwareDto() {
+        this.version = "1.0.0";
+    }
+
 
     public boolean isFieldPresent(String fieldName) {
         return fieldPresence.getOrDefault(fieldName, false);

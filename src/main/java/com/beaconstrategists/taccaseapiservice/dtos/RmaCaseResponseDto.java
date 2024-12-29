@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
@@ -22,7 +23,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RmaCaseResponseDto implements Serializable {
 
@@ -36,14 +37,11 @@ public class RmaCaseResponseDto implements Serializable {
     @JsonProperty("version")
     private final String version = "1.0.0";
 
-
     @NotNull
     private Long id;
 
     @NotNull
     private Long tacCaseId;
-
-    private String href;
 
     private String caseNumber;
 

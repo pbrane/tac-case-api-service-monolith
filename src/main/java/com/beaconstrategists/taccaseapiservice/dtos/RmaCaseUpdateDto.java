@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
@@ -19,17 +20,9 @@ import java.time.OffsetDateTime;
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @JsonIgnoreProperties(ignoreUnknown = false)
 public class RmaCaseUpdateDto extends AbstractFieldPresenceAwareDto {
-
-
-    private String href;
-    @JsonSetter
-    public void setHref(String value) {
-        this.caseNumber = value;
-        markFieldPresent("href");
-    }
 
     private String caseNumber;
     @JsonSetter
@@ -86,24 +79,6 @@ public class RmaCaseUpdateDto extends AbstractFieldPresenceAwareDto {
         this.caseStatus = value;
         markFieldPresent("caseStatus");
     }
-
-/*
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private OffsetDateTime caseCreatedDate;
-    @JsonSetter
-    public void setCaseCreatedDate(OffsetDateTime value) {
-        this.caseCreatedDate = value;
-        markFieldPresent("caseCreatedDate");
-    }
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private OffsetDateTime caseClosedDate;
-    @JsonSetter
-    public void setCaseClosedDate(OffsetDateTime value) {
-        this.caseClosedDate = value;
-        markFieldPresent("caseClosedDate");
-    }
-*/
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime newPartShippedDate;

@@ -7,6 +7,7 @@ import com.beaconstrategists.taccaseapiservice.dtos.AbstractFieldPresenceAwareDt
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.OffsetDateTime;
 
@@ -14,10 +15,10 @@ import java.time.OffsetDateTime;
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @JsonIgnoreProperties(ignoreUnknown = false) //fixme: do we really want/need this here?
-//This doesn't work because the class is from a dependency project
-//@JsonSerialize(using = GenericFieldPresenceSnakeCaseJsonSerializer.class)
+//This doesn't work when separated from the dependency project because the class is from a dependency project
+//@JsonSerialize(using = GenericFieldPresenceSnakeCaseJsonSerializer.class) //fixme: fix this properly if it is a problem
 public class FreshdeskTicketUpdateDto extends AbstractFieldPresenceAwareDto {
 
     /*
