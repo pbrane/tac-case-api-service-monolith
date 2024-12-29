@@ -25,7 +25,7 @@ public class ResourceServerSecurityConfig {
 
     @Bean(name = "ProdSecurityFilterChain")
     @Order(1)
-    @ConditionalOnProperty(name = "API_SVR_ENV", havingValue = "production", matchIfMissing = false)
+    @ConditionalOnProperty(name = "API_SVC_ENV", havingValue = "production", matchIfMissing = false)
     public SecurityFilterChain prodResourceServerSecurityFilterChain(HttpSecurity http) throws Exception {
         // Apply security specifically for API endpoints
         http.securityMatcher("/api/**") // Match only Resource Server endpoints
@@ -46,7 +46,7 @@ public class ResourceServerSecurityConfig {
 
     @Bean(name = "DevSecurityFilterChain")
     @Order(2)
-    @ConditionalOnProperty(name = "API_SVR_ENV", havingValue = "development", matchIfMissing = true)
+    @ConditionalOnProperty(name = "API_SVC_ENV", havingValue = "development", matchIfMissing = true)
     public SecurityFilterChain devResourceServerSecurityFilterChain(HttpSecurity http) throws Exception {
         // Apply security specifically for API endpoints
         http.securityMatcher("/api/**") // Match only Resource Server endpoints

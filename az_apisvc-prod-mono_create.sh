@@ -13,7 +13,7 @@ az containerapp create \
     SERVER_PORT="$SERVER_PORT" \
     DB_HOST="$DB_HOST" \
     DB_PORT="$DB_PORT" \
-    API_SVR_ENV="$API_SVR_ENV" \
+    API_SVC_ENV="$API_SVC_ENV" \
     AUTH_SVR_ENV="$AUTH_SVR_ENV" \
     AUTH_SVR_REPO="$AUTH_SVR_REPO" \
     CLIENT_ID="$CLIENT_ID" \

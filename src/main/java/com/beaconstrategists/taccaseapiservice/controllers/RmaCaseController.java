@@ -26,7 +26,7 @@ public class RmaCaseController {
 
     private final RmaCaseService rmaCaseService;
 
-    public RmaCaseController(@Qualifier("JpaRmaCaseService") RmaCaseService rmaCaseService) {
+    public RmaCaseController(RmaCaseService rmaCaseService) {
         this.rmaCaseService = rmaCaseService;
     }
 
@@ -48,15 +48,15 @@ public class RmaCaseController {
             List<CaseStatus> caseStatus,
 
             @RequestParam(required = false, defaultValue = "AND")
-            String logic
-    ) {
+            String logic) {
+
         List<RmaCaseResponseDto> rmaCases = rmaCaseService.listRmaCases(
                 caseCreateDateFrom,
                 caseCreateDateTo,
                 caseCreateDateSince,
                 caseStatus,
-                logic
-        );
+                logic);
+
         return new ResponseEntity<>(rmaCases, HttpStatus.OK);
     }
 
@@ -74,19 +74,15 @@ public class RmaCaseController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<RmaCaseResponseDto> updateTacCase(
+    public ResponseEntity<RmaCaseResponseDto> updateRmaCase(
             @PathVariable Long id,
             @Valid @RequestBody RmaCaseUpdateDto updateDto) {
-
-        //fixme: make sure this isn't redundant
-        if (!rmaCaseService.exists(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
 
         RmaCaseResponseDto rmaCaseSavedDto = rmaCaseService.update(id, updateDto);
         return new ResponseEntity<>(rmaCaseSavedDto, HttpStatus.OK);
     }
 
+/*
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> deleteRmaCase(@PathVariable Long id) {
         rmaCaseService.delete(id);
@@ -94,8 +90,7 @@ public class RmaCaseController {
         headers.add("X-Message", "RMA Case ID: " + id + " deleted.");
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
-
-
+*/
 
     //Attachments
 
@@ -139,6 +134,7 @@ public class RmaCaseController {
         return new ResponseEntity<>(attachment, HttpStatus.OK);
     }
 
+/*
     @DeleteMapping("/{caseId}/attachments/{attachmentId}")
     public ResponseEntity<Void> deleteAttachment(
             @PathVariable Long caseId,
@@ -152,7 +148,9 @@ public class RmaCaseController {
         rmaCaseService.deleteAllAttachments(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+*/
 
+/*
     @GetMapping("/{caseId}/attachments/{attachmentId}/download")
     public ResponseEntity<Resource> downloadAttachment(
             @PathVariable Long caseId,
@@ -164,7 +162,7 @@ public class RmaCaseController {
                 .contentType(MediaType.parseMediaType(downloadDto.getMimeType()))
                 .body(downloadDto.getResource());
     }
-
+*/
     @PostMapping("/{id}/notes")
     public ResponseEntity<RmaCaseNoteResponseDto> uploadNote(
             @PathVariable Long id,
@@ -195,6 +193,8 @@ public class RmaCaseController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+
+/*
     @DeleteMapping("/{caseId}/notes/{noteId}")
     public ResponseEntity<Void> deleteNote(
             @PathVariable Long caseId,
@@ -208,7 +208,9 @@ public class RmaCaseController {
         rmaCaseService.deleteAllNotes(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+*/
 
+/*
     @GetMapping("/{caseId}/notes/{noteId}/download")
     public ResponseEntity<RmaCaseNoteDownloadDto> downloadNote(
             @PathVariable Long caseId,
@@ -217,5 +219,6 @@ public class RmaCaseController {
 
         return new ResponseEntity<>(downloadDto, HttpStatus.OK);
     }
+*/
 
 }

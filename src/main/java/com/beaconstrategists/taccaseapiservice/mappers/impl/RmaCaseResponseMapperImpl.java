@@ -5,6 +5,7 @@ import com.beaconstrategists.taccaseapiservice.mappers.Mapper;
 import com.beaconstrategists.taccaseapiservice.model.entities.RmaCaseAttachmentEntity;
 import com.beaconstrategists.taccaseapiservice.model.entities.RmaCaseEntity;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class RmaCaseResponseMapperImpl implements Mapper<RmaCaseEntity, RmaCaseR
 
     private final ModelMapper modelMapper;
 
-    public RmaCaseResponseMapperImpl(ModelMapper modelMapper) {
+    public RmaCaseResponseMapperImpl(@Qualifier("basicModelMapper") ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }
 

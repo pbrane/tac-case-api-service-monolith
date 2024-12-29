@@ -123,13 +123,12 @@ public class RmaCaseServiceImpl implements RmaCaseService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<RmaCaseResponseDto> listRmaCases(
-            OffsetDateTime caseCreateDateFrom,
-            OffsetDateTime caseCreateDateTo,
-            OffsetDateTime caseCreateDateSince,
-            List<CaseStatus> caseStatus,
-            String logic
-    ) {
+    public List<RmaCaseResponseDto> listRmaCases(OffsetDateTime caseCreateDateFrom,
+                                                 OffsetDateTime caseCreateDateTo,
+                                                 OffsetDateTime caseCreateDateSince,
+                                                 List<CaseStatus> caseStatus,
+                                                 String logic) {
+
         Specification<RmaCaseEntity> specification = RmaCaseSpecification.buildSpecification(
                 caseCreateDateFrom,
                 caseCreateDateTo,
