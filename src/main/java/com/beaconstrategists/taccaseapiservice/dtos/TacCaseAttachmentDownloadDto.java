@@ -6,9 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.core.io.Resource;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 @Getter
 @Setter
 @AllArgsConstructor

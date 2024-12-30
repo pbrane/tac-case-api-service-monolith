@@ -3,7 +3,6 @@ package com.beaconstrategists.taccaseapiservice.dtos.freshdesk;
 import com.beaconstrategists.taccaseapiservice.dtos.TacCaseUpdateDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,8 +10,8 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+//@AllArgsConstructor
 @SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)  //fixme: check on this
 public class FreshdeskTacCaseUpdateDto extends TacCaseUpdateDto {

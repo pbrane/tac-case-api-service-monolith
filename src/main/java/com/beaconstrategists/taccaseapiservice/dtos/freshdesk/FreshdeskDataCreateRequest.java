@@ -1,8 +1,12 @@
 package com.beaconstrategists.taccaseapiservice.dtos.freshdesk;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data //fixme: check this Lombok configuration
+@Getter
+@Setter
+@NoArgsConstructor
 public class FreshdeskDataCreateRequest<T> {
 
     private T data;

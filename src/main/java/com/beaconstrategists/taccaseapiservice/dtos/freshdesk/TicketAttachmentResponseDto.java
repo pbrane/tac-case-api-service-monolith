@@ -1,20 +1,20 @@
 package com.beaconstrategists.taccaseapiservice.dtos.freshdesk;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
 import java.time.OffsetDateTime;
 
-//fixme: check this Lombok configuration
-//fixme: should this be serializable
-@Value
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class TicketAttachmentResponseDto {
-     Long id;
-     String contentType;
-     Long size;
-     String name;
-     String attachmentUrl;
-     OffsetDateTime createdAt;
-     OffsetDateTime updatedAt;
+     private Long id;
+     private String contentType;
+     private Long size;
+     private String name;
+     private String attachmentUrl;
+     private OffsetDateTime createdAt;
+     private OffsetDateTime updatedAt;
 }

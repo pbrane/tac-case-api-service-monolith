@@ -1,20 +1,22 @@
 package com.beaconstrategists.taccaseapiservice.dtos.freshdesk;
 
+import com.beaconstrategists.taccaseapiservice.dtos.AbstractFieldPresenceAwareDto;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.PriorityForTickets;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.Source;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.StatusForTickets;
-import com.beaconstrategists.taccaseapiservice.dtos.AbstractFieldPresenceAwareDto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.OffsetDateTime;
 
 @Getter
 @EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
 @NoArgsConstructor
+//@AllArgsConstructor
 @SuperBuilder
 @JsonIgnoreProperties(ignoreUnknown = false) //fixme: do we really want/need this here?
 //This doesn't work when separated from the dependency project because the class is from a dependency project

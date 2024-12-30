@@ -9,8 +9,8 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+//@AllArgsConstructor
 @SuperBuilder
 public class FreshdeskRmaCaseResponseDto extends RmaCaseResponseDto {
 

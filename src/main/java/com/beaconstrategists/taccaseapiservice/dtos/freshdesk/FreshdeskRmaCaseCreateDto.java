@@ -13,8 +13,8 @@ import java.time.OffsetDateTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+//@AllArgsConstructor
 @SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)  //fixme: check on this
 public class FreshdeskRmaCaseCreateDto extends RmaCaseCreateDto {

@@ -1,16 +1,15 @@
 package com.beaconstrategists.taccaseapiservice.dtos.freshdesk;
 
 import com.beaconstrategists.taccaseapiservice.dtos.TacCaseResponseDto;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import java.time.LocalDate;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+//@AllArgsConstructor
 @SuperBuilder
 public class FreshdeskTacCaseResponseDto extends TacCaseResponseDto {
 

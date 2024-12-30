@@ -10,8 +10,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class DeliveryDetailsDto {
 
     @JsonProperty("failed_emails")

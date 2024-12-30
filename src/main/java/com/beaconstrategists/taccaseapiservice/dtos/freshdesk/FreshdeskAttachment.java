@@ -1,14 +1,16 @@
 package com.beaconstrategists.taccaseapiservice.dtos.freshdesk;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.OffsetDateTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@AllArgsConstructor
 public class FreshdeskAttachment {
         private Long id;
         private String name;

@@ -1,23 +1,19 @@
 package com.beaconstrategists.taccaseapiservice.dtos;
 
-import com.beaconstrategists.taccaseapiservice.config.api.GenericFieldPresenceSnakeCaseJsonSerializer;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 
 @Getter
-@EqualsAndHashCode(callSuper = false)
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder

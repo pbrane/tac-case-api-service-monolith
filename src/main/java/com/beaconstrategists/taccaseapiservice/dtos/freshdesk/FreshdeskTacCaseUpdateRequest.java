@@ -1,14 +1,12 @@
 package com.beaconstrategists.taccaseapiservice.dtos.freshdesk;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter //fixme: check this Lombok configuration
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class FreshdeskTacCaseUpdateRequest {
 

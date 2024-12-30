@@ -3,15 +3,16 @@ package com.beaconstrategists.taccaseapiservice.dtos.freshdesk;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.PriorityForTickets;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.Source;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.StatusForTickets;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
 import java.time.OffsetDateTime;
 
 //fixme: check this Lombok configuration
-@Value
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL) //fixme: I did this trying to fix sending null parent_id.. could probably use the field tracker
 public class FreshdeskTicketCreateDto {
@@ -19,109 +20,109 @@ public class FreshdeskTicketCreateDto {
     /*
     Name of the requester.
      */
-     String name;
+    private String name;
 
     /*
     User ID of the requester.
     For existing contacts, the requester_id can be passed instead of the requester's email.
      */
-     Long requesterId;
+     private Long requesterId;
 
     /*
     email address of requester
      */
-     String email;
+    private String email;
 
     /*
     Facebook ID of the requester. A contact should exist with this facebook_id in Freshdesk.
      */
-     String facebookId;
+    private String facebookId;
 
     /*
     Phone number of the requester.
     If no contact exists with this phone number in Freshdesk, it will be added as a new contact.
     If the phone number is set and the email address is not, then the name attribute is mandatory.
      */
-     String phone;
+    private String phone;
 
     /*
     Twitter handle of the requester.
     If no contact exists with this handle in Freshdesk, it will be added as a new contact.
      */
-     String twitterId;
+    private String twitterId;
 
     /*
     Subject of the ticket.
     The default Value is null.
      */
-     String subject;
+    private String subject;
 
     /*
     Helps categorize the ticket according to the different kinds of issues your support team deals with.
     The default Value is null.
      */
-     String type;
+    private String type;
 
     /*
     Status of the ticket.
     The default Value is 2.
      */
-     StatusForTickets status;
+    private StatusForTickets status;
 
     /*
     Priority of the ticket.
     The default value is 1.
      */
-     PriorityForTickets priority;
+    private PriorityForTickets priority;
 
     /*
     HTML content of the ticket.
      */
-     String description;
+    private String description;
 
     /*
     ID of the agent to whom the ticket has been assigned.
      */
-     Long responderId;
+    private Long responderId;
 
     /*
     Timestamp that denotes when the ticket is due to be resolved.
      */
-     OffsetDateTime dueBy;
+    private OffsetDateTime dueBy;
 
     /*
     ID of email config which is used for this ticket. (i.e., support@yourcompany.com/sales@yourcompany.com)
     If product_id is given and email_config_id is not given, product's primary email_config_id will be set.
      */
-     Long emailConfigId;
+    private Long emailConfigId;
 
     /*
     Timestamp that denotes when the first response is due.
      */
-     OffsetDateTime frDueBy;
+    private OffsetDateTime frDueBy;
 
     /*
     ID of the group to which the ticket has been assigned.
     The default value is the ID of the group that is associated with the given email_config_id.
      */
-     Long groupId;
+    private Long groupId;
 
     /*
     ID of the parent ticket that this ticket should be linked to.
     When passing this field, the current ticket actioned upon will be converted to a child ticket.
      */
-    Long parentId;
+    private Long parentId;
 
     /*
     ID of the product to which the ticket is associated.
     It will be ignored if the email_config_id attribute is set in the request.
      */
-     Long ProductId;
+    private Long ProductId;
 
     /*
     The channel through which the ticket was created. The default value is 2.
      */
-     Source source;
+    private Source source;
 
 //    /*
 //    Tags that have been associated with the ticket
@@ -132,7 +133,7 @@ public class FreshdeskTicketCreateDto {
     Company ID of the requester.
     This attribute can only be set if the Multiple Companies feature is enabled (Estate plan and above)
      */
-     Long companyId;
+    private Long companyId;
 
 //    /*
 //    ID of the internal agent which the ticket should be assigned with.
@@ -142,7 +143,7 @@ public class FreshdeskTicketCreateDto {
 //    /*
 //    ID of the internal group to which the ticket should be assigned with.
 //     */
-//     Long internalGroupId;
+//    private Long internalGroupId;
 
     /*
     This attribute for tickets can only be set if Custom Objects is enabled
@@ -153,6 +154,6 @@ public class FreshdeskTicketCreateDto {
 
 //    The default value is display_id.
 //     */
-//     String lookupParameter;
+//    private String lookupParameter;
 
 }
