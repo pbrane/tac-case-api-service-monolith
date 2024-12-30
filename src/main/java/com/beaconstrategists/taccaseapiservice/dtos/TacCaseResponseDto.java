@@ -38,8 +38,6 @@ public class TacCaseResponseDto implements Serializable {
     @NotNull
     private Long id;
 
-    private String href;
-
     private String caseNumber;
 
     private CaseStatus caseStatus;
