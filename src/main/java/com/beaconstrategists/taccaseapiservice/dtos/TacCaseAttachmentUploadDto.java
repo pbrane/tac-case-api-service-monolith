@@ -11,12 +11,14 @@ import java.io.Serializable;
 
 //fixme: should be immutable
 @Data
-public class TacCaseAttachmentUploadDto implements Serializable {
+public class TacCaseAttachmentUploadDto {
 
+/*
     @Serial
     @JsonIgnore
     @Schema(hidden = true)
     private static final long serialVersionUID = 1L;
+*/
 
     @JsonIgnore
     @Schema(hidden = true)

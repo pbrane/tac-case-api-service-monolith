@@ -11,12 +11,14 @@ import java.io.Serializable;
 
 //fixme: this Lombok configuration needs to be addressed
 @Data
-public class RmaCaseAttachmentUploadDto implements Serializable {
+public class RmaCaseAttachmentUploadDto {
 
+/*
     @Serial
     @JsonIgnore
     @Schema(hidden = true)
     private static final long serialVersionUID = 1L;
+*/
 
     @JsonIgnore
     @Schema(hidden = true)

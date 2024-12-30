@@ -17,12 +17,14 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RmaCaseNoteResponseDto implements Serializable {
+public class RmaCaseNoteResponseDto {
 
+/*
     @Serial
     @JsonIgnore
     @Schema(hidden = true)
     private static final long serialVersionUID = 1L;
+*/
 
     @JsonIgnore
     @Schema(hidden = true)

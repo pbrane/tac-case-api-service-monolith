@@ -16,12 +16,14 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RmaCaseNoteUploadDto implements Serializable {
+public class RmaCaseNoteUploadDto {
 
+/*
     @Serial
     @JsonIgnore
     @Schema(hidden = true)
     private static final long serialVersionUID = 1L;
+*/
 
     @JsonIgnore
     @Schema(hidden = true)

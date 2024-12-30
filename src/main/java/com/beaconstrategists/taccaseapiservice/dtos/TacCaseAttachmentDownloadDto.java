@@ -14,12 +14,14 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TacCaseAttachmentDownloadDto implements Serializable {
+public class TacCaseAttachmentDownloadDto {
 
+/*
     @Serial
     @JsonIgnore
     @Schema(hidden = true)
     private static final long serialVersionUID = 1L;
+*/
 
     @JsonIgnore
     @Schema(hidden = true)

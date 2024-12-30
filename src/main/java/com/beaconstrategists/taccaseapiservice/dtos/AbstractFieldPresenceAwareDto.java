@@ -19,12 +19,14 @@ import java.util.Map;
 @Getter
 @SuperBuilder
 @JsonSerialize(using = GenericFieldPresenceSnakeCaseJsonSerializer.class) //snake case for Freshdesk
-public abstract class AbstractFieldPresenceAwareDto implements Serializable {
+public abstract class AbstractFieldPresenceAwareDto {
 
+/*
     @Serial
     @JsonIgnore
     @Schema(hidden = true)
     private static final long serialVersionUID = 1L;
+*/
 
     @JsonIgnore
     @Schema(hidden = true)

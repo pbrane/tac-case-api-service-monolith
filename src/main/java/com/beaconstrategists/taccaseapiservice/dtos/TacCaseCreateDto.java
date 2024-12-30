@@ -22,12 +22,14 @@ import java.io.Serializable;
 @NoArgsConstructor
 @SuperBuilder
 @JsonIgnoreProperties(ignoreUnknown = false)
-public class TacCaseCreateDto implements Serializable {
+public class TacCaseCreateDto {
 
+/*
     @Serial
     @JsonIgnore
     @Schema(hidden = true)
     private static final long serialVersionUID = 1L;
+*/
 
     @JsonIgnore
     @Schema(hidden = true)

@@ -22,12 +22,14 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @SuperBuilder
 @JsonIgnoreProperties(ignoreUnknown = false)
-public class RmaCaseCreateDto implements Serializable {
+public class RmaCaseCreateDto {
 
+/*
     @Serial
     @JsonIgnore
     @Schema(hidden = true)
     private static final long serialVersionUID = 1L;
+*/
 
     @JsonIgnore
     @Schema(hidden = true)

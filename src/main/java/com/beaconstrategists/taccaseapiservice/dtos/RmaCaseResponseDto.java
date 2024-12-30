@@ -25,12 +25,14 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RmaCaseResponseDto implements Serializable {
+public class RmaCaseResponseDto {
 
+/*
     @Serial
     @JsonIgnore
     @Schema(hidden = true)
     private static final long serialVersionUID = 1L;
+*/
 
     @JsonIgnore
     @Schema(hidden = true)

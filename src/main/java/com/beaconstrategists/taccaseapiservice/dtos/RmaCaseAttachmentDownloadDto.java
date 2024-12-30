@@ -11,12 +11,14 @@ import java.io.Serializable;
 
 //fixme: if this is intended to be immutable, use @Value instead
 @Data
-public class RmaCaseAttachmentDownloadDto implements Serializable {
+public class RmaCaseAttachmentDownloadDto {
 
+/*
     @Serial
     @JsonIgnore
     @Schema(hidden = true)
     private static final long serialVersionUID = 1L;
+*/
 
     @JsonIgnore
     @Schema(hidden = true)

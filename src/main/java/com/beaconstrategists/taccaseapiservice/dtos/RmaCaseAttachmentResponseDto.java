@@ -15,12 +15,14 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode
-public class RmaCaseAttachmentResponseDto implements Serializable {
+public class RmaCaseAttachmentResponseDto {
 
+/*
     @Serial
     @JsonIgnore
     @Schema(hidden = true)
     private static final long serialVersionUID = 1L;
+*/
 
     @JsonIgnore
     @Schema(hidden = true)

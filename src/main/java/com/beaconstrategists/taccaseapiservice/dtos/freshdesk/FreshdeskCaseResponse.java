@@ -1,13 +1,14 @@
 package com.beaconstrategists.taccaseapiservice.dtos.freshdesk;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data //fixme: check this lombok configuration
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FreshdeskCaseResponse<T> {
 
     public FreshdeskCaseResponse(T data) {
