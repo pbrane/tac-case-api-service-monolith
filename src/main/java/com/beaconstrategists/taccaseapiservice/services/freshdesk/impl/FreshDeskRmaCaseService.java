@@ -35,6 +35,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service("FreshdeskRmaCaseService")
 public class FreshDeskRmaCaseService implements RmaCaseService {
@@ -716,6 +718,10 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         if (rmaTicketId != null) {
             rmaCaseResponseDto.setId(rmaTicketId);
             FreshdeskTicketResponseDto freshdeskTicketResponseDto = findFreshdeskTicketById(rmaTicketId);
+            List<Long> associatedTicketsList = freshdeskTicketResponseDto.getAssociatedTicketsList();
+            if (associatedTicketsList != null && associatedTicketsList.size() == 1) {
+                rmaCaseResponseDto.setTacCaseId(associatedTicketsList.getFirst());
+            }
             rmaCaseResponseDto.setCaseStatus(CaseStatus.valueOf(freshdeskTicketResponseDto.getStatusForTickets().name()));
             rmaCaseResponseDto.setCaseClosedDate(freshdeskTicketResponseDto.getStats().getClosedAt());
             rmaCaseResponseDto.setCaseCreatedDate(freshdeskTicketResponseDto.getCreatedAt());
@@ -723,5 +729,15 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
 
         return rmaCaseResponseDto;
     }
+
+    private static Long extractRmaTicketNumberFromKey(String input) {
+        Pattern pattern = Pattern.compile("RMA:(\\d+)");
+        Matcher matcher = pattern.matcher(input);
+        if (matcher.find()) {
+            return Long.parseLong(matcher.group(1));
+        }
+        return null; // Return null if "RMA:" is not found
+    }
+
 
 }

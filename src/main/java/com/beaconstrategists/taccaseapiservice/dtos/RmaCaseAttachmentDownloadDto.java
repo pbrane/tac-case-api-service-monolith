@@ -6,16 +6,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.core.io.Resource;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 @Data
-public class RmaCaseAttachmentDownloadDto implements Serializable {
+public class RmaCaseAttachmentDownloadDto {
 
+/*
     @Serial
     @JsonIgnore
     @Schema(hidden = true)
     private static final long serialVersionUID = 1L;
+*/
 
     @JsonIgnore
     @Schema(hidden = true)

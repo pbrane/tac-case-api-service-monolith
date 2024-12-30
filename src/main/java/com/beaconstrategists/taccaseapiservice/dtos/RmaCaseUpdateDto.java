@@ -1,46 +1,24 @@
 package com.beaconstrategists.taccaseapiservice.dtos;
 
-import com.beaconstrategists.taccaseapiservice.config.api.GenericFieldPresenceSnakeCaseJsonSerializer;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 
 @Getter
-@EqualsAndHashCode(callSuper = false)
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @JsonIgnoreProperties(ignoreUnknown = false)
-@JsonSerialize(using = GenericFieldPresenceSnakeCaseJsonSerializer.class) //snake case for freshdesk
-public class RmaCaseUpdateDto extends AbstractFieldPresenceAwareDto implements Serializable {
-
-    @Serial
-    @JsonIgnore
-    @Schema(hidden = true)
-    private static final long serialVersionUID = 1L;
-
-    @JsonIgnore
-    @Schema(hidden = true)
-    @JsonProperty("version")
-    private final String version = "1.0.0";
-
-
-    private String href;
-    @JsonSetter
-    public void setHref(String value) {
-        this.caseNumber = value;
-        markFieldPresent("href");
-    }
+public class RmaCaseUpdateDto extends AbstractFieldPresenceAwareDto {
 
     private String caseNumber;
     @JsonSetter
@@ -97,24 +75,6 @@ public class RmaCaseUpdateDto extends AbstractFieldPresenceAwareDto implements S
         this.caseStatus = value;
         markFieldPresent("caseStatus");
     }
-
-/*
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private OffsetDateTime caseCreatedDate;
-    @JsonSetter
-    public void setCaseCreatedDate(OffsetDateTime value) {
-        this.caseCreatedDate = value;
-        markFieldPresent("caseCreatedDate");
-    }
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private OffsetDateTime caseClosedDate;
-    @JsonSetter
-    public void setCaseClosedDate(OffsetDateTime value) {
-        this.caseClosedDate = value;
-        markFieldPresent("caseClosedDate");
-    }
-*/
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime newPartShippedDate;

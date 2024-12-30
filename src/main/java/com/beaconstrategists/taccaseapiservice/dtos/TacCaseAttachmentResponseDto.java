@@ -6,21 +6,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@EqualsAndHashCode() //fixme: explore if this is needed
-public class TacCaseAttachmentResponseDto implements Serializable {
+public class TacCaseAttachmentResponseDto {
 
+/*
     @Serial
     @JsonIgnore
     @Schema(hidden = true)
     private static final long serialVersionUID = 1L;
+*/
 
     @JsonIgnore
     @Schema(hidden = true)

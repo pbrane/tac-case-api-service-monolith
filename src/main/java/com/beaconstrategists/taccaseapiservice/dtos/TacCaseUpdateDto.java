@@ -1,41 +1,27 @@
 package com.beaconstrategists.taccaseapiservice.dtos;
 
-import com.beaconstrategists.taccaseapiservice.config.api.GenericFieldPresenceSnakeCaseJsonSerializer;
 import com.beaconstrategists.taccaseapiservice.model.CasePriorityEnum;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 
 @Getter
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @JsonIgnoreProperties(ignoreUnknown = false)
-@JsonSerialize(using = GenericFieldPresenceSnakeCaseJsonSerializer.class) //snake case for Freshdesk
-public class TacCaseUpdateDto extends AbstractFieldPresenceAwareDto implements Serializable {
-
-    @Serial
-    @JsonIgnore
-    @Schema(hidden = true)
-    private static final long serialVersionUID = 1L;
-
-    @JsonIgnore
-    @Schema(hidden = true)
-    @JsonProperty("version")
-    private final String version = "1.0.0";
-
+public class TacCaseUpdateDto extends AbstractFieldPresenceAwareDto {
 
     @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "Intended to be an URI to the TAC Case")
     private String href;
