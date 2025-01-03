@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RmaCaseServiceConfig {
 
-    @Value("${API_SVC_MODE:Database}") // Default to JPA if not specified
+    @Value("${API_SVC_MODE:Database}")
     private String apiSvcMode;
 
     @Bean

@@ -50,6 +50,12 @@ public class RmaCaseController {
             @RequestParam(required = false, defaultValue = "AND")
             String logic) {
 
+        if (caseCreateDateFrom != null && caseCreateDateTo != null) {
+            if (caseCreateDateFrom.isAfter(caseCreateDateTo)) {
+                throw new IllegalArgumentException("The 'caseCreateDateFrom' parameter cannot be after 'caseCreateDateTo'.");
+            }
+        }
+
         List<RmaCaseResponseDto> rmaCases = rmaCaseService.listRmaCases(
                 caseCreateDateFrom,
                 caseCreateDateTo,

@@ -46,4 +46,4 @@ spring:
 logging:
   level:
     org:
-      springframework: debug
+      springframework: info

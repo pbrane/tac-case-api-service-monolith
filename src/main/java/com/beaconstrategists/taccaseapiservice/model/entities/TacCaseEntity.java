@@ -26,9 +26,10 @@ public class TacCaseEntity {
   @EqualsAndHashCode.Include
   private Long id;
 
+  //fixme: this should be deleted
   private String href;
 
-  private String caseNumber; //fixme: we should probably get rid of this
+  private String caseNumber;
 
   @Enumerated(EnumType.STRING)
   private CaseStatus caseStatus;
@@ -38,9 +39,9 @@ public class TacCaseEntity {
   @Column(nullable = false, length = 4096)
   private String subject;
 
-  private Integer relatedRmaCount;  //fixme this needs implementation
+  private Integer relatedRmaCount;
 
-  private Integer relatedDispatchCount; //fixme this needs implementation
+  private Integer relatedDispatchCount;
 
   @Column(nullable = false, length = 65535)
   private String problemDescription;

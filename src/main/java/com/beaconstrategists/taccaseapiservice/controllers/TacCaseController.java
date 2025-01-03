@@ -4,17 +4,14 @@ import com.beaconstrategists.taccaseapiservice.dtos.*;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.beaconstrategists.taccaseapiservice.services.TacCaseService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,8 +43,14 @@ public class TacCaseController {
             List<CaseStatus> caseStatus,
 
             @RequestParam(required = false, defaultValue = "AND")
-            String logic
-    ) {
+            String logic) {
+
+        if (caseCreateDateFrom != null && caseCreateDateTo != null) {
+            if (caseCreateDateFrom.isAfter(caseCreateDateTo)) {
+                throw new IllegalArgumentException("The 'caseCreateDateFrom' parameter cannot be after 'caseCreateDateTo'.");
+            }
+        }
+
         List<TacCaseResponseDto> tacCases = tacCaseService.listTacCases(
                 caseCreateDateFrom,
                 caseCreateDateTo,

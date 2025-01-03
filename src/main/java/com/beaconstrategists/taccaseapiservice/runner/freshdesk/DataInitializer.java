@@ -17,6 +17,9 @@ public class DataInitializer {
     @Value("${FD_CUSTOMER_NAME:Beacon}")
     private String requiredCompany;
 
+    @Value("${API_SVC_MODE:Database}")
+    private String apiSvcMode;
+
     public DataInitializer(SchemaService schemaService, CompanyService companyService) {
         this.schemaService = schemaService;
         this.companyService = companyService;
@@ -24,15 +27,27 @@ public class DataInitializer {
 
     @Bean
     public ApplicationRunner initializeData() {
-        return args -> {
-            // Initialize Schemas
-            schemaService.initializeSchemas();
-            validateSchemas();
 
-            // Initialize Companies
-            companyService.initializeCompanies();
-            validateCompany();
-        };
+        System.out.println("\n\tInitializing data...");
+        System.out.println("\tAPI Mode: " + apiSvcMode);
+
+        if (apiSvcMode.equals("Freshdesk")) {
+            System.out.println("\tCompany Name: " + requiredCompany);
+            System.out.println("\n");
+            return args -> {
+                // Initialize Schemas
+                schemaService.initializeSchemas();
+                validateSchemas();
+
+                // Initialize Companies
+                companyService.initializeCompanies();
+                validateCompany();
+            };
+        } else {
+            System.out.println("\n");
+            return args -> {};
+        }
+
     }
 
     private void validateSchemas() {

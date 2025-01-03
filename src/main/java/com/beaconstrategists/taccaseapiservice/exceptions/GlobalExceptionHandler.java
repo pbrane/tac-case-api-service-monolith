@@ -37,6 +37,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return body;
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex, WebRequest request) {
+        Map<String, Object> body = createErrorBody("Bad Request", ex.getMessage(), HttpStatus.BAD_REQUEST, request);
+        return ResponseEntity.badRequest().body(body);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGenericException(Exception ex, WebRequest request) {
         logger.error("Exception occurred: {}", ex.getMessage(), ex);
