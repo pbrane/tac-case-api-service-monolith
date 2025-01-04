@@ -16,8 +16,6 @@ public class FreshdeskRmaCaseUpdateRequest {
 
     private Integer version;
 
-    //fixme: do we really need this annotation?
-    @JsonProperty("data")
     private FreshdeskRmaCaseUpdateDto data;
 
     public FreshdeskRmaCaseUpdateRequest(FreshdeskRmaCaseUpdateDto data) {

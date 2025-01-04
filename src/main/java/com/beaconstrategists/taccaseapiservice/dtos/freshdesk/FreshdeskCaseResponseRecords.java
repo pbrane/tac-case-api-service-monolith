@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)  //fixme: check this what we want/need here
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FreshdeskCaseResponseRecords<T> {
 
     private List<FreshdeskCaseResponse<T>> records;
