@@ -4,7 +4,8 @@ services:
     image: pbranestrategy/tac-case-api-service-mono:0.2.6
     environment:
       - API_SVC_ENV=production
-      - API_SVR_MAX_FILE_SIZE_MB=20
+      - API_SVC_MAX_FILE_SIZE_MB=20
+      - API_SVC_MODE=Freshdesk
       - AUTH_SVR_ENV=production
       - AUTH_SVR_REPO=inMemory
       - CLIENT_ID=client-id
@@ -12,7 +13,6 @@ services:
       - CLIENT_NAME=client-name
       - ACCESS_TOKEN_EXPIRATION_MIN=5
       - SERVER_PORT=8080
-      - API_SVC_MODE=Freshdesk
       - FD_API_KEY=0123456789ABCDEFGHI
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
       - FD_CUSTOMER_NAME=Beacon
@@ -37,6 +37,8 @@ services:
     image: pbranestrategy/tac-case-api-service-mono:0.2.6
     environment:
       - API_SVC_ENV=development
+      - API_SVC_MAX_FILE_SIZE_MB=20
+      - API_SVC_MODE=Database
       - AUTH_SVR_ENV=development
       - AUTH_SVR_REPO=inMemory
       - CLIENT_ID=client-id
@@ -44,7 +46,6 @@ services:
       - CLIENT_NAME=client-name
       - ACCESS_TOKEN_EXPIRATION_MIN=5
       - SERVER_PORT=8080
-      - API_SVC_MODE=Database
       - FD_API_KEY=0123456789ABCDEFGHI
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
       - FD_CUSTOMER_NAME=Beacon
@@ -69,6 +70,8 @@ services:
     image: pbranestrategy/tac-case-api-service-mono:0.2.6
     environment:
       - API_SVC_ENV=development
+      - API_SVC_MAX_FILE_SIZE_MB=20
+      - API_SVC_MODE=Freshdesk
       - AUTH_SVR_ENV=development
       - AUTH_SVR_REPO=inMemory
       - CLIENT_ID=client-id
@@ -76,7 +79,6 @@ services:
       - CLIENT_NAME=client-name
       - ACCESS_TOKEN_EXPIRATION_MIN=5
       - SERVER_PORT=8080
-      - API_SVC_MODE=Freshdesk
       - FD_API_KEY=0123456789ABCDEFGHI
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
       - FD_CUSTOMER_NAME=Beacon
@@ -98,6 +100,7 @@ services:
 
   client-prod:
     container_name: client-prod-mono
+    image: pbranestrategy/tac-case-api-oauth2-sample-client:0.1.7
     environment:
       - TAC_API_HOST=apisvc-prod-mono
       - TAC_API_HOST_PORT=8080
@@ -115,7 +118,6 @@ services:
       - CLIENT_SCOPE=read.cases,write.cases
       - CLIENT_CONN_TIMEOUT=2000
       - CLIENT_RESP_TIMEOUT=3000
-    image: pbranestrategy/tac-case-api-oauth2-sample-client:0.1.7
     tty: true
     stdin_open: true
     networks:
