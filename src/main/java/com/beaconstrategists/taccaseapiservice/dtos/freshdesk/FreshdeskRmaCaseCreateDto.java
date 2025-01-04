@@ -16,7 +16,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 //@AllArgsConstructor
 @SuperBuilder
-@JsonInclude(JsonInclude.Include.NON_NULL)  //fixme: check on this
+//@JsonInclude(JsonInclude.Include.NON_NULL)  //fixme: check on this
 public class FreshdeskRmaCaseCreateDto extends RmaCaseCreateDto {
     private String key;
     private Long ticket;

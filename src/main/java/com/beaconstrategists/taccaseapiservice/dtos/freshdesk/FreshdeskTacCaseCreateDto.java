@@ -12,7 +12,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 //@AllArgsConstructor
 @SuperBuilder
-@JsonInclude(JsonInclude.Include.NON_NULL)  //fixme: check on this
 public class FreshdeskTacCaseCreateDto extends TacCaseCreateDto {
     private String key;
     private Long ticket;
