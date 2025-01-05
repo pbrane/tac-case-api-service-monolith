@@ -41,9 +41,13 @@ services:
     environment:
       - API_SVC_ENV=secured
       - API_SVC_MODE=freshdesk
+      - CLIENT_ID=client-id
+      - CLIENT_SECRET=client-secret
+      - CLIENT_NAME=Beacon
       - FD_API_KEY=0123456789ABCDEFGHI
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
       - FD_CUSTOMER_NAME=Beacon
+      - FD_DEFAULT_RESPONDER_ID=3043029172572
     build:
       context: .
       dockerfile: Dockerfile
