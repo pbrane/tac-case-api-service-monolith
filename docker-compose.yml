@@ -1,6 +1,4 @@
 services:
-  # The following is only for documenting all the possible environment variables
-  # Skip to the prod, dev, test services for creating containers
   apisvc-documentation-mono:
     container_name: apisvc-doc-mono
     image: pbranestrategy/tac-case-api-service-mono:0.2.6
@@ -37,7 +35,6 @@ services:
     profiles:
       - documentation
 
-
   apisvc-prod-mono:
     container_name: apisvc-prod-mono
     image: pbranestrategy/tac-case-api-service-mono:0.2.6
@@ -46,8 +43,6 @@ services:
       - API_SVC_MODE=freshdesk
       - FD_API_KEY=0123456789ABCDEFGHI
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
-      - FD_CUSTOMER_NAME=Beacon
-      - FD_DEFAULT_RESPONDER_ID=3043029172572
     build:
       context: .
       dockerfile: Dockerfile
@@ -59,7 +54,7 @@ services:
       - backend
     #    restart: unless-stopped
     profiles:
-      - production
+      - development
 
   apisvc-dev-mono:
     container_name: apisvc-dev-mono
@@ -69,8 +64,6 @@ services:
       - API_SVC_MODE=database
       - FD_API_KEY=0123456789ABCDEFGHI
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
-      - FD_CUSTOMER_NAME=Beacon
-      - FD_DEFAULT_RESPONDER_ID=3043029172572
     build:
       context: .
       dockerfile: Dockerfile
@@ -89,11 +82,9 @@ services:
     image: pbranestrategy/tac-case-api-service-mono:0.2.6
     environment:
       - API_SVC_ENV=unsecured
-      - API_SVC_MODE=database
+      - API_SVC_MODE=freshdesk
       - FD_API_KEY=0123456789ABCDEFGHI
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
-      - FD_CUSTOMER_NAME=Beacon
-      - FD_DEFAULT_RESPONDER_ID=3043029172572
     build:
       context: .
       dockerfile: Dockerfile
