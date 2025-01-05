@@ -73,7 +73,8 @@ public class FreshDeskTacCaseService implements TacCaseService {
     public List<TacCaseResponseDto> listTacCases(OffsetDateTime caseCreateDateFrom,
                                                  OffsetDateTime caseCreateDateTo,
                                                  OffsetDateTime caseCreateDateSince,
-                                                 List<CaseStatus> caseStatus, String logic) {
+                                                 List<CaseStatus> caseStatus,
+                                                 String logic) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
@@ -87,13 +88,9 @@ public class FreshDeskTacCaseService implements TacCaseService {
             uriComponentsBuilder.queryParam("created_time[gt]", caseCreateDateSince.format(formatter));
         }
 
-        //fixme: to get this to work, we will have to query tickets then fetch the matching TAC Cases
-        if (caseStatus != null && !caseStatus.isEmpty()) {
-            for (CaseStatus status : caseStatus) {
-                uriComponentsBuilder.queryParam("status", status.getValue());
-            }
-        }
-
+        /*
+          It only makes sense to support AND logic in this query
+         */
         RestClient restClient = snakeCaseRestClient.mutate()
                 .baseUrl(restClientConfig.getFreshdeskBaseUri().endsWith("/")
                         ? restClientConfig.getFreshdeskBaseUri()
@@ -106,16 +103,22 @@ public class FreshDeskTacCaseService implements TacCaseService {
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("custom_objects/schemas/" + schemaId + "/records") // No leading '/'
-                        .query(uriComponentsBuilder.build().getQuery())
+                        .query(Objects.requireNonNull(uriComponentsBuilder.build().getQuery()))
                         .build())
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {});
         assert responseRecords != null;
 
         List<FreshdeskCaseResponse<FreshdeskTacCaseResponseDto>> freshdeskCaseResponses = responseRecords.getRecords().stream().toList();
-        List<TacCaseResponseDto> tacCaseResponseDtos = freshdeskCaseResponses.stream()
+        List<TacCaseResponseDto> tacCaseResponseDtos = new java.util.ArrayList<>(freshdeskCaseResponses.stream()
                 .map(this::mapToTacCaseResponseDto)
-                .toList();
+                .toList());
+
+        //fixme: can probably just get rid of this logic check and always assume "AND"
+        //fixme: fix this in the controller
+        if (caseStatus != null && !caseStatus.isEmpty() && "and".equalsIgnoreCase(logic)) {
+            tacCaseResponseDtos.removeIf(tacCaseResponseDto -> !caseStatus.contains(tacCaseResponseDto.getCaseStatus()));
+        }
 
         // Return the list of records
         return tacCaseResponseDtos;
