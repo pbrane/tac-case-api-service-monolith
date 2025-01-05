@@ -43,6 +43,7 @@ services:
       - API_SVC_MODE=freshdesk
       - FD_API_KEY=0123456789ABCDEFGHI
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
+      - FD_CUSTOMER_NAME=Beacon
     build:
       context: .
       dockerfile: Dockerfile
@@ -64,6 +65,7 @@ services:
       - API_SVC_MODE=database
       - FD_API_KEY=0123456789ABCDEFGHI
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
+      - FD_CUSTOMER_NAME=Beacon
     build:
       context: .
       dockerfile: Dockerfile
@@ -85,6 +87,7 @@ services:
       - API_SVC_MODE=freshdesk
       - FD_API_KEY=0123456789ABCDEFGHI
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
+      - FD_CUSTOMER_NAME=Beacon
     build:
       context: .
       dockerfile: Dockerfile
