@@ -55,7 +55,7 @@ services:
       - backend
     #    restart: unless-stopped
     profiles:
-      - development
+      - production
 
   apisvc-dev-mono:
     container_name: apisvc-dev-mono
