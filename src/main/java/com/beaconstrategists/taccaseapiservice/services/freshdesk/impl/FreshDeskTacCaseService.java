@@ -1,20 +1,18 @@
 package com.beaconstrategists.taccaseapiservice.services.freshdesk.impl;
 
 import com.beaconstrategists.taccaseapiservice.config.freshdesk.RestClientConfig;
+import com.beaconstrategists.taccaseapiservice.dtos.*;
 import com.beaconstrategists.taccaseapiservice.dtos.freshdesk.*;
 import com.beaconstrategists.taccaseapiservice.mappers.freshdesk.FieldPresenceModelMapper;
 import com.beaconstrategists.taccaseapiservice.mappers.freshdesk.GenericModelMapper;
+import com.beaconstrategists.taccaseapiservice.model.CasePriorityEnum;
+import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.FreshdeskConversationSource;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.PriorityForTickets;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.Source;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.StatusForTickets;
-import com.beaconstrategists.taccaseapiservice.services.freshdesk.CompanyService;
-import com.beaconstrategists.taccaseapiservice.services.freshdesk.SchemaService;
-import com.beaconstrategists.taccaseapiservice.dtos.*;
-import com.beaconstrategists.taccaseapiservice.model.CasePriorityEnum;
-import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.beaconstrategists.taccaseapiservice.services.TacCaseService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.beaconstrategists.taccaseapiservice.services.freshdesk.SchemaService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -33,7 +31,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service("FreshdeskTacCaseService")
 public class FreshDeskTacCaseService implements TacCaseService {
@@ -42,44 +43,30 @@ public class FreshDeskTacCaseService implements TacCaseService {
     private final RestClient snakeCaseRestClient;
 
     /*
-     * This RestClient is only needed for updating Tickets
+     * The following RestClient is only needed for updating Tickets
      * Freshdesk Tickets can handle partial updates.
      * Freshdesk Custom Objects (TAC/RMA Cases) require full updates.
-     * The Custom Objects are managed with a FieldPresence ModelMapper.
+     * The updates to Custom Objects are managed with a FieldPresence ModelMapper.
      * So, they don't need, and shouldn't use, this RestClient
      */
     private final RestClient fieldPresenseRestClient;
-
-    private final CompanyService companyService;
-
     private final GenericModelMapper genericModelMapper;
-    private final ObjectMapper snakeCaseObjectMapper;
-
-    @Value("${FD_CUSTOMER_NAME:Beacon}")
-    private String companyName;
 
     @Value("${FD_DEFAULT_RESPONDER_ID:3043029172572}")
     private String defaultResponderId;
-
-    @Value("${FD_TAC_CASE_ID_PREFIX:_2-}")
-    private String tacCaseIdPrefix;
 
     private final SchemaService schemaService;
 
     public FreshDeskTacCaseService(RestClientConfig restClientConfig,
                                    @Qualifier("snakeCaseRestClient") RestClient snakeCaseRestClient,
                                    SchemaService schemaService,
-                                   CompanyService companyService,
                                    GenericModelMapper genericModelMapper,
-                                   @Qualifier("fieldPresenceSnakeCaseSerializingRestClient") RestClient fieldPresenseRestClient,
-                                   @Qualifier("snakeCaseObjectMapper") ObjectMapper snakeCaseObjectMapper) {
+                                   @Qualifier("fieldPresenceSnakeCaseSerializingRestClient") RestClient fieldPresenseRestClient) {
         this.restClientConfig = restClientConfig;
         this.snakeCaseRestClient = snakeCaseRestClient;
-        this.companyService = companyService;
         this.genericModelMapper = genericModelMapper;
         this.schemaService = schemaService;
         this.fieldPresenseRestClient = fieldPresenseRestClient;
-        this.snakeCaseObjectMapper = snakeCaseObjectMapper;
     }
 
     @Override

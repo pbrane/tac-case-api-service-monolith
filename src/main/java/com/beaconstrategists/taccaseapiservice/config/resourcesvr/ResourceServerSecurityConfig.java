@@ -1,5 +1,6 @@
 package com.beaconstrategists.taccaseapiservice.config.resourcesvr;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +15,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class ResourceServerSecurityConfig {
 
-//    @Value("${AUTH_SVC_ISSUER_URI:http://localhost:8080/oauth2/jwks}")
-//    private String issuerUri;
+    /*
+      This is used when running as a separate service.
+     */
+    @Value("${AUTH_SVC_ISSUER_URI:http://localhost:8080/oauth2/jwks}")
+    private String issuerUri;
 
     private final JwtDecoder jwtDecoder;
 
@@ -25,7 +29,7 @@ public class ResourceServerSecurityConfig {
 
     @Bean(name = "ProdSecurityFilterChain")
     @Order(1)
-    @ConditionalOnProperty(name = "API_SVC_ENV", havingValue = "production", matchIfMissing = false)
+    @ConditionalOnProperty(name = "API_SVC_ENV", havingValue = "secured", matchIfMissing = false)
     public SecurityFilterChain prodResourceServerSecurityFilterChain(HttpSecurity http) throws Exception {
         // Apply security specifically for API endpoints
         http.securityMatcher("/api/**") // Match only Resource Server endpoints
@@ -46,7 +50,7 @@ public class ResourceServerSecurityConfig {
 
     @Bean(name = "DevSecurityFilterChain")
     @Order(2)
-    @ConditionalOnProperty(name = "API_SVC_ENV", havingValue = "development", matchIfMissing = true)
+//    @ConditionalOnProperty(name = "API_SVC_ENV", havingValue = "unsecured", matchIfMissing = true)
     public SecurityFilterChain devResourceServerSecurityFilterChain(HttpSecurity http) throws Exception {
         // Apply security specifically for API endpoints
         http.securityMatcher("/api/**") // Match only Resource Server endpoints
@@ -60,9 +64,14 @@ public class ResourceServerSecurityConfig {
         return http.build();
     }
 
-//    //fixme: this may need attention
-//    @Bean
-//    public JwtDecoder jwtDecoder() {
-//        return NimbusJwtDecoder.withJwkSetUri(issuerUri).build();
-//    }
+    /*
+      This is used when running as a separate service.
+     */
+
+/*
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        return NimbusJwtDecoder.withJwkSetUri(issuerUri).build();
+    }
+*/
 }

@@ -10,12 +10,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TacCaseServiceConfig {
 
-    @Value("${API_SVC_MODE:Database}") // Default to JPA if not specified
+    @Value("${API_SVC_MODE:database}")
     private String apiSvcMode;
 
     @Bean
     public TacCaseService tacCaseService(TacCaseServiceImpl jpaTacCaseService, FreshDeskTacCaseService freshdeskCaseService) {
-        if ("Freshdesk".equalsIgnoreCase(apiSvcMode)) {
+        if ("freshdesk".equalsIgnoreCase(apiSvcMode)) {
             return freshdeskCaseService;
         } else {
             return jpaTacCaseService;

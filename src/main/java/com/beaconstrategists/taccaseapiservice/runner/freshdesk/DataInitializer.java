@@ -14,11 +14,18 @@ public class DataInitializer {
     private final SchemaService schemaService;
     private final CompanyService companyService;
 
+    @Value("${API_SVC_MODE:database}")
+    private String apiSvcMode;
+
     @Value("${FD_CUSTOMER_NAME:Beacon}")
     private String requiredCompany;
 
-    @Value("${API_SVC_MODE:Database}")
-    private String apiSvcMode;
+    @Value("${FD_TAC_CASE_SCHEMA_NAME:TAC Cases}")
+    private String tacCaseSchemaName;
+
+    @Value("${FD_RMA_CASE_SCHEMA_NAME:RMA Cases}")
+    private String rmaCaseSchemaName;
+
 
     public DataInitializer(SchemaService schemaService, CompanyService companyService) {
         this.schemaService = schemaService;
@@ -31,7 +38,7 @@ public class DataInitializer {
         System.out.println("\n\tInitializing data...");
         System.out.println("\tAPI Mode: " + apiSvcMode);
 
-        if (apiSvcMode.equals("Freshdesk")) {
+        if (apiSvcMode.equalsIgnoreCase("freshdesk")) {
             System.out.println("\tCompany Name: " + requiredCompany);
             System.out.println("\n");
             return args -> {
@@ -51,11 +58,11 @@ public class DataInitializer {
     }
 
     private void validateSchemas() {
-        JsonNode tacSchema = schemaService.getSchemaByName("TAC Cases");
-        JsonNode rmaSchema = schemaService.getSchemaByName("RMA Cases");
+        JsonNode tacSchema = schemaService.getSchemaByName(tacCaseSchemaName);
+        JsonNode rmaSchema = schemaService.getSchemaByName(rmaCaseSchemaName);
 
         if (tacSchema == null || rmaSchema == null) {
-            System.err.println("ERROR: Required schemas 'TAC Cases' and 'RMA Cases' are missing.");
+            System.err.println("ERROR: Required schemas '"+tacCaseSchemaName+"' and '"+rmaCaseSchemaName+"' are missing in Freshdesk.");
             System.exit(1);
         }
 

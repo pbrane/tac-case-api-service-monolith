@@ -1,21 +1,17 @@
 package com.beaconstrategists.taccaseapiservice.services.freshdesk.impl;
 
 import com.beaconstrategists.taccaseapiservice.config.freshdesk.RestClientConfig;
+import com.beaconstrategists.taccaseapiservice.dtos.*;
 import com.beaconstrategists.taccaseapiservice.dtos.freshdesk.*;
 import com.beaconstrategists.taccaseapiservice.mappers.freshdesk.FieldPresenceModelMapper;
 import com.beaconstrategists.taccaseapiservice.mappers.freshdesk.GenericModelMapper;
-import com.beaconstrategists.taccaseapiservice.model.CasePriorityEnum;
+import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.FreshdeskConversationSource;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.Source;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.StatusForTickets;
-import com.beaconstrategists.taccaseapiservice.services.freshdesk.CompanyService;
-import com.beaconstrategists.taccaseapiservice.services.freshdesk.SchemaService;
-import com.beaconstrategists.taccaseapiservice.dtos.*;
-import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.beaconstrategists.taccaseapiservice.services.RmaCaseService;
-import org.modelmapper.ModelMapper;
+import com.beaconstrategists.taccaseapiservice.services.freshdesk.SchemaService;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -52,38 +48,20 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
      * So, they don't need, and shouldn't use, this RestClient
      */
     private final RestClient fieldPresenseRestClient;
-
-    private final CompanyService companyService;
-
     private final GenericModelMapper genericModelMapper;
-    private final ModelMapper freshDeskModelMapper;
-
-    @Value("${FD_CUSTOMER_NAME:Beacon}")
-    private String companyName;
-
-    @Value("${FD_DEFAULT_RESPONDER_ID:3043029172572}")
-    private String defaultResponderId;
-
-    @Value("${FD_RMA_CASE_ID_PREFIX:_3-}")
-    private String rmaCaseIdPrefix;
 
     private final SchemaService schemaService;
 
     public FreshDeskRmaCaseService(RestClientConfig restClientConfig,
                                    @Qualifier("snakeCaseRestClient") RestClient snakeCaseRestClient,
                                    SchemaService schemaService,
-                                   CompanyService companyService,
                                    GenericModelMapper genericModelMapper,
-                                   @Qualifier("fieldPresenceSnakeCaseSerializingRestClient") RestClient fieldPresenseRestClient,
-                                   @Qualifier("freshdeskModelMapper") ModelMapper freshDeskModelMapper) {
+                                   @Qualifier("fieldPresenceSnakeCaseSerializingRestClient") RestClient fieldPresenseRestClient) {
         this.restClientConfig = restClientConfig;
-
         this.snakeCaseRestClient = snakeCaseRestClient;
-        this.companyService = companyService;
         this.genericModelMapper = genericModelMapper;
         this.schemaService = schemaService;
         this.fieldPresenseRestClient = fieldPresenseRestClient;
-        this.freshDeskModelMapper = freshDeskModelMapper;
     }
 
 
@@ -576,16 +554,6 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
                 .body(FreshdeskTicketResponseDto.class);
     }
 
-    private FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto> getFreshdeskRmaCaseResponse(Long id) {
-        String rmaDisplayId = rmaCaseIdPrefix+ id;
-        String rmaSchemaId = schemaService.getSchemaIdByName("RMA Cases");
-        return snakeCaseRestClient.get()
-                .uri("/custom_objects/schemas/{schema-id}/records/{record-id}", rmaSchemaId, rmaDisplayId)
-                .retrieve()
-                .body(new ParameterizedTypeReference<>() {
-                });
-    }
-
     //fixme: a lot of duplicate code in this class and sister TAC Case Service class
     private FreshdeskTicketResponseDto createFreshdeskTicket(FreshdeskTicketCreateDto dto) {
         return snakeCaseRestClient.post()
@@ -596,18 +564,18 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
                 .body(FreshdeskTicketResponseDto.class);
     }
 
-    private FreshdeskTicketCreateDto buildCreateChildTicketDto(FreshdeskTicketResponseDto freshdeskTicketResponseDto, RmaCaseCreateDto rmaCaseCreateDto) {
+    private FreshdeskTicketCreateDto buildCreateChildTicketDto(FreshdeskTicketResponseDto tacCaseTicketResponseDto, RmaCaseCreateDto rmaCaseCreateDto) {
 
         return FreshdeskTicketCreateDto.builder()
                 .email(rmaCaseCreateDto.getContactEmail())
-                .subject("RMA: "+freshdeskTicketResponseDto.getSubject())
-                .responderId(freshdeskTicketResponseDto.getResponderId())
+                .subject("RMA: "+ tacCaseTicketResponseDto.getSubject())
+                .responderId(tacCaseTicketResponseDto.getResponderId())
                 .type("Problem")
                 .source(Source.Email)
                 .status(StatusForTickets.Open)
-                .priority(freshdeskTicketResponseDto.getPriorityForTickets())
+                .priority(tacCaseTicketResponseDto.getPriorityForTickets())
                 .description("RMA for TAC Case: "+rmaCaseCreateDto.getTacCaseId())
-                .parentId(freshdeskTicketResponseDto.getId())
+                .parentId(tacCaseTicketResponseDto.getId())
                 .build();
     }
 

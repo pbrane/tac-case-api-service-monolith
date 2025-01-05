@@ -14,7 +14,6 @@ public class RestControllerConfig {
     private Integer maxFileSize;
 
     @Bean
-    @ConfigurationProperties("spring.servlet.multipart") //fixme: this should be removed
     public MultipartProperties multipartProperties() {
         MultipartProperties properties = new MultipartProperties();
         properties.setMaxFileSize(DataSize.ofMegabytes(maxFileSize));

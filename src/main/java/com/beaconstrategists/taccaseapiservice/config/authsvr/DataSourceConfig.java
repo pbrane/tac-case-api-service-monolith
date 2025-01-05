@@ -11,13 +11,17 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfig {
 
+    /*
+     This class and vars are used when saving client credentials to PostgreSQL
+     See also RegisteredClientRepositoryConfig
+     */
     @Value("${PG_DATASOURCE_URL:jdbc:postgresql://localhost:5432/tacauthdb}")
     private String datasourceUrl;
 
     @Value("${PG_DATASOURCE_USERNAME:tacauthuser}")
     private String datasourceUsername;
 
-    @Value("${PR_DATASOURCE_PASSWORD:tacauthpass}")
+    @Value("${PG_DATASOURCE_PASSWORD:tacauthpass}")
     private String datasourcePassword;
 
     @Bean
