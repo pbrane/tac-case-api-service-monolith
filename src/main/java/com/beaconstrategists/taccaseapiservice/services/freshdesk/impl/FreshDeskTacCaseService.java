@@ -103,7 +103,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("custom_objects/schemas/" + schemaId + "/records") // No leading '/'
-                        .query(Objects.requireNonNull(uriComponentsBuilder.build().getQuery()))
+                        .query(uriComponentsBuilder.build().getQuery())
                         .build())
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {});
