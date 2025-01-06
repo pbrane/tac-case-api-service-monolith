@@ -10,12 +10,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RmaCaseServiceConfig {
 
-    @Value("${API_SVC_MODE:Database}")
+    @Value("${API_SVC_MODE:database}")
     private String apiSvcMode;
 
     @Bean
     public RmaCaseService rmaCaseService(RmaCaseServiceImpl jpaRmaCaseService, FreshDeskRmaCaseService freshdeskCaseService) {
-        if ("Freshdesk".equalsIgnoreCase(apiSvcMode)) {
+        if ("freshdesk".equalsIgnoreCase(apiSvcMode)) {
             return freshdeskCaseService;
         } else {
             return jpaRmaCaseService;

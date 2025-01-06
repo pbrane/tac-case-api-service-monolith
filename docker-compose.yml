@@ -1,24 +1,53 @@
 services:
-  apisvc-prod-mono:
-    container_name: apisvc-prod-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.6
+  apisvc-documentation-mono:
+    container_name: apisvc-doc-mono
+    image: pbranestrategy/tac-case-api-service-mono:0.2.7
     environment:
-      - API_SVC_ENV=production
+      - SERVER_PORT=8080
+      - API_SVC_ENV=secured
       - API_SVC_MAX_FILE_SIZE_MB=20
-      - API_SVC_MODE=Freshdesk
-      - AUTH_SVR_ENV=production
+      - API_SVC_MODE=freshdesk
       - AUTH_SVR_REPO=inMemory
+      - AUTH_SVC_ISSUER_URI=http://localhost:8080/oauth2/jwks
+      - PG_DATASOURCE_URL=jdbc:postgresql://localhost:5432/tacauthdb
+      - PG_DATASOURCE_USERNAME=postgres-user-name
+      - PG_DATASOURCE_PASSWORD=postgres-user-password
       - CLIENT_ID=client-id
       - CLIENT_SECRET=client-secret
       - CLIENT_NAME=client-name
       - ACCESS_TOKEN_EXPIRATION_MIN=5
-      - SERVER_PORT=8080
+      - FD_API_KEY=0123456789ABCDEFGHI
+      - FD_BASE_URI=https://domain.freshdesk.com/api/v2
+      - FD_CUSTOMER_NAME=Beacon
+      - FD_TAC_CASE_SCHEMA_NAME="TAC Cases"
+      - FD_RMA_CASE_SCHEMA_NAME="RMA Cases"
+      - FD_DEFAULT_RESPONDER_ID=3043029172572
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    ports:
+      - 8080:8080
+    networks:
+      - backend
+    #    restart: unless-stopped
+    profiles:
+      - documentation
+
+  apisvc-prod-mono:
+    container_name: apisvc-prod-mono
+    image: pbranestrategy/tac-case-api-service-mono:0.2.7
+    environment:
+      - API_SVC_ENV=secured
+      - API_SVC_MODE=freshdesk
+      - CLIENT_ID=client-id
+      - CLIENT_SECRET=client-secret
+      - CLIENT_NAME=Beacon
       - FD_API_KEY=0123456789ABCDEFGHI
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
       - FD_CUSTOMER_NAME=Beacon
       - FD_DEFAULT_RESPONDER_ID=3043029172572
-      - FD_TAC_CASE_ID_PREFIX=_2-
-      - FD_RMA_CASE_ID_PREFIX=_3-
     build:
       context: .
       dockerfile: Dockerfile
@@ -34,24 +63,13 @@ services:
 
   apisvc-dev-mono:
     container_name: apisvc-dev-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.6
+    image: pbranestrategy/tac-case-api-service-mono:0.2.7
     environment:
-      - API_SVC_ENV=development
-      - API_SVC_MAX_FILE_SIZE_MB=20
-      - API_SVC_MODE=Database
-      - AUTH_SVR_ENV=development
-      - AUTH_SVR_REPO=inMemory
-      - CLIENT_ID=client-id
-      - CLIENT_SECRET=client-secret
-      - CLIENT_NAME=client-name
-      - ACCESS_TOKEN_EXPIRATION_MIN=5
-      - SERVER_PORT=8080
+      - API_SVC_ENV=unsecured
+      - API_SVC_MODE=database
       - FD_API_KEY=0123456789ABCDEFGHI
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
       - FD_CUSTOMER_NAME=Beacon
-      - FD_DEFAULT_RESPONDER_ID=3043029172572
-      - FD_TAC_CASE_ID_PREFIX=_2-
-      - FD_RMA_CASE_ID_PREFIX=_3-
     build:
       context: .
       dockerfile: Dockerfile
@@ -67,24 +85,13 @@ services:
 
   apisvc-test-mono:
     container_name: apisvc-test-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.6
+    image: pbranestrategy/tac-case-api-service-mono:0.2.7
     environment:
-      - API_SVC_ENV=development
-      - API_SVC_MAX_FILE_SIZE_MB=20
-      - API_SVC_MODE=Freshdesk
-      - AUTH_SVR_ENV=development
-      - AUTH_SVR_REPO=inMemory
-      - CLIENT_ID=client-id
-      - CLIENT_SECRET=client-secret
-      - CLIENT_NAME=client-name
-      - ACCESS_TOKEN_EXPIRATION_MIN=5
-      - SERVER_PORT=8080
+      - API_SVC_ENV=unsecured
+      - API_SVC_MODE=freshdesk
       - FD_API_KEY=0123456789ABCDEFGHI
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
       - FD_CUSTOMER_NAME=Beacon
-      - FD_DEFAULT_RESPONDER_ID=3043029172572
-      - FD_TAC_CASE_ID_PREFIX=_2-
-      - FD_RMA_CASE_ID_PREFIX=_3-
     build:
       context: .
       dockerfile: Dockerfile

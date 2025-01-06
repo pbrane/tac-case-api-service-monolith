@@ -43,8 +43,6 @@ public class RegisteredClientRepositoryConfig {
     }
 
     @Bean(name = "InMemoryClientRepo")
-//    @ConditionalOnProperty(name = "AUTH_SVR_ENV", havingValue = "development", matchIfMissing = true)
-//    @Conditional(DevelopmentOrMonolithCondition.class) //AUTH_SVR_ENV = development or monolith
     @ConditionalOnProperty(name = "AUTH_SVR_REPO", havingValue = "inMemory", matchIfMissing = true)
     public RegisteredClientRepository devRegisteredClientRepository() {
 
