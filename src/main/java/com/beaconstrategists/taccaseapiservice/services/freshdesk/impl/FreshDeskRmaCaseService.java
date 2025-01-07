@@ -576,6 +576,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
                 .priority(tacCaseTicketResponseDto.getPriorityForTickets())
                 .description("RMA for TAC Case: "+rmaCaseCreateDto.getTacCaseId()+":\n"+rmaCaseCreateDto.getProblemDescription())
                 .parentId(tacCaseTicketResponseDto.getId())
+                .tags(List.of("RMA"))
                 .build();
     }
 

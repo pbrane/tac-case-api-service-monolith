@@ -31,10 +31,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service("FreshdeskTacCaseService")
 public class FreshDeskTacCaseService implements TacCaseService {
@@ -588,6 +585,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
                         .map(PriorityForTickets::valueOf)
                         .orElse(null))
                 .description(tacCaseDto.getProblemDescription())
+                .tags(List.of("TAC"))
                 .build();
     }
 

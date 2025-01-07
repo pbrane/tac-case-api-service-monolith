@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 //fixme: check this Lombok configuration
 @Getter
@@ -124,10 +125,10 @@ public class FreshdeskTicketCreateDto {
      */
     private Source source;
 
-//    /*
-//    Tags that have been associated with the ticket
-//     */
-//     List<String> tags; //= new ArrayList<>();
+    /*
+    Tags that have been associated with the ticket
+     */
+    private List<String> tags; //= new ArrayList<>();
 
     /*
     Company ID of the requester.
