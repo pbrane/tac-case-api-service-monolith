@@ -73,7 +73,7 @@ public class FreshdeskTicketService implements TicketService {
                 .retrieve()
                 .body(Ticket.class);
 
-        String tacCaseSchemaId = schemaService.getSchemaIdByName("TAC Cases");
+        String tacCaseSchemaId = schemaService.getTacCaseSchemaId();
         TacCaseResponseDto tacCase = restClient.post()
                 .uri("custom_objects/schemas/"+tacCaseSchemaId+"/records")
                 .contentType(MediaType.APPLICATION_JSON)

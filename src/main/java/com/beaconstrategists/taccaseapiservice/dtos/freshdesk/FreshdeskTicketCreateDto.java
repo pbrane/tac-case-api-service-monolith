@@ -128,7 +128,7 @@ public class FreshdeskTicketCreateDto {
     /*
     Tags that have been associated with the ticket
      */
-    private List<String> tags; //= new ArrayList<>();
+    private List<String> tags;
 
     /*
     Company ID of the requester.

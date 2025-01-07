@@ -17,15 +17,6 @@ public class DataInitializer {
     @Value("${API_SVC_MODE:database}")
     private String apiSvcMode;
 
-    @Value("${FD_CUSTOMER_NAME:Beacon}")
-    private String requiredCompany;
-
-    @Value("${FD_TAC_CASE_SCHEMA_NAME:TAC Cases}")
-    private String tacCaseSchemaName;
-
-    @Value("${FD_RMA_CASE_SCHEMA_NAME:RMA Cases}")
-    private String rmaCaseSchemaName;
-
 
     public DataInitializer(SchemaService schemaService, CompanyService companyService) {
         this.schemaService = schemaService;
@@ -39,16 +30,12 @@ public class DataInitializer {
         System.out.println("\tAPI Mode: " + apiSvcMode);
 
         if (apiSvcMode.equalsIgnoreCase("freshdesk")) {
-            System.out.println("\tCompany Name: " + requiredCompany);
-            System.out.println("\n");
             return args -> {
                 // Initialize Schemas
                 schemaService.initializeSchemas();
-                validateSchemas();
 
                 // Initialize Companies
                 companyService.initializeCompanies();
-                validateCompany();
             };
         } else {
             System.out.println("\n");
@@ -57,26 +44,4 @@ public class DataInitializer {
 
     }
 
-    private void validateSchemas() {
-        JsonNode tacSchema = schemaService.getSchemaByName(tacCaseSchemaName);
-        JsonNode rmaSchema = schemaService.getSchemaByName(rmaCaseSchemaName);
-
-        if (tacSchema == null || rmaSchema == null) {
-            System.err.println("ERROR: Required schemas '"+tacCaseSchemaName+"' and '"+rmaCaseSchemaName+"' are missing in Freshdesk.");
-            System.exit(1);
-        }
-
-        System.out.println("Schemas validated successfully.");
-    }
-
-    private void validateCompany() {
-        String companyId = companyService.getCompanyIdByName(requiredCompany);
-
-        if (companyId == null) {
-            System.err.println("ERROR: Required company '" + requiredCompany + "' is missing.");
-            System.exit(1);
-        }
-
-        System.out.println("Company validated successfully. Company ID: " + companyId);
-    }
 }

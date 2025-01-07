@@ -94,7 +94,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
                         : restClientConfig.getFreshdeskBaseUri() + "/") // Ensure trailing "/"
                 .build();
 
-        String schemaId = schemaService.getSchemaIdByName("TAC Cases");
+        String schemaId = schemaService.getTacCaseSchemaId();
         // Pass the relative path without leading '/' and append the query parameters
         FreshdeskCaseResponseRecords<FreshdeskTacCaseResponseDto> responseRecords = restClient
                 .get()
@@ -506,7 +506,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
     TAC Cases
      */
     private FreshdeskCaseResponse<FreshdeskTacCaseResponseDto> createFreshdeskTacCase(String displayId, FreshdeskTacCaseUpdateRequest updateRequest) {
-        String tacCaseSchemaId = schemaService.getSchemaIdByName("TAC Cases");
+        String tacCaseSchemaId = schemaService.getTacCaseSchemaId();
         return snakeCaseRestClient.put()
                 .uri("/custom_objects/schemas/{schema-id}/records/{record-id}", tacCaseSchemaId, displayId)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -517,7 +517,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
     }
 
     private FreshdeskCaseResponseRecords<FreshdeskTacCaseResponseDto> findFreshdeskTacCaseRecords(Long id) {
-        String tacCaseSchemaId = schemaService.getSchemaIdByName("TAC Cases");
+        String tacCaseSchemaId = schemaService.getTacCaseSchemaId();
         return snakeCaseRestClient.get()
                 .uri("/custom_objects/schemas/" + tacCaseSchemaId + "/records?ticket={ticketId}", id)
                 .retrieve()
@@ -537,7 +537,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
     private FreshdeskCaseResponse<FreshdeskTacCaseResponseDto> createFreshdeskTacCase(
             FreshdeskDataCreateRequest<FreshdeskTacCaseCreateDto> freshdeskTacCaseCreateRequest) {
 
-        String tacCaseSchemaId = schemaService.getSchemaIdByName("TAC Cases");
+        String tacCaseSchemaId = schemaService.getTacCaseSchemaId();
         FreshdeskCaseResponse<FreshdeskTacCaseResponseDto> responseTacCase = snakeCaseRestClient.post()
                 .uri("/custom_objects/schemas/{schemaId}/records", tacCaseSchemaId)
                 .contentType(MediaType.APPLICATION_JSON)

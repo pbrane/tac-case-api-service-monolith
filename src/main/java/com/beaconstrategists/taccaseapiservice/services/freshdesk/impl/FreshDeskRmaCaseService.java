@@ -108,7 +108,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
 
         FreshdeskDataCreateRequest<FreshdeskRmaCaseCreateDto> freshdeskRmaCreateRequest =
                 new FreshdeskDataCreateRequest<>(freshdeskRmaCaseCreateDto);
-        String rmaCaseSchemaId = schemaService.getSchemaIdByName("RMA Cases");
+        String rmaCaseSchemaId = schemaService.getRMACaseSchemaId();
 
         FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto> createRmaCaseResponse =
                 snakeCaseRestClient.post()
@@ -296,7 +296,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
                         : restClientConfig.getFreshdeskBaseUri() + "/") // Ensure trailing "/"
                 .build();
 
-        String schemaId = schemaService.getSchemaIdByName("RMA Cases");
+        String schemaId = schemaService.getRMACaseSchemaId();
         // Pass the relative path without leading '/' and append the query parameters
         FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> responseRecords = restClient
                 .get()
@@ -501,7 +501,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
     }
 
     private FreshdeskCaseResponseRecords<FreshdeskTacCaseResponseDto> findFreshdeskTacCaseRecordsByTicketId(Long tacTicketId) {
-        String tacCaseSchemaId = schemaService.getSchemaIdByName("TAC Cases");
+        String tacCaseSchemaId = schemaService.getTacCaseSchemaId();
         return snakeCaseRestClient.get()
                 .uri("/custom_objects/schemas/{schema-id}/records?ticket={ticketId}", tacCaseSchemaId, tacTicketId)
                 .retrieve()
@@ -510,7 +510,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
     }
 
     private FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> findFreshdeskRmaCaseRecordsByTicketId(Long rmaTicketId) {
-        String tacCaseSchemaId = schemaService.getSchemaIdByName("RMA Cases");
+        String tacCaseSchemaId = schemaService.getRMACaseSchemaId();
         FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> rmaCaseResponseDto = snakeCaseRestClient.get()
                 .uri("/custom_objects/schemas/{schema-id}/records?ticket={ticketId}", tacCaseSchemaId, rmaTicketId)
                 .retrieve()
@@ -520,7 +520,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
     }
 
     private FreshdeskCaseResponse<FreshdeskTacCaseResponseDto> findFreshdeskTacCaseByDisplayId(String displayId) {
-        String tacCaseSchemaId = schemaService.getSchemaIdByName("TAC Cases");
+        String tacCaseSchemaId = schemaService.getTacCaseSchemaId();
         return snakeCaseRestClient.get()
                 .uri("/custom_objects/schemas/{schema-id}/records/{record-id}", tacCaseSchemaId, displayId)
                 .retrieve()
@@ -539,7 +539,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
 
 
     private FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto> findFreshdeskRmaCaseByDisplayId(String displayId) {
-        String rmaCaseSchemaId = schemaService.getSchemaIdByName("RMA Cases");
+        String rmaCaseSchemaId = schemaService.getRMACaseSchemaId();
         return snakeCaseRestClient.get()
                 .uri("/custom_objects/schemas/{schema-id}/records/{record-id}", rmaCaseSchemaId, displayId)
                 .retrieve()
@@ -583,7 +583,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
     private FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto> updateRmaCase(
             String rmaCaseDisplayId, FreshdeskRmaCaseUpdateRequest request) {
 
-        String rmaCaseSchemaId = schemaService.getSchemaIdByName("RMA Cases");
+        String rmaCaseSchemaId = schemaService.getRMACaseSchemaId();
         return snakeCaseRestClient.put()
                 .uri("/custom_objects/schemas/{schema-id}/records/{record-id}", rmaCaseSchemaId, rmaCaseDisplayId)
                 .contentType(MediaType.APPLICATION_JSON)
