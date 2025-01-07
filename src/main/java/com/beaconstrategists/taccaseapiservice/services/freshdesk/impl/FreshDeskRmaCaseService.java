@@ -460,6 +460,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
 
         return freshdeskTicketConversations.stream()
                 .filter(freshdesk -> freshdesk.getSource() == FreshdeskConversationSource.Note)
+                .filter(freshdesk -> !freshdesk.isPrivate())
                 .map(freshdesk -> RmaCaseNoteResponseDto.builder()
                         .id(freshdesk.getId())
                         .rmaCaseId(caseId)
@@ -573,7 +574,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
                 .source(Source.Email)
                 .status(StatusForTickets.Open)
                 .priority(tacCaseTicketResponseDto.getPriorityForTickets())
-                .description("RMA for TAC Case: "+rmaCaseCreateDto.getTacCaseId())
+                .description("RMA for TAC Case: "+rmaCaseCreateDto.getTacCaseId()+":\n"+rmaCaseCreateDto.getProblemDescription())
                 .parentId(tacCaseTicketResponseDto.getId())
                 .build();
     }
@@ -607,7 +608,12 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
     private void validateFileType(MultipartFile file) {
         List<String> allowedMimeTypes = Arrays.asList(
                 "application/pdf",
-                "application/msword",
+                "application/msword", //.doc
+                "application/vnd.ms-excel", //.xls
+                "application/vnd.ms-powerpoint", //.ppt
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", //.xlsx
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document", //.docx
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation", //.pptx
                 "text/plain",
                 "image/jpeg",
                 "image/png",

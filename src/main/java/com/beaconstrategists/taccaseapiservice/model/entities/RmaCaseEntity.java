@@ -107,7 +107,7 @@ public class RmaCaseEntity {
 
   private String contactEmail;
 
-  private Integer vendorRmaNumber;
+  private String vendorRmaNumber;
 
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private OffsetDateTime newPartDeliveryDateEta;

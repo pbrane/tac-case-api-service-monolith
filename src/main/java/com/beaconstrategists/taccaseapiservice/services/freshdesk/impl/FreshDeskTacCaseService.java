@@ -453,10 +453,11 @@ public class FreshDeskTacCaseService implements TacCaseService {
 
         return freshdeskTicketConversations.stream()
                 .filter(freshdesk -> freshdesk.getSource() == FreshdeskConversationSource.Note)
+                .filter(freshdesk -> !freshdesk.isPrivate())
                 .map(freshdesk -> TacCaseNoteResponseDto.builder()
                         .id(freshdesk.getId())
                         .tacCaseId(caseId)
-                        .author("FD User ID:"+freshdesk.getUserId().toString())
+                        .author("FD User ID:" + freshdesk.getUserId().toString())
                         .date(freshdesk.getCreatedAt())
                         .build())
                 .toList();
@@ -681,7 +682,12 @@ public class FreshDeskTacCaseService implements TacCaseService {
     private void validateFileType(MultipartFile file) {
         List<String> allowedMimeTypes = Arrays.asList(
                 "application/pdf",
-                "application/msword",
+                "application/msword", //.doc
+                "application/vnd.ms-excel", //.xls
+                "application/vnd.ms-powerpoint", //.ppt
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", //.xlsx
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document", //.docx
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation", //.pptx
                 "text/plain",
                 "image/jpeg",
                 "image/png",

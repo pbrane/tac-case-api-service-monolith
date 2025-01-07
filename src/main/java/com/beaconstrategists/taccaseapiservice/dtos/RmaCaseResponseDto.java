@@ -126,7 +126,7 @@ public class RmaCaseResponseDto {
 
     private String contactEmail;
 
-    private Integer vendorRmaNumber;
+    private String vendorRmaNumber;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonDeserialize(using = CustomOffsetDateTimeDeserializer.class)

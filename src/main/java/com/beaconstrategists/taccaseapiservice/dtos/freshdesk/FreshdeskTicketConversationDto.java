@@ -2,6 +2,7 @@ package com.beaconstrategists.taccaseapiservice.dtos.freshdesk;
 
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.FreshdeskConversationSource;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +20,7 @@ public class FreshdeskTicketConversationDto {
     private String bodyText;
     private Long id;
     private boolean incoming;
+    @JsonProperty("private")
     private boolean isPrivate;
     private Long userId;
     private String supportEmail;

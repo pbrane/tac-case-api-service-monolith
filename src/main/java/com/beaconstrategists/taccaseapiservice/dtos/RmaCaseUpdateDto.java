@@ -230,9 +230,9 @@ public class RmaCaseUpdateDto extends AbstractFieldPresenceAwareDto {
         markFieldPresent("contactEmail");
     }
 
-    private Integer vendorRmaNumber;
+    private String vendorRmaNumber;
     @JsonSetter
-    public void setVendorRmaNumber(Integer value) {
+    public void setVendorRmaNumber(String value) {
         this.vendorRmaNumber = value;
         markFieldPresent("vendorRmaNumber");
     }
