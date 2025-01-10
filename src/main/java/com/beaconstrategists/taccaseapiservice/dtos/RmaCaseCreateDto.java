@@ -59,6 +59,7 @@ public class RmaCaseCreateDto {
     private String shipToCity;
     private String shipToAttention;
 
+    //fixme: investigate this along with Freshdesk Extension of this class
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime shippedDate;
 

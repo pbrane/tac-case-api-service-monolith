@@ -128,6 +128,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         rmaCaseResponseDto.setTacCaseId(rmaCaseCreateDto.getTacCaseId());
         rmaCaseResponseDto.setCaseStatus(CaseStatus.valueOf(createRmaCaseTicketResponseDto.getStatusForTickets().name()));
         //fixme: to do this right, we have to do an update to set this field in the RMA Case Record
+        //fixme: or just never save it in the record. Just always get it from the displayId???
         rmaCaseResponseDto.setCaseNumber(rmaDisplayId);
         rmaCaseResponseDto.setCaseCreatedDate(createRmaCaseTicketResponseDto.getCreatedAt());
 
@@ -137,6 +138,8 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
     @Override
     public RmaCaseResponseDto update(Long rmaTicketId, RmaCaseUpdateDto rmaCaseUpdateDto) {
 
+        //fixme: there may be other fields for the ticket that should be updated,
+        //fixme: for example, problem description
         /*
          * If the update contains caseStatus, we should also update the ticket
          * Otherwise, just fetch the ticket.
