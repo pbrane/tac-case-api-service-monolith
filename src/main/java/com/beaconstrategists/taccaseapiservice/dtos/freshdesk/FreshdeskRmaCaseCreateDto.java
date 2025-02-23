@@ -22,10 +22,4 @@ public class FreshdeskRmaCaseCreateDto extends RmaCaseCreateDto {
     private Long ticket;
     private String tacCase;
 
-
-    //fixme: why is this field here, I recall it had something to do with mapping/formatting
-    //fixme: but we should look at this again
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private OffsetDateTime shippedDate;
-
 }
