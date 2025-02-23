@@ -58,7 +58,7 @@ public class FreshdeskTicketResponseDto {
 
      private String supportEmail;
 
-     private String toEmails;
+     private List<String> toEmails;
 
      private Long productId;
 
