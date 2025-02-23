@@ -157,12 +157,6 @@ public class FreshDeskTacCaseService implements TacCaseService {
         tacCaseResponseDto.setSubject(createTicketResponseDto.getSubject());
         tacCaseResponseDto.setCaseStatus(CaseStatus.valueOf(createTicketResponseDto.getStatusForTickets().name()));
         tacCaseResponseDto.setCasePriority(CasePriorityEnum.valueOf(createTicketResponseDto.getPriorityForTickets().name()));
-        /*
-        Don't attempt to set these values.
-        These stats are not going to be available since we just created the ticket.
-        */
-        //tacCaseResponseDto.setFirstResponseDate(createTicketResponseDto.getStats().getFirstRespondedAt());
-        //tacCaseResponseDto.setCaseClosedDate(createTicketResponseDto.getStats().getClosedAt());
         tacCaseResponseDto.setCaseCreatedDate(createTicketResponseDto.getCreatedAt());
 
         return tacCaseResponseDto;
