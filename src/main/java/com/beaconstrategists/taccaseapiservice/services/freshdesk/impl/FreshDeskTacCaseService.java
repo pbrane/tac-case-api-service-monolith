@@ -155,6 +155,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
         tacCaseResponseDto.setId(createTicketResponseDto.getId());
         tacCaseResponseDto.setCaseNumber(freshdeskTacCaseResponse.getDisplayId());
         tacCaseResponseDto.setSubject(createTicketResponseDto.getSubject());
+        tacCaseResponseDto.setProblemDescription(createTicketResponseDto.getDescriptionText());
         tacCaseResponseDto.setCaseStatus(CaseStatus.valueOf(createTicketResponseDto.getStatusForTickets().name()));
         tacCaseResponseDto.setCasePriority(CasePriorityEnum.valueOf(createTicketResponseDto.getPriorityForTickets().name()));
         tacCaseResponseDto.setCaseCreatedDate(createTicketResponseDto.getCreatedAt());
@@ -236,6 +237,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
         TacCaseResponseDto tacCaseResponseDto = genericModelMapper.map(responseData, TacCaseResponseDto.class);
         tacCaseResponseDto.setId(freshdeskTicketResponseDto.getId());
         tacCaseResponseDto.setSubject(freshdeskTicketResponseDto.getSubject());
+        tacCaseResponseDto.setProblemDescription(freshdeskTicketResponseDto.getDescriptionText());
         tacCaseResponseDto.setCaseStatus(status);
         tacCaseResponseDto.setCasePriority(priority);
         tacCaseResponseDto.setCaseNumber(tacCaseDisplayId);
@@ -272,6 +274,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
         tacCaseResponseDto.setSubject(freshdeskTicketResponseDto.getSubject());
         tacCaseResponseDto.setCaseStatus(CaseStatus.valueOf(freshdeskTicketResponseDto.getStatusForTickets().name()));
         tacCaseResponseDto.setCasePriority(CasePriorityEnum.valueOf(freshdeskTicketResponseDto.getPriorityForTickets().name()));
+        tacCaseResponseDto.setProblemDescription(freshdeskTicketResponseDto.getDescriptionText());
         tacCaseResponseDto.setFirstResponseDate(freshdeskTicketResponseDto.getStats().getFirstRespondedAt());
         tacCaseResponseDto.setCaseClosedDate(freshdeskTicketResponseDto.getStats().getClosedAt());
         tacCaseResponseDto.setCaseCreatedDate(freshdeskTicketResponseDto.getCreatedAt());
@@ -742,6 +745,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
         tacCaseResponseDto.setCaseStatus(CaseStatus.valueOf(freshdeskTicketResponseDto.getStatusForTickets().name()));
         tacCaseResponseDto.setCasePriority(CasePriorityEnum.valueOf(freshdeskTicketResponseDto.getPriorityForTickets().name()));
         tacCaseResponseDto.setSubject(freshdeskTicketResponseDto.getSubject());
+        tacCaseResponseDto.setProblemDescription(freshdeskTicketResponseDto.getDescriptionText());
         tacCaseResponseDto.setCaseNumber(freshdeskTacCaseResponse.getDisplayId());
         tacCaseResponseDto.setFirstResponseDate(freshdeskTicketResponseDto.getStats().getFirstRespondedAt());
         tacCaseResponseDto.setCaseClosedDate(freshdeskTicketResponseDto.getStats().getClosedAt());
