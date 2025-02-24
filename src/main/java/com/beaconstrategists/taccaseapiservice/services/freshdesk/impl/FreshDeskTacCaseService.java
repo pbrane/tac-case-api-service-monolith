@@ -51,6 +51,10 @@ public class FreshDeskTacCaseService implements TacCaseService {
 
     @Value("${FD_DEFAULT_RESPONDER_ID:3043029172572}")
     private String defaultResponderId;
+    @Value("${FD_DEFAULT_REQUESTER_ID:12345678901234}")
+    private String defaultRequesterId;
+    @Value("${FD_DEFAULT_COMPARY_ID:98765432109876}")
+    private String defaultCompanyId;
 
     private final SchemaService schemaService;
 
@@ -577,6 +581,8 @@ public class FreshDeskTacCaseService implements TacCaseService {
                 .email(tacCaseDto.getContactEmail())
                 .subject(tacCaseDto.getSubject())
                 .responderId(Long.valueOf(responderId))
+                .requesterId(Long.valueOf(defaultRequesterId)) 
+                .companyId(Long.valueOf(defaultCompanyId)) 
                 .type("Problem")
                 .source(Source.Email)
                 .status(StatusForTickets.Open)
