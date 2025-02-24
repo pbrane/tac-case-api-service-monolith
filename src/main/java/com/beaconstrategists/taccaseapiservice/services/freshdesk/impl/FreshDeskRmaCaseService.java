@@ -12,6 +12,7 @@ import com.beaconstrategists.taccaseapiservice.model.freshdesk.StatusForTickets;
 import com.beaconstrategists.taccaseapiservice.services.RmaCaseService;
 import com.beaconstrategists.taccaseapiservice.services.freshdesk.SchemaService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -49,6 +50,11 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
      */
     private final RestClient fieldPresenseRestClient;
     private final GenericModelMapper genericModelMapper;
+
+    @Value("${FD_DEFAULT_REQUESTER_ID:12345678901234}")
+    private String defaultRequesterId;
+    @Value("${FD_DEFAULT_COMPARY_ID:98765432109876}")
+    private String defaultCompanyId;
 
     private final SchemaService schemaService;
 
@@ -572,6 +578,8 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         return FreshdeskTicketCreateDto.builder()
                 .email(rmaCaseCreateDto.getContactEmail())
                 .subject("RMA: "+ tacCaseTicketResponseDto.getSubject())
+                .requesterId(Long.valueOf(defaultRequesterId))   
+                .companyId(Long.valueOf(defaultCompanyId))               
                 .responderId(tacCaseTicketResponseDto.getResponderId())
                 .type("Problem")
                 .source(Source.Email)
