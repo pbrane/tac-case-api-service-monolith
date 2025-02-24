@@ -1,6 +1,7 @@
 package com.beaconstrategists.taccaseapiservice.runner.freshdesk;
 
 import com.beaconstrategists.taccaseapiservice.services.freshdesk.CompanyService;
+import com.beaconstrategists.taccaseapiservice.services.freshdesk.ResponderService;
 import com.beaconstrategists.taccaseapiservice  .services.freshdesk.SchemaService;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,14 +14,16 @@ public class DataInitializer {
 
     private final SchemaService schemaService;
     private final CompanyService companyService;
+    private final ResponderService responderService;
 
     @Value("${API_SVC_MODE:database}")
     private String apiSvcMode;
 
 
-    public DataInitializer(SchemaService schemaService, CompanyService companyService) {
+    public DataInitializer(SchemaService schemaService, CompanyService companyService, ResponderService responderService) {
         this.schemaService = schemaService;
         this.companyService = companyService;
+        this.responderService = responderService;
     }
 
     @Bean
@@ -36,6 +39,9 @@ public class DataInitializer {
 
                 // Initialize Companies
                 companyService.initializeCompanies();
+
+                // Initialize Responder ID
+                responderService.initializeResponder();
             };
         } else {
             System.out.println("\n");

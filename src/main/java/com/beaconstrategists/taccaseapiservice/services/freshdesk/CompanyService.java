@@ -24,18 +24,6 @@ public class CompanyService {
         this.restClient = restClient;
     }
 
-    public List<JsonNode> fetchCompanies() {
-        JsonNode response = restClient.get()
-                .uri("/companies")
-                .retrieve()
-                .body(JsonNode.class);
-
-        List<JsonNode> companies = new ArrayList<>();
-        assert response != null;
-        response.forEach(companies::add);
-        return companies;
-    }
-
     public void initializeCompanies() {
         System.out.println("\n\tInitializing Company Map for: " + requiredCompany);
         System.out.println("\n");
@@ -57,6 +45,18 @@ public class CompanyService {
             throw new IllegalStateException("The required company is not found");
         }
 
+    }
+
+    public List<JsonNode> fetchCompanies() {
+        JsonNode response = restClient.get()
+                .uri("/companies")
+                .retrieve()
+                .body(JsonNode.class);
+
+        List<JsonNode> companies = new ArrayList<>();
+        assert response != null;
+        response.forEach(companies::add);
+        return companies;
     }
 
     public String getCompanyIdByName(String name) {

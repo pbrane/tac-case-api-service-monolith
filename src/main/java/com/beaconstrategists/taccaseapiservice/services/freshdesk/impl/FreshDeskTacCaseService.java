@@ -12,6 +12,7 @@ import com.beaconstrategists.taccaseapiservice.model.freshdesk.PriorityForTicket
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.Source;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.StatusForTickets;
 import com.beaconstrategists.taccaseapiservice.services.TacCaseService;
+import com.beaconstrategists.taccaseapiservice.services.freshdesk.ResponderService;
 import com.beaconstrategists.taccaseapiservice.services.freshdesk.SchemaService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,20 +50,23 @@ public class FreshDeskTacCaseService implements TacCaseService {
     private final RestClient fieldPresenseRestClient;
     private final GenericModelMapper genericModelMapper;
 
-    @Value("${FD_DEFAULT_RESPONDER_ID:3043029172572}")
-    private String defaultResponderId;
+//    @Value("${FD_DEFAULT_RESPONDER_ID:3043029172572}")
+//    private String defaultResponderId;
 
     private final SchemaService schemaService;
+    private final ResponderService responderService;
 
     public FreshDeskTacCaseService(RestClientConfig restClientConfig,
                                    @Qualifier("snakeCaseRestClient") RestClient snakeCaseRestClient,
                                    SchemaService schemaService,
+                                   ResponderService responderService,
                                    GenericModelMapper genericModelMapper,
                                    @Qualifier("fieldPresenceSnakeCaseSerializingRestClient") RestClient fieldPresenseRestClient) {
         this.restClientConfig = restClientConfig;
         this.snakeCaseRestClient = snakeCaseRestClient;
         this.genericModelMapper = genericModelMapper;
         this.schemaService = schemaService;
+        this.responderService = responderService;
         this.fieldPresenseRestClient = fieldPresenseRestClient;
     }
 
@@ -131,7 +135,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
         /*
          * First create the ticket
          */
-        FreshdeskTicketCreateDto freshdeskTicketCreateDto = buildCreateTicketDto(tacCaseCreateDto, defaultResponderId);
+        FreshdeskTicketCreateDto freshdeskTicketCreateDto = buildCreateTicketDto(tacCaseCreateDto, responderService.getResponderId());
         FreshdeskTicketResponseDto createTicketResponseDto = createFreshdeskTicket(freshdeskTicketCreateDto);
 
         assert createTicketResponseDto != null;  //fixme: what happens here if null
