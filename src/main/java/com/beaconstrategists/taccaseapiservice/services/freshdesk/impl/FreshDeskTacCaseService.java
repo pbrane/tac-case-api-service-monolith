@@ -12,10 +12,10 @@ import com.beaconstrategists.taccaseapiservice.model.freshdesk.PriorityForTicket
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.Source;
 import com.beaconstrategists.taccaseapiservice.model.freshdesk.StatusForTickets;
 import com.beaconstrategists.taccaseapiservice.services.TacCaseService;
-import com.beaconstrategists.taccaseapiservice.services.freshdesk.ResponderService;
+import com.beaconstrategists.taccaseapiservice.services.freshdesk.CompanyService;
+import com.beaconstrategists.taccaseapiservice.services.freshdesk.RequesterResponderService;
 import com.beaconstrategists.taccaseapiservice.services.freshdesk.SchemaService;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -54,20 +54,22 @@ public class FreshDeskTacCaseService implements TacCaseService {
 //    private String defaultResponderId;
 
     private final SchemaService schemaService;
-    private final ResponderService responderService;
+    private final RequesterResponderService requesterResponderService;
+    private final CompanyService companyService;
 
     public FreshDeskTacCaseService(RestClientConfig restClientConfig,
                                    @Qualifier("snakeCaseRestClient") RestClient snakeCaseRestClient,
                                    SchemaService schemaService,
-                                   ResponderService responderService,
+                                   RequesterResponderService requesterResponderService,
                                    GenericModelMapper genericModelMapper,
-                                   @Qualifier("fieldPresenceSnakeCaseSerializingRestClient") RestClient fieldPresenseRestClient) {
+                                   @Qualifier("fieldPresenceSnakeCaseSerializingRestClient") RestClient fieldPresenseRestClient, CompanyService companyService) {
         this.restClientConfig = restClientConfig;
         this.snakeCaseRestClient = snakeCaseRestClient;
         this.genericModelMapper = genericModelMapper;
         this.schemaService = schemaService;
-        this.responderService = responderService;
+        this.requesterResponderService = requesterResponderService;
         this.fieldPresenseRestClient = fieldPresenseRestClient;
+        this.companyService = companyService;
     }
 
     @Override
@@ -135,7 +137,8 @@ public class FreshDeskTacCaseService implements TacCaseService {
         /*
          * First create the ticket
          */
-        FreshdeskTicketCreateDto freshdeskTicketCreateDto = buildCreateTicketDto(tacCaseCreateDto, responderService.getResponderId());
+        FreshdeskTicketCreateDto freshdeskTicketCreateDto = buildCreateTicketDto(tacCaseCreateDto, requesterResponderService.getResponderId(),
+                requesterResponderService.getRequesterId(), companyService.getRequiredCompanyId());
         FreshdeskTicketResponseDto createTicketResponseDto = createFreshdeskTicket(freshdeskTicketCreateDto);
 
         assert createTicketResponseDto != null;  //fixme: what happens here if null
@@ -159,6 +162,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
         tacCaseResponseDto.setId(createTicketResponseDto.getId());
         tacCaseResponseDto.setCaseNumber(freshdeskTacCaseResponse.getDisplayId());
         tacCaseResponseDto.setSubject(createTicketResponseDto.getSubject());
+        tacCaseResponseDto.setCaseOwner(requesterResponderService.getResponderName());
         tacCaseResponseDto.setProblemDescription(createTicketResponseDto.getDescriptionText());
         tacCaseResponseDto.setCaseStatus(CaseStatus.valueOf(createTicketResponseDto.getStatusForTickets().name()));
         tacCaseResponseDto.setCasePriority(CasePriorityEnum.valueOf(createTicketResponseDto.getPriorityForTickets().name()));
@@ -241,6 +245,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
         TacCaseResponseDto tacCaseResponseDto = genericModelMapper.map(responseData, TacCaseResponseDto.class);
         tacCaseResponseDto.setId(freshdeskTicketResponseDto.getId());
         tacCaseResponseDto.setSubject(freshdeskTicketResponseDto.getSubject());
+        tacCaseResponseDto.setCaseOwner(requesterResponderService.getResponderName());
         tacCaseResponseDto.setProblemDescription(freshdeskTicketResponseDto.getDescriptionText());
         tacCaseResponseDto.setCaseStatus(status);
         tacCaseResponseDto.setCasePriority(priority);
@@ -276,6 +281,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
         //fixme: caseNumber is set in the find, should probably be more consistent with the create
         tacCaseResponseDto.setId(id);
         tacCaseResponseDto.setSubject(freshdeskTicketResponseDto.getSubject());
+        tacCaseResponseDto.setCaseOwner(requesterResponderService.getResponderName());
         tacCaseResponseDto.setCaseStatus(CaseStatus.valueOf(freshdeskTicketResponseDto.getStatusForTickets().name()));
         tacCaseResponseDto.setCasePriority(CasePriorityEnum.valueOf(freshdeskTicketResponseDto.getPriorityForTickets().name()));
         tacCaseResponseDto.setProblemDescription(freshdeskTicketResponseDto.getDescriptionText());
@@ -572,12 +578,14 @@ public class FreshDeskTacCaseService implements TacCaseService {
     }
 
 
-    private FreshdeskTicketCreateDto buildCreateTicketDto(TacCaseCreateDto tacCaseDto, String responderId) {
+    private FreshdeskTicketCreateDto buildCreateTicketDto(TacCaseCreateDto tacCaseDto, String responderId, String requesterId, String companyId) {
 
         return FreshdeskTicketCreateDto.builder()
                 .email(tacCaseDto.getContactEmail())
                 .subject(tacCaseDto.getSubject())
                 .responderId(Long.valueOf(responderId))
+                .requesterId(Long.valueOf(requesterId))
+                .companyId(Long.valueOf(companyId))
                 .type("Problem")
                 .source(Source.Email)
                 .status(StatusForTickets.Open)
@@ -749,6 +757,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
         tacCaseResponseDto.setCaseStatus(CaseStatus.valueOf(freshdeskTicketResponseDto.getStatusForTickets().name()));
         tacCaseResponseDto.setCasePriority(CasePriorityEnum.valueOf(freshdeskTicketResponseDto.getPriorityForTickets().name()));
         tacCaseResponseDto.setSubject(freshdeskTicketResponseDto.getSubject());
+        tacCaseResponseDto.setCaseOwner(requesterResponderService.getResponderName());
         tacCaseResponseDto.setProblemDescription(freshdeskTicketResponseDto.getDescriptionText());
         tacCaseResponseDto.setCaseNumber(freshdeskTacCaseResponse.getDisplayId());
         tacCaseResponseDto.setFirstResponseDate(freshdeskTicketResponseDto.getStats().getFirstRespondedAt());

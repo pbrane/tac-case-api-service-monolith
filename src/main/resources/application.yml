@@ -45,5 +45,6 @@ spring:
 #    root: debug
 logging:
   level:
-    org:
-      springframework: info
+    root: warn
+    org.springframework: warn
+    com.beaconstrategists: debug

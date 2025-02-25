@@ -574,6 +574,8 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
                 .email(rmaCaseCreateDto.getContactEmail())
                 .subject("RMA: "+ tacCaseTicketResponseDto.getSubject())
                 .responderId(tacCaseTicketResponseDto.getResponderId())
+                .requesterId(tacCaseTicketResponseDto.getRequesterId())
+                .companyId(tacCaseTicketResponseDto.getCompanyId())
                 .type("Problem")
                 .source(Source.Email)
                 .status(StatusForTickets.Open)

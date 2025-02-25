@@ -18,10 +18,11 @@ services:
       - ACCESS_TOKEN_EXPIRATION_MIN=5
       - FD_API_KEY=0123456789ABCDEFGHIJ
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
-      - FD_CUSTOMER_NAME=Beacon
       - FD_TAC_CASE_SCHEMA_NAME="TAC Cases"
       - FD_RMA_CASE_SCHEMA_NAME="RMA Cases"
-      - FD_DEFAULT_RESPONDER_ID=3043029172572
+      - FD_CUSTOMER_NAME=Beacon
+      - FD_DEFAULT_RESPONDER_ID=1234567890123
+      - FD_DEFAULT_REQUESTER_ID=1234567890123
     build:
       context: .
       dockerfile: Dockerfile
@@ -47,7 +48,8 @@ services:
       - FD_API_KEY=0123456789ABCDEFGHIJ
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
       - FD_CUSTOMER_NAME=Beacon
-      - FD_DEFAULT_RESPONDER_ID=3043029172572
+      - FD_DEFAULT_RESPONDER_ID=1234567890123
+      - FD_DEFAULT_REQUESTER_ID=1234567890123
     build:
       context: .
       dockerfile: Dockerfile
@@ -67,9 +69,6 @@ services:
     environment:
       - API_SVC_ENV=unsecured
       - API_SVC_MODE=database
-      - FD_API_KEY=0123456789ABCDEFGHIJ
-      - FD_BASE_URI=https://domain.freshdesk.com/api/v2
-      - FD_CUSTOMER_NAME=Beacon
     build:
       context: .
       dockerfile: Dockerfile
@@ -92,6 +91,8 @@ services:
       - FD_API_KEY=0123456789ABCDEFGHIJ
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
       - FD_CUSTOMER_NAME=Beacon
+      - FD_DEFAULT_RESPONDER_ID=1234567890123
+      - FD_DEFAULT_REQUESTER_ID=1234567890123
     build:
       context: .
       dockerfile: Dockerfile
