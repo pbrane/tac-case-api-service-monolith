@@ -112,10 +112,6 @@ public class RmaCaseResponseDto {
 
     private String shipToAttention;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @JsonDeserialize(using = CustomOffsetDateTimeDeserializer.class)
-    private OffsetDateTime shippedDate;
-
     private String shippedCarrier;
 
     private String problemDescription;

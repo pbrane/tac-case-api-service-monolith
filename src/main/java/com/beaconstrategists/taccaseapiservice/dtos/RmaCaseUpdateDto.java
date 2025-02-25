@@ -164,6 +164,7 @@ public class RmaCaseUpdateDto extends AbstractFieldPresenceAwareDto {
     @JsonSetter
     public void setShipToCountry(String value) {
         this.shipToCountry = value;
+        markFieldPresent("shipToCountry");
     }
 
     private String shipToCity;

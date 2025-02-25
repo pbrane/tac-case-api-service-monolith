@@ -79,7 +79,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
          */
         FreshdeskTicketResponseDto tacCaseTicketResponseDto = findFreshdeskTicketById(rmaCaseCreateDto.getTacCaseId());
         FreshdeskTicketCreateDto rmaTicketCreateDto = buildCreateChildTicketDto(tacCaseTicketResponseDto, rmaCaseCreateDto);
-        FreshdeskTicketResponseDto createRmaCaseTicketResponseDto = createFreshdeskTicket(rmaTicketCreateDto); //fixme: inline this sometime
+        FreshdeskTicketResponseDto createRmaCaseTicketResponseDto = createFreshdeskTicket(rmaTicketCreateDto);
 
         /*
          * We've created the child Ticket for the RMA, now create the RMA Case
@@ -89,44 +89,32 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         /*
          * Get the TAC Case
          */
-        FreshdeskCaseResponseRecords<FreshdeskTacCaseResponseDto> freshdeskTacCaseResponseRecords =
-                findFreshdeskTacCaseRecordsByTicketId(rmaCaseCreateDto.getTacCaseId());
+        FreshdeskCaseResponseRecords<FreshdeskTacCaseResponseDto> freshdeskTacCaseResponseRecords = findFreshdeskTacCaseRecordsByTicketId(rmaCaseCreateDto.getTacCaseId());
         assert freshdeskTacCaseResponseRecords != null;
 
-        Optional<FreshdeskCaseResponse<FreshdeskTacCaseResponseDto>> tacCaseRecord =
-                freshdeskTacCaseResponseRecords.getRecords().stream().findFirst();
-        FreshdeskTacCaseResponseDto freshdeskTacCaseResponseDto =
-                tacCaseRecord.map(FreshdeskCaseResponse::getData).orElse(null);
+        Optional<FreshdeskCaseResponse<FreshdeskTacCaseResponseDto>> tacCaseRecord = freshdeskTacCaseResponseRecords.getRecords().stream().findFirst();
+        FreshdeskTacCaseResponseDto freshdeskTacCaseResponseDto = tacCaseRecord.map(FreshdeskCaseResponse::getData).orElse(null);
 
-        FreshdeskRmaCaseCreateDto freshdeskRmaCaseCreateDto =
-                genericModelMapper.map(rmaCaseCreateDto, FreshdeskRmaCaseCreateDto.class);
+        FreshdeskRmaCaseCreateDto freshdeskRmaCaseCreateDto = genericModelMapper.map(rmaCaseCreateDto, FreshdeskRmaCaseCreateDto.class);
         assert freshdeskTacCaseResponseDto != null;
 
         freshdeskRmaCaseCreateDto.setKey("RMA:"+createRmaCaseTicketResponseDto.getId()+", "+ freshdeskTacCaseResponseDto.getKey());
         freshdeskRmaCaseCreateDto.setTacCase(tacCaseRecord.get().getDisplayId());
         freshdeskRmaCaseCreateDto.setTicket(createRmaCaseTicketResponseDto.getId());
 
-        FreshdeskDataCreateRequest<FreshdeskRmaCaseCreateDto> freshdeskRmaCreateRequest =
-                new FreshdeskDataCreateRequest<>(freshdeskRmaCaseCreateDto);
+        FreshdeskDataCreateRequest<FreshdeskRmaCaseCreateDto> freshdeskRmaCreateRequest = new FreshdeskDataCreateRequest<>(freshdeskRmaCaseCreateDto);
         String rmaCaseSchemaId = schemaService.getRMACaseSchemaId();
 
-        FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto> createRmaCaseResponse =
-                snakeCaseRestClient.post()
-                        .uri("/custom_objects/schemas/{schemaId}/records", rmaCaseSchemaId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(freshdeskRmaCreateRequest)
-                        .retrieve()
-                        .body(new ParameterizedTypeReference<>() {
-                        });
+        FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto> createRmaCaseResponse = createRmaCase(rmaCaseSchemaId, freshdeskRmaCreateRequest);
         assert createRmaCaseResponse != null;
 
         String rmaDisplayId = createRmaCaseResponse.getDisplayId();
 
-        RmaCaseResponseDto rmaCaseResponseDto =
-                genericModelMapper.map(createRmaCaseResponse.getData(), RmaCaseResponseDto.class);
+        RmaCaseResponseDto rmaCaseResponseDto = genericModelMapper.map(createRmaCaseResponse.getData(), RmaCaseResponseDto.class);
         rmaCaseResponseDto.setId(createRmaCaseTicketResponseDto.getId());
         rmaCaseResponseDto.setTacCaseId(rmaCaseCreateDto.getTacCaseId());
         rmaCaseResponseDto.setCaseStatus(CaseStatus.valueOf(createRmaCaseTicketResponseDto.getStatusForTickets().name()));
+        rmaCaseResponseDto.setProblemDescription(createRmaCaseTicketResponseDto.getDescriptionText());
         //fixme: to do this right, we have to do an update to set this field in the RMA Case Record
         //fixme: or just never save it in the record. Just always get it from the displayId???
         rmaCaseResponseDto.setCaseNumber(rmaDisplayId);
@@ -144,10 +132,21 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
          * If the update contains caseStatus, we should also update the ticket
          * Otherwise, just fetch the ticket.
          */
+        FreshdeskTicketUpdateDto dto = new FreshdeskTicketUpdateDto();
+        FreshdeskTicketResponseDto rmaCaseUpdateTicketResponseDto = null;
+        boolean updateTicket = false;
         if (rmaCaseUpdateDto.isFieldPresent("caseStatus")) {
-            FreshdeskTicketUpdateDto dto = new FreshdeskTicketUpdateDto();
             dto.setStatus(StatusForTickets.valueOf(rmaCaseUpdateDto.getCaseStatus().getValue()));
-            FreshdeskTicketResponseDto rmaCaseUpdateTicketResponseDto = updateTicket(rmaTicketId, dto);
+            updateTicket = true;
+        }
+
+        if (rmaCaseUpdateDto.isFieldPresent("problemDescription")) {
+            dto.setDescription(rmaCaseUpdateDto.getProblemDescription());
+            updateTicket = true;
+        }
+
+        if (updateTicket) {
+            rmaCaseUpdateTicketResponseDto = updateTicket(rmaTicketId, dto);
         }
 
         /*
@@ -214,6 +213,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         //fixme: to do this right, we have to do an update to set this field in the RMA Case Record
         rmaCaseResponseDto.setCaseNumber(freshdeskRmaCaseResponse.get().getDisplayId());
         rmaCaseResponseDto.setCaseClosedDate(rmaCaseTicketResponseDto.getStats().getClosedAt());
+        rmaCaseResponseDto.setProblemDescription(rmaCaseTicketResponseDto.getDescriptionText());
         rmaCaseResponseDto.setCaseCreatedDate(rmaCaseTicketResponseDto.getCreatedAt());
 
         return rmaCaseResponseDto;
@@ -259,6 +259,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         rmaCaseResponseDto.setId(rmaCaseTicketResponseDto.getId());
         rmaCaseResponseDto.setTacCaseId(freshdeskTacCaseResponse.getData().getTicket());
         rmaCaseResponseDto.setCaseStatus(CaseStatus.valueOf(rmaCaseTicketResponseDto.getStatusForTickets().name()));
+        rmaCaseResponseDto.setProblemDescription(rmaCaseTicketResponseDto.getDescriptionText());
         //fixme: to do this right, we have to do an update to set this field in the RMA Case Record
         rmaCaseResponseDto.setCaseNumber(freshdeskRmaCaseResponse.get().getDisplayId());
         rmaCaseResponseDto.setCaseClosedDate(rmaCaseTicketResponseDto.getStats().getClosedAt());
@@ -573,6 +574,8 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
                 .email(rmaCaseCreateDto.getContactEmail())
                 .subject("RMA: "+ tacCaseTicketResponseDto.getSubject())
                 .responderId(tacCaseTicketResponseDto.getResponderId())
+                .requesterId(tacCaseTicketResponseDto.getRequesterId())
+                .companyId(tacCaseTicketResponseDto.getCompanyId())
                 .type("Problem")
                 .source(Source.Email)
                 .status(StatusForTickets.Open)
@@ -700,11 +703,23 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
                 rmaCaseResponseDto.setTacCaseId(associatedTicketsList.getFirst());
             }
             rmaCaseResponseDto.setCaseStatus(CaseStatus.valueOf(freshdeskTicketResponseDto.getStatusForTickets().name()));
+            rmaCaseResponseDto.setProblemDescription(freshdeskTicketResponseDto.getDescriptionText());
             rmaCaseResponseDto.setCaseClosedDate(freshdeskTicketResponseDto.getStats().getClosedAt());
             rmaCaseResponseDto.setCaseCreatedDate(freshdeskTicketResponseDto.getCreatedAt());
         }
 
         return rmaCaseResponseDto;
+    }
+
+    private FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto> createRmaCase(String rmaCaseSchemaId,
+                                                                             FreshdeskDataCreateRequest<FreshdeskRmaCaseCreateDto> freshdeskRmaCreateRequest) {
+        return snakeCaseRestClient.post()
+                .uri("/custom_objects/schemas/{schemaId}/records", rmaCaseSchemaId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(freshdeskRmaCreateRequest)
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {
+                });
     }
 
     private static Long extractRmaTicketNumberFromKey(String input) {

@@ -1,0 +1,16 @@
+<configuration>
+    <!-- Console Appender (prints logs to console) -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Root Logger (captures everything at INFO level or higher) -->
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <!-- Enable DEBUG logging for your package -->
+    <logger name="com.beaconstrategists" level="debug"/>
+</configuration>

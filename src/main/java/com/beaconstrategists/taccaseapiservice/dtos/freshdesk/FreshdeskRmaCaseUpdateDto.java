@@ -41,7 +41,4 @@ public class FreshdeskRmaCaseUpdateDto extends RmaCaseUpdateDto {
         markFieldPresent("ticket");
     }
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private OffsetDateTime shippedDate;
-
 }

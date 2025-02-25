@@ -1,7 +1,7 @@
 services:
   apisvc-documentation-mono:
     container_name: apisvc-doc-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.9
+    image: pbranestrategy/tac-case-api-service-mono:0.2.10
     environment:
       - SERVER_PORT=8080
       - API_SVC_ENV=secured
@@ -16,12 +16,13 @@ services:
       - CLIENT_SECRET=client-secret
       - CLIENT_NAME=client-name
       - ACCESS_TOKEN_EXPIRATION_MIN=5
-      - FD_API_KEY=0123456789ABCDEFGHI
+      - FD_API_KEY=0123456789ABCDEFGHIJ
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
-      - FD_CUSTOMER_NAME=Beacon
       - FD_TAC_CASE_SCHEMA_NAME="TAC Cases"
       - FD_RMA_CASE_SCHEMA_NAME="RMA Cases"
-      - FD_DEFAULT_RESPONDER_ID=3043029172572
+      - FD_CUSTOMER_NAME=Beacon
+      - FD_DEFAULT_RESPONDER_ID=1234567890123
+      - FD_DEFAULT_REQUESTER_ID=1234567890123
     build:
       context: .
       dockerfile: Dockerfile
@@ -37,17 +38,18 @@ services:
 
   apisvc-prod-mono:
     container_name: apisvc-prod-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.9
+    image: pbranestrategy/tac-case-api-service-mono:0.2.10
     environment:
       - API_SVC_ENV=secured
       - API_SVC_MODE=freshdesk
       - CLIENT_ID=client-id
       - CLIENT_SECRET=client-secret
       - CLIENT_NAME=Beacon
-      - FD_API_KEY=0123456789ABCDEFGHI
+      - FD_API_KEY=0123456789ABCDEFGHIJ
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
       - FD_CUSTOMER_NAME=Beacon
-      - FD_DEFAULT_RESPONDER_ID=3043029172572
+      - FD_DEFAULT_RESPONDER_ID=1234567890123
+      - FD_DEFAULT_REQUESTER_ID=1234567890123
     build:
       context: .
       dockerfile: Dockerfile
@@ -63,13 +65,10 @@ services:
 
   apisvc-dev-mono:
     container_name: apisvc-dev-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.9
+    image: pbranestrategy/tac-case-api-service-mono:0.2.10
     environment:
       - API_SVC_ENV=unsecured
       - API_SVC_MODE=database
-      - FD_API_KEY=0123456789ABCDEFGHI
-      - FD_BASE_URI=https://domain.freshdesk.com/api/v2
-      - FD_CUSTOMER_NAME=Beacon
     build:
       context: .
       dockerfile: Dockerfile
@@ -85,13 +84,15 @@ services:
 
   apisvc-test-mono:
     container_name: apisvc-test-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.9
+    image: pbranestrategy/tac-case-api-service-mono:0.2.10
     environment:
       - API_SVC_ENV=unsecured
       - API_SVC_MODE=freshdesk
-      - FD_API_KEY=0123456789ABCDEFGHI
+      - FD_API_KEY=0123456789ABCDEFGHIJ
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
       - FD_CUSTOMER_NAME=Beacon
+      - FD_DEFAULT_RESPONDER_ID=1234567890123
+      - FD_DEFAULT_REQUESTER_ID=1234567890123
     build:
       context: .
       dockerfile: Dockerfile
