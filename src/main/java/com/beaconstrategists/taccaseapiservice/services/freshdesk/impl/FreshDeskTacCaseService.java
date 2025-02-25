@@ -162,7 +162,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
         tacCaseResponseDto.setId(createTicketResponseDto.getId());
         tacCaseResponseDto.setCaseNumber(freshdeskTacCaseResponse.getDisplayId());
         tacCaseResponseDto.setSubject(createTicketResponseDto.getSubject());
-        tacCaseResponseDto.setCaseOwner(requesterResponderService.getResponderName());
+//        tacCaseResponseDto.setCaseOwner(requesterResponderService.getResponderName());
         tacCaseResponseDto.setProblemDescription(createTicketResponseDto.getDescriptionText());
         tacCaseResponseDto.setCaseStatus(CaseStatus.valueOf(createTicketResponseDto.getStatusForTickets().name()));
         tacCaseResponseDto.setCasePriority(CasePriorityEnum.valueOf(createTicketResponseDto.getPriorityForTickets().name()));
@@ -245,7 +245,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
         TacCaseResponseDto tacCaseResponseDto = genericModelMapper.map(responseData, TacCaseResponseDto.class);
         tacCaseResponseDto.setId(freshdeskTicketResponseDto.getId());
         tacCaseResponseDto.setSubject(freshdeskTicketResponseDto.getSubject());
-        tacCaseResponseDto.setCaseOwner(requesterResponderService.getResponderName());
+//        tacCaseResponseDto.setCaseOwner(requesterResponderService.getResponderName());
         tacCaseResponseDto.setProblemDescription(freshdeskTicketResponseDto.getDescriptionText());
         tacCaseResponseDto.setCaseStatus(status);
         tacCaseResponseDto.setCasePriority(priority);
@@ -281,7 +281,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
         //fixme: caseNumber is set in the find, should probably be more consistent with the create
         tacCaseResponseDto.setId(id);
         tacCaseResponseDto.setSubject(freshdeskTicketResponseDto.getSubject());
-        tacCaseResponseDto.setCaseOwner(requesterResponderService.getResponderName());
+//        tacCaseResponseDto.setCaseOwner(requesterResponderService.getResponderName());
         tacCaseResponseDto.setCaseStatus(CaseStatus.valueOf(freshdeskTicketResponseDto.getStatusForTickets().name()));
         tacCaseResponseDto.setCasePriority(CasePriorityEnum.valueOf(freshdeskTicketResponseDto.getPriorityForTickets().name()));
         tacCaseResponseDto.setProblemDescription(freshdeskTicketResponseDto.getDescriptionText());
@@ -757,7 +757,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
         tacCaseResponseDto.setCaseStatus(CaseStatus.valueOf(freshdeskTicketResponseDto.getStatusForTickets().name()));
         tacCaseResponseDto.setCasePriority(CasePriorityEnum.valueOf(freshdeskTicketResponseDto.getPriorityForTickets().name()));
         tacCaseResponseDto.setSubject(freshdeskTicketResponseDto.getSubject());
-        tacCaseResponseDto.setCaseOwner(requesterResponderService.getResponderName());
+//        tacCaseResponseDto.setCaseOwner(requesterResponderService.getResponderName());
         tacCaseResponseDto.setProblemDescription(freshdeskTicketResponseDto.getDescriptionText());
         tacCaseResponseDto.setCaseNumber(freshdeskTacCaseResponse.getDisplayId());
         tacCaseResponseDto.setFirstResponseDate(freshdeskTicketResponseDto.getStats().getFirstRespondedAt());

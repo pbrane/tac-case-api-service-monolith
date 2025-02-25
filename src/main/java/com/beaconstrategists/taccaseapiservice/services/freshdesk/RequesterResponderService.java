@@ -16,10 +16,10 @@ public class RequesterResponderService {
 
     private final RestClient restClient;
     private final Map<String, String> responderMap = new ConcurrentHashMap<>();
-
-
-    @Value("${FD_DEFAULT_RESPONDER_ID:123456}")
     private String defaultResponderId;
+
+    @Value("${FD_API_KEY:0123456789ABCDEFGHI}")
+    private String freshdeskApiKey;
 
     @Value("${FD_DEFAULT_REQUESTER_ID:123456}")
     private String defaultRequesterId;
@@ -30,11 +30,11 @@ public class RequesterResponderService {
 
     public void initializeResponder() {
 
-        if (defaultResponderId.equals("123456")) {
-            throw new IllegalStateException("No responder ID provided.");
+        if (freshdeskApiKey.equals("0123456789ABCDEFGHI")) {
+            throw new IllegalStateException("No API Key provided.");
         }
 
-        System.out.println("\n\tInitializing Responder for ID: " + defaultResponderId);
+        System.out.println("\n\tInitializing Responder using API Key: " + freshdeskApiKey);
         System.out.println("\n");
 
         JsonNode responderNode = fetchResponder();
@@ -45,6 +45,7 @@ public class RequesterResponderService {
           Go ahead and validate schemas here.
          */
 
+        defaultResponderId = responderNode.get("id").asText();
         JsonNode contactNode = responderNode.get("contact");
         String contactName = contactNode.get("name").asText();
         responderMap.put(defaultResponderId, contactName);
@@ -57,7 +58,7 @@ public class RequesterResponderService {
             throw new IllegalStateException("No requester ID provided.");
         }
 
-        System.out.println("\n\tInitializing Requester for ID: " + defaultResponderId);
+        System.out.println("\n\tInitializing Requester for ID: " + defaultRequesterId);
         System.out.println("\n");
 
         JsonNode requester = fetchRequester();
@@ -77,7 +78,7 @@ public class RequesterResponderService {
     public JsonNode fetchResponder() {
 
         return restClient.get()
-                .uri("/agents/"+defaultResponderId)
+                .uri("/agents/me")
                 .retrieve()
                 .body(JsonNode.class);
     }
