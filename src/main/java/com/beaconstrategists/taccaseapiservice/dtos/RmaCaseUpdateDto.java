@@ -188,14 +188,6 @@ public class RmaCaseUpdateDto extends AbstractFieldPresenceAwareDto {
         markFieldPresent("shipToAttention");
     }
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private OffsetDateTime shippedDate;
-    @JsonSetter
-    public void setShippedDate(OffsetDateTime value) {
-        this.shippedDate = value;
-        markFieldPresent("shippedDate");
-    }
-
     private String shippedCarrier;
     @JsonSetter
     public void setShippedCarrier(String value) {

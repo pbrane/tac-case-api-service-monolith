@@ -61,7 +61,7 @@ public class RmaCaseCreateDto {
 
     //fixme: investigate this along with Freshdesk Extension of this class
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private OffsetDateTime shippedDate;
+    private OffsetDateTime newPartShippedDate;
 
     private String shippedCarrier;
     private String problemDescription;
