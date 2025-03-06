@@ -493,7 +493,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         List<FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto>> records = rmaCaseRecordsByTicketId.getRecords();
 
         if (records.isEmpty()) {
-            throw new ResourceNotFoundException("Cannot get case notes: Invalid or Missing Case Number.", "INVALID_CASE");
+            throw new ResourceNotFoundException("Cannot retrieve case results: Invalid or Missing Case Number.", "INVALID_CASE");
         }
 
         //first get all the notes of a ticket
@@ -519,7 +519,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         List<FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto>> records = rmaCaseRecordsByTicketId.getRecords();
 
         if (records.isEmpty()) {
-            throw new ResourceNotFoundException("Cannot get case note: Invalid or Missing Case Number.", "INVALID_CASE");
+            throw new ResourceNotFoundException("Cannot retrieve case results: Invalid or Missing Case Number.", "INVALID_CASE");
         }
 
         // Retrieve all the conversations of a ticket
