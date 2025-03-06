@@ -81,7 +81,7 @@ public class RmaCaseController {
         Optional<RmaCaseResponseDto> foundRmaCase = rmaCaseService.findById(id);
         return foundRmaCase
                 .map(rmaCaseDto -> new ResponseEntity<>(rmaCaseDto, HttpStatus.OK))
-                .orElseThrow(() -> new ResourceNotFoundException("Invalid RMA case type.", "INVALID_RMA_CASE"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot retrieve case results: Invalid or Missing Case Number.", "INVALID_CASE"));
     }
 
     @PostMapping(path = "")

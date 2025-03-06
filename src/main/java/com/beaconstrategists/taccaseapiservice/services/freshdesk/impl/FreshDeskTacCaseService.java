@@ -268,29 +268,9 @@ public class FreshDeskTacCaseService implements TacCaseService {
 
     @Override
     public Optional<TacCaseResponseDto> findById(Long id) {
-
-        /*
-         These finds will never be null.
-         If any of the RestClient queries fail to find this ID,
-         The RestClient will result in an HttpClientErrorException.NotFound
-         and will propagate back to the Controller.
-        */
-
-        TacCaseResponseDto tacCaseResponseDto = findFreshdeskTacCaseByTicketId(id);
-        FreshdeskTicketResponseDto freshdeskTicketResponseDto = findFreshdeskTicketById(id);
-
-        //fixme: caseNumber is set in the find, should probably be more consistent with the create
-        tacCaseResponseDto.setId(id);
-        tacCaseResponseDto.setSubject(freshdeskTicketResponseDto.getSubject());
-//        tacCaseResponseDto.setCaseOwner(requesterResponderService.getResponderName());
-        tacCaseResponseDto.setCaseStatus(CaseStatus.valueOf(freshdeskTicketResponseDto.getStatusForTickets().name()));
-        tacCaseResponseDto.setCasePriority(CasePriorityEnum.valueOf(freshdeskTicketResponseDto.getPriorityForTickets().name()));
-        tacCaseResponseDto.setProblemDescription(freshdeskTicketResponseDto.getDescriptionText());
-        tacCaseResponseDto.setFirstResponseDate(freshdeskTicketResponseDto.getStats().getFirstRespondedAt());
-        tacCaseResponseDto.setCaseClosedDate(freshdeskTicketResponseDto.getStats().getClosedAt());
-        tacCaseResponseDto.setCaseCreatedDate(freshdeskTicketResponseDto.getCreatedAt());
-
-        return Optional.of(tacCaseResponseDto);
+        return findFreshdeskTacCaseByTicketId(id)
+                .flatMap(tacCase -> Optional.ofNullable(findFreshdeskTicketById(id))
+                        .map(ticket -> mapToTacCaseResponseDto(tacCase, ticket)));
     }
 
     //fixme
@@ -627,10 +607,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
 
     }
 
-    private TacCaseResponseDto findFreshdeskTacCaseByTicketId(Long id) {
-
-        // Expecting only one record
-
+    private Optional<TacCaseResponseDto> findFreshdeskTacCaseByTicketId(Long id) {
         return findFreshdeskTacCaseRecords(id)
                 .getRecords()
                 .stream()
@@ -639,8 +616,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
                     TacCaseResponseDto tacCaseResponseDto = genericModelMapper.map(record.getData(), TacCaseResponseDto.class);
                     tacCaseResponseDto.setCaseNumber(record.getDisplayId());
                     return tacCaseResponseDto;
-                })
-                .orElseThrow(() -> new ResourceNotFoundException("Invalid case type.", "INVALID_CASE_TYPE"));
+                });
     }
 
     /*
@@ -774,6 +750,20 @@ public class FreshDeskTacCaseService implements TacCaseService {
 
         return tacCaseResponseDto;
     }
+
+    private TacCaseResponseDto mapToTacCaseResponseDto(TacCaseResponseDto tacCase, FreshdeskTicketResponseDto ticket) {
+        tacCase.setId(ticket.getId());
+        tacCase.setSubject(ticket.getSubject());
+//        tacCase.setCaseOwner(requesterResponderService.getResponderName());
+        tacCase.setCaseStatus(CaseStatus.valueOf(ticket.getStatusForTickets().name()));
+        tacCase.setCasePriority(CasePriorityEnum.valueOf(ticket.getPriorityForTickets().name()));
+        tacCase.setProblemDescription(ticket.getDescriptionText());
+        tacCase.setFirstResponseDate(ticket.getStats().getFirstRespondedAt());
+        tacCase.setCaseClosedDate(ticket.getStats().getClosedAt());
+        tacCase.setCaseCreatedDate(ticket.getCreatedAt());
+        return tacCase;
+    }
+
 
 
 }

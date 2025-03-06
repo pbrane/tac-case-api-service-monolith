@@ -76,9 +76,8 @@ public class TacCaseController {
         Optional<TacCaseResponseDto> foundTacCase = tacCaseService.findById(id);
         return foundTacCase
                 .map(tacCaseResponseDto -> new ResponseEntity<>(tacCaseResponseDto, HttpStatus.OK))
-                .orElseThrow(() -> new ResourceNotFoundException("Invalid case type.", "INVALID_CASE_TYPE"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot retrieve case results: Invalid or Missing Case Number.", "INVALID_CASE"));
     }
-
 
     @PostMapping(path = "")
     public ResponseEntity<TacCaseResponseDto> createTacCase(@Valid @RequestBody TacCaseCreateDto dto) {
