@@ -1,6 +1,7 @@
 package com.beaconstrategists.taccaseapiservice.controllers;
 
 import com.beaconstrategists.taccaseapiservice.dtos.*;
+import com.beaconstrategists.taccaseapiservice.exceptions.ResourceNotFoundException;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.beaconstrategists.taccaseapiservice.services.RmaCaseService;
 import jakarta.validation.Valid;
@@ -66,11 +67,21 @@ public class RmaCaseController {
         return new ResponseEntity<>(rmaCases, HttpStatus.OK);
     }
 
+/*
     @GetMapping(path = "/{id}")
     public ResponseEntity<RmaCaseResponseDto> getRmaCase(@PathVariable Long id) {
         Optional<RmaCaseResponseDto> foundRmaCase = rmaCaseService.findById(id);
         return foundRmaCase.map(rmaCaseDto -> new ResponseEntity<>(rmaCaseDto, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+*/
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<RmaCaseResponseDto> getRmaCase(@PathVariable Long id) {
+        Optional<RmaCaseResponseDto> foundRmaCase = rmaCaseService.findById(id);
+        return foundRmaCase
+                .map(rmaCaseDto -> new ResponseEntity<>(rmaCaseDto, HttpStatus.OK))
+                .orElseThrow(() -> new ResourceNotFoundException("Invalid RMA case type.", "INVALID_RMA_CASE"));
     }
 
     @PostMapping(path = "")

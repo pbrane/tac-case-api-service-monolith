@@ -3,6 +3,7 @@ package com.beaconstrategists.taccaseapiservice.services.freshdesk.impl;
 import com.beaconstrategists.taccaseapiservice.config.freshdesk.RestClientConfig;
 import com.beaconstrategists.taccaseapiservice.dtos.*;
 import com.beaconstrategists.taccaseapiservice.dtos.freshdesk.*;
+import com.beaconstrategists.taccaseapiservice.exceptions.ResourceNotFoundException;
 import com.beaconstrategists.taccaseapiservice.mappers.freshdesk.FieldPresenceModelMapper;
 import com.beaconstrategists.taccaseapiservice.mappers.freshdesk.GenericModelMapper;
 import com.beaconstrategists.taccaseapiservice.model.CasePriorityEnum;
@@ -627,12 +628,19 @@ public class FreshDeskTacCaseService implements TacCaseService {
     }
 
     private TacCaseResponseDto findFreshdeskTacCaseByTicketId(Long id) {
-        FreshdeskCaseResponseRecords<FreshdeskTacCaseResponseDto> freshdeskTacCaseRecords = findFreshdeskTacCaseRecords(id);
-        Optional<FreshdeskCaseResponse<FreshdeskTacCaseResponseDto>> record = freshdeskTacCaseRecords.getRecords().stream().findFirst();
-        FreshdeskTacCaseResponseDto freshdeskTacCaseResponseDto = record.map(FreshdeskCaseResponse::getData).orElse(null);
-        TacCaseResponseDto tacCaseResponseDto = genericModelMapper.map(freshdeskTacCaseResponseDto, TacCaseResponseDto.class);
-        tacCaseResponseDto.setCaseNumber(record.stream().findFirst().get().getDisplayId()); //fixme: 'Optional. get()' without 'isPresent()' check
-        return tacCaseResponseDto;
+
+        // Expecting only one record
+
+        return findFreshdeskTacCaseRecords(id)
+                .getRecords()
+                .stream()
+                .findFirst() // Expecting only one record
+                .map(record -> {
+                    TacCaseResponseDto tacCaseResponseDto = genericModelMapper.map(record.getData(), TacCaseResponseDto.class);
+                    tacCaseResponseDto.setCaseNumber(record.getDisplayId());
+                    return tacCaseResponseDto;
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Invalid case type.", "INVALID_CASE_TYPE"));
     }
 
     /*

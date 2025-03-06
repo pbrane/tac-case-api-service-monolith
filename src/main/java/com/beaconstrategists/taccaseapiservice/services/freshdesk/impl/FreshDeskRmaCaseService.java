@@ -219,17 +219,17 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         return rmaCaseResponseDto;
     }
 
-    @Override
+/*    @Override
     public Optional<RmaCaseResponseDto> findById(Long rmaTicketId) {
 
-        /*
+        *//*
          * Find the RMA Ticket
-         */
+         *//*
         FreshdeskTicketResponseDto rmaCaseTicketResponseDto = findFreshdeskTicketById(rmaTicketId);
 
-        /*
+        *//*
          * Find the RMA Case
-         */
+         *//*
         FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> rmaCaseRecords =
                 findFreshdeskRmaCaseRecordsByTicketId(rmaTicketId);
         Optional<FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto>> freshdeskRmaCaseResponse =
@@ -239,9 +239,9 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         assert findRmaCaseResponseDto != null;
 
 
-        /*
+        *//*
          * Find the parent TAC Case
-         */
+         *//*
 
         //now we have to pull the TAC Case to get the TAC Case ID which is the Freshdesk Ticket ID
         FreshdeskCaseResponse<FreshdeskTacCaseResponseDto> freshdeskTacCaseResponse =
@@ -249,13 +249,13 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         FreshdeskTacCaseResponseDto freshdeskTacCaseResponseDto = freshdeskTacCaseResponse.getData();
 
 
-        /*
+        *//*
          * Start mapping values
-         */
+         *//*
         RmaCaseResponseDto rmaCaseResponseDto = genericModelMapper.map(findRmaCaseResponseDto, RmaCaseResponseDto.class);
-        /*
+        *//*
           Finish mapping things for the response from a combination of the RMA Ticket and the RMA Response meta data
-        */
+        *//*
         rmaCaseResponseDto.setId(rmaCaseTicketResponseDto.getId());
         rmaCaseResponseDto.setTacCaseId(freshdeskTacCaseResponse.getData().getTicket());
         rmaCaseResponseDto.setCaseStatus(CaseStatus.valueOf(rmaCaseTicketResponseDto.getStatusForTickets().name()));
@@ -266,7 +266,27 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         rmaCaseResponseDto.setCaseCreatedDate(rmaCaseTicketResponseDto.getCreatedAt());
 
         return Optional.of(rmaCaseResponseDto);
+    }*/
+
+    @Override
+    public Optional<RmaCaseResponseDto> findById(Long rmaTicketId) {
+        return findFreshdeskRmaCaseRecordsByTicketId(rmaTicketId)
+                .getRecords()
+                .stream()
+                .findFirst()
+                .map(FreshdeskCaseResponse::getData)
+                .flatMap(rmaCaseData -> {
+                    // Fetch RMA Ticket
+                    Optional<FreshdeskTicketResponseDto> rmaTicket = Optional.ofNullable(findFreshdeskTicketById(rmaTicketId));
+
+                    // Fetch TAC Case linked to this RMA case
+                    Optional<FreshdeskTacCaseResponseDto> tacCase = Optional.ofNullable(findFreshdeskTacCaseByDisplayId(rmaCaseData.getTacCase()))
+                            .map(FreshdeskCaseResponse::getData);
+
+                    return rmaTicket.flatMap(ticket -> tacCase.map(tacData -> mapToRmaCaseResponseDto(ticket, rmaCaseData, tacData)));
+                });
     }
+
 
     //fixme:
     @Override
@@ -729,6 +749,26 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
             return Long.parseLong(matcher.group(1));
         }
         return null; // Return null if "RMA:" is not found
+    }
+
+    private RmaCaseResponseDto mapToRmaCaseResponseDto(
+            FreshdeskTicketResponseDto rmaTicket,
+            FreshdeskRmaCaseResponseDto rmaCaseData,
+            FreshdeskTacCaseResponseDto tacCaseData) {
+
+        return Optional.ofNullable(genericModelMapper.map(rmaCaseData, RmaCaseResponseDto.class))
+                .map(rmaCaseResponseDto -> {
+                    rmaCaseResponseDto.setId(rmaTicket.getId());
+                    rmaCaseResponseDto.setTacCaseId(tacCaseData.getTicket());
+                    rmaCaseResponseDto.setCaseStatus(CaseStatus.valueOf(rmaTicket.getStatusForTickets().name()));
+                    rmaCaseResponseDto.setProblemDescription(rmaTicket.getDescriptionText());
+                    //fixme: look into this sometime
+                    //rmaCaseResponseDto.setCaseNumber(rmaCaseData.getTacCase());
+                    rmaCaseResponseDto.setCaseClosedDate(rmaTicket.getStats().getClosedAt());
+                    rmaCaseResponseDto.setCaseCreatedDate(rmaTicket.getCreatedAt());
+                    return rmaCaseResponseDto;
+                })
+                .orElseThrow(() -> new IllegalStateException("Failed to map RMA case response"));
     }
 
 

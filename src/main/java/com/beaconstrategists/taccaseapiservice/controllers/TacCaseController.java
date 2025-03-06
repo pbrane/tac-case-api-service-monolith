@@ -1,6 +1,7 @@
 package com.beaconstrategists.taccaseapiservice.controllers;
 
 import com.beaconstrategists.taccaseapiservice.dtos.*;
+import com.beaconstrategists.taccaseapiservice.exceptions.ResourceNotFoundException;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.beaconstrategists.taccaseapiservice.services.TacCaseService;
 import jakarta.validation.Valid;
@@ -61,12 +62,23 @@ public class TacCaseController {
         return new ResponseEntity<>(tacCases, HttpStatus.OK);
     }
 
+/*
     @GetMapping(path = "/{id}")
     public ResponseEntity<TacCaseResponseDto> getTacCase(@PathVariable Long id) {
         Optional<TacCaseResponseDto> foundTacCase = tacCaseService.findById(id);
         return foundTacCase.map(tacCaseResponseDto -> new ResponseEntity<>(tacCaseResponseDto, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+*/
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<TacCaseResponseDto> getTacCase(@PathVariable Long id) {
+        Optional<TacCaseResponseDto> foundTacCase = tacCaseService.findById(id);
+        return foundTacCase
+                .map(tacCaseResponseDto -> new ResponseEntity<>(tacCaseResponseDto, HttpStatus.OK))
+                .orElseThrow(() -> new ResourceNotFoundException("Invalid case type.", "INVALID_CASE_TYPE"));
+    }
+
 
     @PostMapping(path = "")
     public ResponseEntity<TacCaseResponseDto> createTacCase(@Valid @RequestBody TacCaseCreateDto dto) {
