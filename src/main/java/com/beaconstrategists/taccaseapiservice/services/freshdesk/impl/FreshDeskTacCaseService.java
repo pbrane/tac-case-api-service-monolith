@@ -412,10 +412,10 @@ public class FreshDeskTacCaseService implements TacCaseService {
 
     //fixme: Should this throw an exception where the other's don't?
     @Override
-    public TacCaseNoteResponseDto addNote(Long ticketId, TacCaseNoteUploadDto uploadDto) throws IOException {
+    public TacCaseNoteResponseDto addNote(Long caseId, TacCaseNoteUploadDto uploadDto) throws IOException {
 
         //First make sure this is a valid TAC Ticket
-        Optional<TacCaseResponseDto> freshdeskTacCaseByTicketId = findFreshdeskTacCaseByTicketId(ticketId);
+        Optional<TacCaseResponseDto> freshdeskTacCaseByTicketId = findFreshdeskTacCaseByTicketId(caseId);
 
         if (freshdeskTacCaseByTicketId.isEmpty()) {
             throw new ResourceNotFoundException("Cannot add note: Invalid or Missing Case Number.", "INVALID_CASE");
@@ -427,18 +427,25 @@ public class FreshDeskTacCaseService implements TacCaseService {
                 .incoming(true)
                 .build();
 
-        FreshdeskTicketNoteResponseDto freshdeskTicketNoteDto = createFreshdeskTicketNote(dto, ticketId);
+        FreshdeskTicketNoteResponseDto freshdeskTicketNoteDto = createFreshdeskTicketNote(dto, caseId);
 
         return TacCaseNoteResponseDto.builder()
                 .id(freshdeskTicketNoteDto.getId())
                 .author(uploadDto.getAuthor())
-                .tacCaseId(ticketId)
+                .tacCaseId(caseId)
                 .date(freshdeskTicketNoteDto.getCreatedAt())
                 .build();
     }
 
     @Override
     public List<TacCaseNoteResponseDto> getAllNotes(Long caseId) {
+
+        //First make sure this is a valid TAC Ticket
+        Optional<TacCaseResponseDto> freshdeskTacCaseByTicketId = findFreshdeskTacCaseByTicketId(caseId);
+
+        if (freshdeskTacCaseByTicketId.isEmpty()) {
+            throw new ResourceNotFoundException("Cannot get notes for case: Invalid or Missing Case Number.", "INVALID_CASE");
+        }
 
         //first get all the notes of a ticket
         List<FreshdeskTicketConversationDto> freshdeskTicketConversations = findFreshdeskTicketConversations(caseId);
@@ -457,6 +464,14 @@ public class FreshDeskTacCaseService implements TacCaseService {
 
     @Override
     public TacCaseNoteDownloadDto getNote(Long caseId, Long noteId) {
+
+        //First make sure this is a valid TAC Ticket
+        Optional<TacCaseResponseDto> freshdeskTacCaseByTicketId = findFreshdeskTacCaseByTicketId(caseId);
+
+        if (freshdeskTacCaseByTicketId.isEmpty()) {
+            throw new ResourceNotFoundException("Cannot get note for case: Invalid or Missing Case Number.", "INVALID_CASE");
+        }
+
         // Retrieve all the conversations of a ticket
         List<FreshdeskTicketConversationDto> freshdeskTicketConversations = findFreshdeskTicketConversations(caseId);
 
@@ -471,8 +486,8 @@ public class FreshDeskTacCaseService implements TacCaseService {
                         .text(freshdesk.getBodyText())
                         .build())
                 .findFirst() // Get the first matching note
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "No note found with noteId: " + noteId + " for Case ID: " + caseId));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No note found with noteId: " + noteId + " for Case ID: " + caseId, "INVALID_CASE"));
     }
 
     @Override

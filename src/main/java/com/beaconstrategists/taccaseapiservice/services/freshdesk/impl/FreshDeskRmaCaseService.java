@@ -459,10 +459,10 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
     }
 
     @Override
-    public RmaCaseNoteResponseDto addNote(Long ticketId, RmaCaseNoteUploadDto uploadDto) throws IOException {
+    public RmaCaseNoteResponseDto addNote(Long caseId, RmaCaseNoteUploadDto uploadDto) throws IOException {
 
         //First make sure this is a valid RMA Ticket
-        FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> rmaCaseRecordsByTicketId = findFreshdeskRmaCaseRecordsByTicketId(ticketId);
+        FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> rmaCaseRecordsByTicketId = findFreshdeskRmaCaseRecordsByTicketId(caseId);
         List<FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto>> records = rmaCaseRecordsByTicketId.getRecords();
 
         if (records.isEmpty()) {
@@ -475,18 +475,26 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
                 .incoming(true)
                 .build();
 
-        FreshdeskTicketNoteResponseDto freshdeskTicketNoteDto = createFreshdeskTicketNote(dto, ticketId);
+        FreshdeskTicketNoteResponseDto freshdeskTicketNoteDto = createFreshdeskTicketNote(dto, caseId);
 
         return RmaCaseNoteResponseDto.builder()
                 .id(freshdeskTicketNoteDto.getId())
                 .author(uploadDto.getAuthor())
-                .rmaCaseId(ticketId)
+                .rmaCaseId(caseId)
                 .date(freshdeskTicketNoteDto.getCreatedAt())
                 .build();
     }
 
     @Override
     public List<RmaCaseNoteResponseDto> getAllNotes(Long caseId) {
+
+        //First make sure this is a valid RMA Ticket
+        FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> rmaCaseRecordsByTicketId = findFreshdeskRmaCaseRecordsByTicketId(caseId);
+        List<FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto>> records = rmaCaseRecordsByTicketId.getRecords();
+
+        if (records.isEmpty()) {
+            throw new ResourceNotFoundException("Cannot get case notes: Invalid or Missing Case Number.", "INVALID_CASE");
+        }
 
         //first get all the notes of a ticket
         List<FreshdeskTicketConversationDto> freshdeskTicketConversations = findFreshdeskTicketConversations(caseId);
@@ -505,6 +513,15 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
 
     @Override
     public RmaCaseNoteDownloadDto getNote(Long caseId, Long noteId) {
+
+        //First make sure this is a valid RMA Ticket
+        FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> rmaCaseRecordsByTicketId = findFreshdeskRmaCaseRecordsByTicketId(caseId);
+        List<FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto>> records = rmaCaseRecordsByTicketId.getRecords();
+
+        if (records.isEmpty()) {
+            throw new ResourceNotFoundException("Cannot get case note: Invalid or Missing Case Number.", "INVALID_CASE");
+        }
+
         // Retrieve all the conversations of a ticket
         List<FreshdeskTicketConversationDto> freshdeskTicketConversations = findFreshdeskTicketConversations(caseId);
 
@@ -519,8 +536,8 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
                         .text(freshdesk.getBodyText())
                         .build())
                 .findFirst() // Get the first matching note
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "No note found with noteId: " + noteId + " for Case ID: " + caseId));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No note found with noteId: " + noteId + " for Case ID: " + caseId, "INVALID_CASE"));
     }
 
     @Override
