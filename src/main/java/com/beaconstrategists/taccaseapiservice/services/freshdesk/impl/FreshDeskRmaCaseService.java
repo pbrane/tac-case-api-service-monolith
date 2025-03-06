@@ -3,6 +3,7 @@ package com.beaconstrategists.taccaseapiservice.services.freshdesk.impl;
 import com.beaconstrategists.taccaseapiservice.config.freshdesk.RestClientConfig;
 import com.beaconstrategists.taccaseapiservice.dtos.*;
 import com.beaconstrategists.taccaseapiservice.dtos.freshdesk.*;
+import com.beaconstrategists.taccaseapiservice.exceptions.ResourceNotFoundException;
 import com.beaconstrategists.taccaseapiservice.mappers.freshdesk.FieldPresenceModelMapper;
 import com.beaconstrategists.taccaseapiservice.mappers.freshdesk.GenericModelMapper;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
@@ -459,6 +460,14 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
 
     @Override
     public RmaCaseNoteResponseDto addNote(Long ticketId, RmaCaseNoteUploadDto uploadDto) throws IOException {
+
+        //First make sure this is a valid RMA Ticket
+        FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> rmaCaseRecordsByTicketId = findFreshdeskRmaCaseRecordsByTicketId(ticketId);
+        List<FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto>> records = rmaCaseRecordsByTicketId.getRecords();
+
+        if (records.isEmpty()) {
+            throw new ResourceNotFoundException("Cannot add note: Invalid or Missing Case Number.", "INVALID_CASE");
+        }
 
         FreshdeskTicketCreateNoteDto dto = FreshdeskTicketCreateNoteDto.builder()
                 .body(uploadDto.getText())

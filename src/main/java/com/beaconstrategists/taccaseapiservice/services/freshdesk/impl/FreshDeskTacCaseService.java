@@ -414,6 +414,13 @@ public class FreshDeskTacCaseService implements TacCaseService {
     @Override
     public TacCaseNoteResponseDto addNote(Long ticketId, TacCaseNoteUploadDto uploadDto) throws IOException {
 
+        //First make sure this is a valid TAC Ticket
+        Optional<TacCaseResponseDto> freshdeskTacCaseByTicketId = findFreshdeskTacCaseByTicketId(ticketId);
+
+        if (freshdeskTacCaseByTicketId.isEmpty()) {
+            throw new ResourceNotFoundException("Cannot add note: Invalid or Missing Case Number.", "INVALID_CASE");
+        }
+
         FreshdeskTicketCreateNoteDto dto = FreshdeskTicketCreateNoteDto.builder()
                 .body(uploadDto.getText())
                 .privateField(false)
