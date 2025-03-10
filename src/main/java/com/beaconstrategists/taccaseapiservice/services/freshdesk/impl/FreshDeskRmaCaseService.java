@@ -13,6 +13,7 @@ import com.beaconstrategists.taccaseapiservice.model.freshdesk.StatusForTickets;
 import com.beaconstrategists.taccaseapiservice.services.RmaCaseService;
 import com.beaconstrategists.taccaseapiservice.services.freshdesk.SchemaService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -52,6 +53,9 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
     private final GenericModelMapper genericModelMapper;
 
     private final SchemaService schemaService;
+
+    @Value("${RMA_DEFAULT_SHIPPED_CARRIER:FedEx}")
+    private String defaultShippedCarrier;
 
     public FreshDeskRmaCaseService(RestClientConfig restClientConfig,
                                    @Qualifier("snakeCaseRestClient") RestClient snakeCaseRestClient,
@@ -97,6 +101,9 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         FreshdeskTacCaseResponseDto freshdeskTacCaseResponseDto = tacCaseRecord.map(FreshdeskCaseResponse::getData).orElse(null);
 
         FreshdeskRmaCaseCreateDto freshdeskRmaCaseCreateDto = genericModelMapper.map(rmaCaseCreateDto, FreshdeskRmaCaseCreateDto.class);
+        if (rmaCaseCreateDto.getShippedCarrier() == null) {
+            freshdeskRmaCaseCreateDto.setShippedCarrier(defaultShippedCarrier);
+        }
         assert freshdeskTacCaseResponseDto != null;
 
         freshdeskRmaCaseCreateDto.setKey("RMA:"+createRmaCaseTicketResponseDto.getId()+", "+ freshdeskTacCaseResponseDto.getKey());
