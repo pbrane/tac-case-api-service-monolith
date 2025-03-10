@@ -361,7 +361,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
     }
 
     @Override
-    public RmaCaseAttachmentResponseDto addAttachment(Long ticketId, RmaCaseAttachmentUploadDto uploadDto) throws IOException {
+    public RmaCaseAttachmentResponseDto addAttachment(Long caseId, RmaCaseAttachmentUploadDto uploadDto) throws IOException {
 
         /*
           Fixme: We should at least validate that the ticket ID sent is a ticket for an RMA???
@@ -373,12 +373,20 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
 
         validateFileType(file);
 
+        //First make sure this is a valid RMA Case
+        FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> rmaCaseRecordsByTicketId = findFreshdeskRmaCaseRecordsByTicketId(caseId);
+        List<FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto>> records = rmaCaseRecordsByTicketId.getRecords();
+
+        if (records.isEmpty()) {
+            throw new ResourceNotFoundException("Cannot retrieve case results: Invalid or Missing Case Number.", "INVALID_CASE");
+        }
+
         // Create the multipart request body
         MultiValueMap<String, HttpEntity<?>> multipartMap = createMultipartMap(file);
 
         try {
             FreshdeskTicketResponseDto dto = snakeCaseRestClient.put()
-                    .uri("/tickets/{ticketId}", ticketId)
+                    .uri("/tickets/{ticketId}", caseId)
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .body(multipartMap)
                     .retrieve()
@@ -397,6 +405,14 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
 
     @Override
     public List<RmaCaseAttachmentResponseDto> getAllAttachments(Long caseId) {
+        //First make sure this is a valid RMA Case
+        FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> rmaCaseRecordsByTicketId = findFreshdeskRmaCaseRecordsByTicketId(caseId);
+        List<FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto>> records = rmaCaseRecordsByTicketId.getRecords();
+
+        if (records.isEmpty()) {
+            throw new ResourceNotFoundException("Cannot retrieve case results: Invalid or Missing Case Number.", "INVALID_CASE");
+        }
+
         // Retrieve the ticket and its attachments
         FreshdeskTicketResponseDto freshdeskTicketResponseDto = findFreshdeskTicketById(caseId);
         List<FreshdeskAttachment> freshdeskAttachments = freshdeskTicketResponseDto.getAttachments();
@@ -419,10 +435,19 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
 
     @Override
     public RmaCaseAttachmentResponseDto getAttachment(Long caseId, Long attachmentId) {
+
+        //First make sure this is a valid RMA Case
+        FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> rmaCaseRecordsByTicketId = findFreshdeskRmaCaseRecordsByTicketId(caseId);
+        List<FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto>> records = rmaCaseRecordsByTicketId.getRecords();
+
+        if (records.isEmpty()) {
+            throw new ResourceNotFoundException("Cannot retrieve case results: Invalid or Missing Case Number.", "INVALID_CASE");
+        }
+
         // Retrieve the ticket and its attachments
         FreshdeskTicketResponseDto freshdeskTicketResponseDto = findFreshdeskTicketById(caseId);
         if (freshdeskTicketResponseDto == null) {
-            throw new IllegalArgumentException("No ticket found for RMA Case: " + caseId);
+            throw new ResourceNotFoundException("No required ticket found for RMA Case: " + caseId, "INVALID_CASE");
         }
 
         List<FreshdeskAttachment> freshdeskAttachments = freshdeskTicketResponseDto.getAttachments();
@@ -561,12 +586,11 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
 
     private FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> findFreshdeskRmaCaseRecordsByTicketId(Long rmaTicketId) {
         String tacCaseSchemaId = schemaService.getRMACaseSchemaId();
-        FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> rmaCaseResponseDto = snakeCaseRestClient.get()
+        return snakeCaseRestClient.get()
                 .uri("/custom_objects/schemas/{schema-id}/records?ticket={ticketId}", tacCaseSchemaId, rmaTicketId)
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {
                 });
-        return rmaCaseResponseDto;
     }
 
     private FreshdeskCaseResponse<FreshdeskTacCaseResponseDto> findFreshdeskTacCaseByDisplayId(String displayId) {

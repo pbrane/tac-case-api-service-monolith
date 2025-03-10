@@ -313,7 +313,8 @@ public class FreshDeskTacCaseService implements TacCaseService {
     }
 
     @Override
-    public TacCaseAttachmentResponseDto addAttachment(Long ticketId, TacCaseAttachmentUploadDto uploadDto) throws IOException {
+    public TacCaseAttachmentResponseDto addAttachment(Long caseId, TacCaseAttachmentUploadDto uploadDto) throws IOException {
+
         // Validate the uploaded file
         MultipartFile file = uploadDto.getFile();
         if (file == null || file.isEmpty()) {
@@ -322,12 +323,18 @@ public class FreshDeskTacCaseService implements TacCaseService {
 
         validateFileType(file);
 
+        //First make sure this is a valid TAC Case
+        Optional<TacCaseResponseDto> freshdeskTacCaseByTicketId = findFreshdeskTacCaseByTicketId(caseId);
+        if (freshdeskTacCaseByTicketId.isEmpty()) {
+            throw new ResourceNotFoundException("Cannot retrieve case results: Invalid or Missing TAC Case Number.", "INVALID_CASE");
+        }
+
         // Create the multipart request body
         MultiValueMap<String, HttpEntity<?>> multipartMap = createMultipartMap(file);
 
         try {
             FreshdeskTicketResponseDto dto = snakeCaseRestClient.put()
-                    .uri("/tickets/{ticketId}", ticketId)
+                    .uri("/tickets/{ticketId}", caseId)
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .body(multipartMap)
                     .retrieve()
@@ -346,6 +353,13 @@ public class FreshDeskTacCaseService implements TacCaseService {
 
     @Override
     public List<TacCaseAttachmentResponseDto> getAllAttachments(Long caseId) {
+
+        //First make sure this is a valid TAC Case
+        Optional<TacCaseResponseDto> freshdeskTacCaseByTicketId = findFreshdeskTacCaseByTicketId(caseId);
+        if (freshdeskTacCaseByTicketId.isEmpty()) {
+            throw new ResourceNotFoundException("Cannot retrieve case results: Invalid or Missing TAC Case Number.", "INVALID_CASE");
+        }
+
         // Retrieve the ticket and its attachments
         FreshdeskTicketResponseDto freshdeskTicketResponseDto = findFreshdeskTicketById(caseId);
         List<FreshdeskAttachment> freshdeskAttachments = freshdeskTicketResponseDto.getAttachments();
@@ -368,10 +382,17 @@ public class FreshDeskTacCaseService implements TacCaseService {
 
     @Override
     public TacCaseAttachmentResponseDto getAttachment(Long caseId, Long attachmentId) {
+
+        //First make sure this is a valid TAC Case
+        Optional<TacCaseResponseDto> freshdeskTacCaseByTicketId = findFreshdeskTacCaseByTicketId(caseId);
+        if (freshdeskTacCaseByTicketId.isEmpty()) {
+            throw new ResourceNotFoundException("Cannot retrieve case results: Invalid or Missing TAC Case Number.", "INVALID_CASE");
+        }
+
         // Retrieve the ticket and its attachments
         FreshdeskTicketResponseDto freshdeskTicketResponseDto = findFreshdeskTicketById(caseId);
         if (freshdeskTicketResponseDto == null) {
-            throw new IllegalArgumentException("No ticket found for TAC Case: " + caseId);
+            throw new ResourceNotFoundException("No required ticket found for TAC Case: " + caseId, "INVALID_CASE");
         }
 
         List<FreshdeskAttachment> freshdeskAttachments = freshdeskTicketResponseDto.getAttachments();
