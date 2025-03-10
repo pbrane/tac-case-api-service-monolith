@@ -125,7 +125,14 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
     }
 
     @Override
-    public RmaCaseResponseDto update(Long rmaTicketId, RmaCaseUpdateDto rmaCaseUpdateDto) {
+    public RmaCaseResponseDto update(Long caseId, RmaCaseUpdateDto rmaCaseUpdateDto) {
+
+        //First make sure this is a valid RMA Case
+        FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> rmaCaseRecordsByTicketId = findFreshdeskRmaCaseRecordsByTicketId(caseId);
+        List<FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto>> records = rmaCaseRecordsByTicketId.getRecords();
+        if (records.isEmpty()) {
+            throw new ResourceNotFoundException("Cannot retrieve case results: Invalid or Missing Case Number.", "INVALID_CASE");
+        }
 
         //fixme: there may be other fields for the ticket that should be updated,
         //fixme: for example, problem description
@@ -147,24 +154,26 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         }
 
         if (updateTicket) {
-            rmaCaseUpdateTicketResponseDto = updateTicket(rmaTicketId, dto);
+            rmaCaseUpdateTicketResponseDto = updateTicket(caseId, dto);
         }
 
         /*
          * Always do the find so we can use the stats metadata in the final Response DTO
          */
-        FreshdeskTicketResponseDto rmaCaseTicketResponseDto = findFreshdeskTicketById(rmaTicketId);
+        FreshdeskTicketResponseDto rmaCaseTicketResponseDto = findFreshdeskTicketById(caseId);
 
         /*
          * Now, we need to find the RMA Case Record associated with this ticket ID
-         * fixme: find a better way to handle these Optionals
          */
+/*
         FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> rmaCaseRecords =
-                findFreshdeskRmaCaseRecordsByTicketId(rmaTicketId);
+                findFreshdeskRmaCaseRecordsByTicketId(caseId);
         Optional<FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto>> freshdeskRmaCaseResponse =
                 rmaCaseRecords.getRecords().stream().findFirst();
+*/
+        Optional<FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto>> record = records.stream().findFirst();
         FreshdeskRmaCaseResponseDto findRmaCaseResponseDto =
-                freshdeskRmaCaseResponse.map(FreshdeskCaseResponse::getData).orElse(null);
+                record.map(FreshdeskCaseResponse::getData).orElse(null);
         assert findRmaCaseResponseDto != null;
 
         /*
@@ -190,10 +199,10 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
           Ready to send the RMA Case update
         */
         FreshdeskRmaCaseUpdateRequest freshdeskRmaCaseUpdateRequest = new FreshdeskRmaCaseUpdateRequest(freshdeskRmaCaseUpdateDto);
-        freshdeskRmaCaseUpdateRequest.setDisplayId(freshdeskRmaCaseResponse.get().getDisplayId());
-        freshdeskRmaCaseUpdateRequest.setVersion(freshdeskRmaCaseResponse.get().getVersion());
+        freshdeskRmaCaseUpdateRequest.setDisplayId(record.get().getDisplayId());
+        freshdeskRmaCaseUpdateRequest.setVersion(record.get().getVersion());
         FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto> rmaCaseUpdateResponse =
-                updateRmaCase(freshdeskRmaCaseResponse.get().getDisplayId(), freshdeskRmaCaseUpdateRequest);
+                updateRmaCase(record.get().getDisplayId(), freshdeskRmaCaseUpdateRequest);
         assert rmaCaseUpdateResponse != null;
         FreshdeskRmaCaseResponseDto updateRmaCaseResponseDto = rmaCaseUpdateResponse.getData();
 
@@ -212,7 +221,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         rmaCaseResponseDto.setTacCaseId(freshdeskTacCaseResponse.getData().getTicket());
         rmaCaseResponseDto.setCaseStatus(CaseStatus.valueOf(rmaCaseTicketResponseDto.getStatusForTickets().name()));
         //fixme: to do this right, we have to do an update to set this field in the RMA Case Record
-        rmaCaseResponseDto.setCaseNumber(freshdeskRmaCaseResponse.get().getDisplayId());
+        rmaCaseResponseDto.setCaseNumber(record.get().getDisplayId());
         rmaCaseResponseDto.setCaseClosedDate(rmaCaseTicketResponseDto.getStats().getClosedAt());
         rmaCaseResponseDto.setProblemDescription(rmaCaseTicketResponseDto.getDescriptionText());
         rmaCaseResponseDto.setCaseCreatedDate(rmaCaseTicketResponseDto.getCreatedAt());
@@ -376,7 +385,6 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         //First make sure this is a valid RMA Case
         FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> rmaCaseRecordsByTicketId = findFreshdeskRmaCaseRecordsByTicketId(caseId);
         List<FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto>> records = rmaCaseRecordsByTicketId.getRecords();
-
         if (records.isEmpty()) {
             throw new ResourceNotFoundException("Cannot retrieve case results: Invalid or Missing Case Number.", "INVALID_CASE");
         }

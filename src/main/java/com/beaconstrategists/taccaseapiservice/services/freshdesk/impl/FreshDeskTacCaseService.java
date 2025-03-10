@@ -177,17 +177,23 @@ public class FreshDeskTacCaseService implements TacCaseService {
      * Update a TAC Case in Freshdesk
      */
     @Override
-    public TacCaseResponseDto update(Long id, TacCaseUpdateDto tacCaseUpdateDto) {
+    public TacCaseResponseDto update(Long caseId, TacCaseUpdateDto tacCaseUpdateDto) {
+
+        //First make sure this is a valid TAC Case
+        Optional<TacCaseResponseDto> freshdeskTacCaseByTicketId = findFreshdeskTacCaseByTicketId(caseId);
+        if (freshdeskTacCaseByTicketId.isEmpty()) {
+            throw new ResourceNotFoundException("Cannot retrieve case results: Invalid or Missing TAC Case Number.", "INVALID_CASE");
+        }
 
         FreshdeskTicketUpdateDto freshdeskTicketUpdateDto = buildFreshdeskTicketUpdateDto(tacCaseUpdateDto);
 
         //First, update the ticket if needed
         if (freshdeskTicketUpdateDto != null) {
-            updateTicket(id, freshdeskTicketUpdateDto);
+            updateTicket(caseId, freshdeskTicketUpdateDto);
         }
 
         //Now, fetch it with built-in stats for the TAC Case Response details
-        FreshdeskTicketResponseDto freshdeskTicketResponseDto = findFreshdeskTicketById(id);
+        FreshdeskTicketResponseDto freshdeskTicketResponseDto = findFreshdeskTicketById(caseId);
 
         assert freshdeskTicketResponseDto != null; //fixme: what happens here if null?
 
@@ -201,7 +207,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
         there will ever only be one record returned.
 */
         FreshdeskCaseResponseRecords<FreshdeskTacCaseResponseDto> freshdeskCaseResponseRecords =
-                findFreshdeskTacCaseRecords(id);
+                findFreshdeskTacCaseRecords(caseId);
 /*
         If there is a record, there will only be one as this is a 1:1 relationship by design
         The record ID here is not an integer like with a ticket
