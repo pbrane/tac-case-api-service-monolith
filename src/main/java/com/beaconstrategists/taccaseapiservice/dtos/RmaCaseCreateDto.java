@@ -58,6 +58,7 @@ public class RmaCaseCreateDto {
     private String shipToCountry;
     private String shipToCity;
     private String shipToAttention;
+    private String shipToParty;
 
     //fixme: investigate this along with Freshdesk Extension of this class
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -67,5 +68,6 @@ public class RmaCaseCreateDto {
     private String problemDescription;
     private String installationCountry;
     private String customerTrackingNumber;
+    private String vendorTrackingNumber;
 
 }

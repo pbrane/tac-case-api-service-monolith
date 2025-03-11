@@ -112,6 +112,8 @@ public class RmaCaseResponseDto {
 
     private String shipToAttention;
 
+    private String shipToParty;
+
     private String shippedCarrier;
 
     private String problemDescription;
@@ -119,6 +121,8 @@ public class RmaCaseResponseDto {
     private String installationCountry;
 
     private String customerTrackingNumber;
+
+    private String vendorTrackingNumber;
 
     private String contactEmail;
 

@@ -188,6 +188,13 @@ public class RmaCaseUpdateDto extends AbstractFieldPresenceAwareDto {
         markFieldPresent("shipToAttention");
     }
 
+    private String shipToParty;
+    @JsonSetter
+    public void setShipToParty(String value) {
+        this.shipToParty = value;
+        markFieldPresent("shipToParty");
+    }
+
     private String shippedCarrier;
     @JsonSetter
     public void setShippedCarrier(String value) {
@@ -214,6 +221,13 @@ public class RmaCaseUpdateDto extends AbstractFieldPresenceAwareDto {
     public void setCustomerTrackingNumber(String value) {
         this.customerTrackingNumber = value;
         markFieldPresent("customerTrackingNumber");
+    }
+
+    private String vendorTrackingNumber;
+    @JsonSetter
+    public void setVendorTrackingNumber(String value) {
+        this.vendorTrackingNumber = value;
+        markFieldPresent("vendorTrackingNumber");
     }
 
     private String contactEmail;
