@@ -1,16 +1,21 @@
 package com.beaconstrategists.taccaseapiservice.config.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.deser.BeanDeserializerModifier;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class JacksonConfig {
+
+    @Value("${ESCAPE_HTML_STRINGS:true}")
+    private String escapeHtmlStrings;
+
 
     @Bean
     @Qualifier("camelCaseObjectMapper")
@@ -21,6 +26,7 @@ public class JacksonConfig {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         //objectMapper.findAndRegisterModules();
+        objectMapper.registerModule(htmlEscapingModule());
         return objectMapper;
     }
 
@@ -31,7 +37,29 @@ public class JacksonConfig {
         objectMapper.registerModule(new JavaTimeModule()); // Add support for Java 8+ date/time
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // Ensure dates are not serialized as arrays
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE); // Preserve snake_case
+        objectMapper.registerModule(htmlEscapingModule());
         return objectMapper;
+    }
+
+    @Bean
+    public SimpleModule htmlEscapingModule() {
+        SimpleModule module = new SimpleModule();
+
+        module.setDeserializerModifier(new BeanDeserializerModifier() {
+            @Override
+            public JsonDeserializer<?> modifyDeserializer(
+                    DeserializationConfig config,
+                    BeanDescription beanDesc,
+                    JsonDeserializer<?> deserializer) {
+
+                if (beanDesc.getBeanClass() == String.class) {
+                    return new HtmlEscapingStringDeserializer(escapeHtmlStrings.equalsIgnoreCase("true"));
+                }
+                return deserializer;
+            }
+        });
+
+        return module;
     }
 
 }
