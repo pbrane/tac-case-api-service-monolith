@@ -84,6 +84,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
 
         // Build the query parameters dynamically
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance();
+        uriComponentsBuilder.queryParam("page_size", 50);
 
         if (caseCreateDateFrom != null && caseCreateDateTo != null) {
             uriComponentsBuilder.queryParam("created_time[gt]", caseCreateDateFrom.format(formatter))

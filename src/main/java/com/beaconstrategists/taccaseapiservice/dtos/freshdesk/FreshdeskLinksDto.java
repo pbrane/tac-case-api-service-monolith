@@ -6,17 +6,24 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FreshdeskCaseResponseRecords<T> {
+public class FreshdeskLinksDto {
 
-    private List<FreshdeskCaseResponse<T>> records;
+    @JsonProperty("next")
+    private Link next;
 
-    @JsonProperty("_links")
-    private FreshdeskLinksDto links;  // Add this field to support `_links` in the response
+    @JsonProperty("count")
+    private Link count;
 
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Link {
+        @JsonProperty("href")
+        private String href;
+    }
 }
