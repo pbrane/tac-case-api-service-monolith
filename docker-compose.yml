@@ -1,7 +1,7 @@
 services:
   apisvc-documentation-mono:
     container_name: apisvc-doc-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.12
+    image: pbranestrategy/tac-case-api-service-mono:0.2.13
     environment:
       - SERVER_PORT=8080
       - API_SVC_ENV=secured
@@ -23,6 +23,8 @@ services:
       - FD_CUSTOMER_NAME=Beacon
       - FD_DEFAULT_RESPONDER_ID=1234567890123
       - FD_DEFAULT_REQUESTER_ID=1234567890123
+      - FD_DEFAULT_PAGE_SIZE=100
+      - FD_DEFAULT_PAGE_LIMIT=1000
     build:
       context: .
       dockerfile: Dockerfile
@@ -38,7 +40,7 @@ services:
 
   apisvc-prod-mono:
     container_name: apisvc-prod-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.12
+    image: pbranestrategy/tac-case-api-service-mono:0.2.13
     environment:
       - API_SVC_ENV=secured
       - API_SVC_MODE=freshdesk
@@ -64,7 +66,7 @@ services:
 
   apisvc-dev-mono:
     container_name: apisvc-dev-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.12
+    image: pbranestrategy/tac-case-api-service-mono:0.2.13
     environment:
       - API_SVC_ENV=unsecured
       - API_SVC_MODE=database
@@ -83,7 +85,7 @@ services:
 
   apisvc-test-mono:
     container_name: apisvc-test-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.12
+    image: pbranestrategy/tac-case-api-service-mono:0.2.13
     environment:
       - API_SVC_ENV=secured
       - API_SVC_MODE=freshdesk
