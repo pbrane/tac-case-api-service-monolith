@@ -53,9 +53,6 @@ public class FreshDeskTacCaseService implements TacCaseService {
     private final RestClient fieldPresenseRestClient;
     private final GenericModelMapper genericModelMapper;
 
-    @Value("${FD_DEFAULT_PAGE_SIZE:50}")
-    private Integer defaultPageSize;
-
     @Value("${ESCAPE_HTML_SUBJECT:true}")
     private String escapeHtmlSubject;
 
@@ -81,85 +78,20 @@ public class FreshDeskTacCaseService implements TacCaseService {
         this.companyService = companyService;
     }
 
-/*
-    @Override
-    public List<TacCaseResponseDto> listTacCases(OffsetDateTime caseCreateDateFrom,
-                                                 OffsetDateTime caseCreateDateTo,
-                                                 OffsetDateTime caseCreateDateSince,
-                                                 List<CaseStatus> caseStatus,
-                                                 String logic) {
-
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-        String schemaId = schemaService.getTacCaseSchemaId();
-        RestClient restClient = snakeCaseRestClient.mutate()
-                .baseUrl(restClientConfig.getFreshdeskBaseUri().endsWith("/")
-                        ? restClientConfig.getFreshdeskBaseUri()
-                        : restClientConfig.getFreshdeskBaseUri() + "/") // Ensure trailing "/"
-                .build();
-
-        Integer caseCount = Optional.ofNullable(restClient
-                        .get()
-                        .uri(uriBuilder -> uriBuilder
-                                .path("custom_objects/schemas/" + schemaId + "/records/count")
-                                .build())
-                        .retrieve()
-                        .body(Integer.class))
-                .orElseThrow(() -> new IllegalStateException("caseCount cannot be null: API call failed"));
-
-        if (caseCount == 0) {
-            throw new IllegalStateException("There are no TAC Case records.");
-        }
-
-        Integer pageCount = (caseCount + defaultPageSize - 1) / defaultPageSize; // Ensures rounding up
-
-        // Build the query parameters dynamically
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance();
-        uriComponentsBuilder.queryParam("page_size", defaultPageSize);
-
-        if (caseCreateDateFrom != null && caseCreateDateTo != null) {
-            uriComponentsBuilder.queryParam("created_time[gte]", caseCreateDateFrom.format(formatter))
-                    .queryParam("created_time[lt]", caseCreateDateTo.format(formatter));
-        } else if (caseCreateDateSince != null) {
-            uriComponentsBuilder.queryParam("created_time[gt]", caseCreateDateSince.format(formatter));
-        }
-
-        // Pass the relative path without leading '/' and append the query parameters
-        FreshdeskCaseResponseRecords<FreshdeskTacCaseResponseDto> responseRecords = restClient
-                .get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("custom_objects/schemas/" + schemaId + "/records") // No leading '/'
-                        .query(uriComponentsBuilder.build().getQuery())
-                        .build())
-                .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
-        assert responseRecords != null;
-
-        List<FreshdeskCaseResponse<FreshdeskTacCaseResponseDto>> freshdeskCaseResponses = responseRecords.getRecords().stream().toList();
-        List<TacCaseResponseDto> tacCaseResponseDtos = new java.util.ArrayList<>(freshdeskCaseResponses.stream()
-                .map(this::mapToTacCaseResponseDto)
-                .toList());
-
-        //fixme: can probably just get rid of this logic check and always assume "AND"
-        //fixme: fix this in the controller
-        if (caseStatus != null && !caseStatus.isEmpty() && "and".equalsIgnoreCase(logic)) {
-            tacCaseResponseDtos.removeIf(tacCaseResponseDto -> !caseStatus.contains(tacCaseResponseDto.getCaseStatus()));
-        }
-
-        // Return the list of records
-        return tacCaseResponseDtos;
-    }
-*/
 
     @Override
     public List<TacCaseResponseDto> listTacCases(OffsetDateTime caseCreateDateFrom,
                                                  OffsetDateTime caseCreateDateTo,
                                                  OffsetDateTime caseCreateDateSince,
                                                  List<CaseStatus> caseStatus,
-                                                 String logic) {
+                                                 String logic,
+                                                 Integer pageSize,
+                                                 Integer pageLimit) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
         String schemaId = schemaService.getTacCaseSchemaId();
-        //Mutating this client because to adapt path creation using the UriComponents builder
+
+        //Mutating this client to adapt to path creation due to using the UriComponents builder
         //This forces a trailing "/"
         RestClient restClient = snakeCaseRestClient.mutate()
                 .baseUrl(restClientConfig.getFreshdeskBaseUri().endsWith("/")
@@ -169,13 +101,13 @@ public class FreshDeskTacCaseService implements TacCaseService {
 
         // Build the base query parameters
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance();
-        uriComponentsBuilder.queryParam("page_size", defaultPageSize);
+        uriComponentsBuilder.queryParam("page_size", pageSize);
 
         if (caseCreateDateFrom != null && caseCreateDateTo != null) {
             uriComponentsBuilder.queryParam("created_time[gte]", caseCreateDateFrom.format(formatter))
                     .queryParam("created_time[lt]", caseCreateDateTo.format(formatter));
         } else if (caseCreateDateSince != null) {
-            uriComponentsBuilder.queryParam("created_time[gt]", caseCreateDateSince.format(formatter));
+            uriComponentsBuilder.queryParam("created_time[gte]", caseCreateDateSince.format(formatter));
         }
 
         // Initialize result list
@@ -185,7 +117,9 @@ public class FreshDeskTacCaseService implements TacCaseService {
         String query = uriComponentsBuilder.build().getQuery();
         String nextPageUrl = "custom_objects/schemas/" + schemaId + "/records?" + query;
 
+        int pageCount = 0;
         do {
+            pageCount++;
             FreshdeskCaseResponseRecords<FreshdeskTacCaseResponseDto> responseRecords = restClient
                     .get()
                     .uri(nextPageUrl)
@@ -213,7 +147,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
                 nextPageUrl = null; // Stop paging
             }
 
-        } while (nextPageUrl != null); // Keep fetching until no more next page link is present
+        } while (nextPageUrl != null && pageCount < pageLimit);
 
         // Apply filtering logic (if needed)
         if (caseStatus != null && !caseStatus.isEmpty() && "and".equalsIgnoreCase(logic)) {

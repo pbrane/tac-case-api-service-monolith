@@ -128,7 +128,9 @@ public class TacCaseServiceImpl implements TacCaseService {
             OffsetDateTime caseCreateDateTo,
             OffsetDateTime caseCreateDateSince,
             List<CaseStatus> caseStatus,
-            String logic) {
+            String logic,
+            Integer pageSize,
+            Integer pageLimit) {
 
         Specification<TacCaseEntity> specification = TacCaseSpecification.buildSpecification(
                 caseCreateDateFrom,
@@ -141,6 +143,7 @@ public class TacCaseServiceImpl implements TacCaseService {
         List<TacCaseEntity> tacCases = tacCaseRepository.findAll(specification);
 
         return tacCases.stream()
+                .limit((long) pageSize * pageLimit)
                 .map(tacCaseMapper::mapTo)
                 .collect(Collectors.toList());
     }

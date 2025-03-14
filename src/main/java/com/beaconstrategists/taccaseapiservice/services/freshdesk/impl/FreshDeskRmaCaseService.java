@@ -29,10 +29,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -317,19 +314,12 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
                                                  OffsetDateTime caseCreateDateTo,
                                                  OffsetDateTime caseCreateDateSince,
                                                  List<CaseStatus> caseStatus,
-                                                 String logic) {
+                                                 String logic,
+                                                 Integer pageSize,
+                                                 Integer pageLimit) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-
-        // Build the query parameters dynamically
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance();
-
-        if (caseCreateDateFrom != null && caseCreateDateTo != null) {
-            uriComponentsBuilder.queryParam("created_time[gt]", caseCreateDateFrom.format(formatter))
-                    .queryParam("created_time[lt]", caseCreateDateTo.format(formatter));
-        } else if (caseCreateDateSince != null) {
-            uriComponentsBuilder.queryParam("created_time[gt]", caseCreateDateSince.format(formatter));
-        }
+        String schemaId = schemaService.getRMACaseSchemaId();
 
         RestClient restClient = snakeCaseRestClient.mutate()
                 .baseUrl(restClientConfig.getFreshdeskBaseUri().endsWith("/")
@@ -337,23 +327,57 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
                         : restClientConfig.getFreshdeskBaseUri() + "/") // Ensure trailing "/"
                 .build();
 
-        String schemaId = schemaService.getRMACaseSchemaId();
-        // Pass the relative path without leading '/' and append the query parameters
-        FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> responseRecords = restClient
-                .get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("custom_objects/schemas/" + schemaId + "/records") // No leading '/'
-                        .query(uriComponentsBuilder.build().getQuery())
-                        .build())
-                .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
-        assert responseRecords != null;
+        // Build the query parameters dynamically
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance();
+        uriComponentsBuilder.queryParam("page_size", pageSize);
 
-        List<FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto>> freshdeskCaseResponses = responseRecords.getRecords().stream().toList();
-        List<RmaCaseResponseDto> rmaCaseResponseDtos = new java.util.ArrayList<>(freshdeskCaseResponses.stream()
-                .map(this::mapToRmaCaseResponseDto)
-                .toList());
+        if (caseCreateDateFrom != null && caseCreateDateTo != null) {
+            uriComponentsBuilder.queryParam("created_time[gte]", caseCreateDateFrom.format(formatter))
+                    .queryParam("created_time[lt]", caseCreateDateTo.format(formatter));
+        } else if (caseCreateDateSince != null) {
+            uriComponentsBuilder.queryParam("created_time[gte]", caseCreateDateSince.format(formatter));
+        }
 
+        // Initialize result list
+        List<RmaCaseResponseDto> rmaCaseResponseDtos = new ArrayList<>();
+
+        // Construct the initial API URL
+        String query = uriComponentsBuilder.build().getQuery();
+        String nextPageUrl = "custom_objects/schemas/" + schemaId + "/records?" + query;
+
+        int pageCount = 0;
+        do {
+            pageCount++;
+            FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> responseRecords = restClient
+                    .get()
+                    .uri(nextPageUrl)
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {});
+
+            if (responseRecords == null || responseRecords.getRecords() == null) {
+                break; // No more records
+            }
+
+            // Convert and add records
+            List<RmaCaseResponseDto> currentBatch = responseRecords.getRecords().stream()
+                    .map(this::mapToRmaCaseResponseDto)
+                    .toList();
+            rmaCaseResponseDtos.addAll(currentBatch);
+
+            // Get the 'next' page link if available
+            FreshdeskLinksDto links = responseRecords.getLinks();
+            FreshdeskLinksDto.Link next = links.getNext();
+            if (links != null && next != null) {
+                nextPageUrl = "custom_objects/" + (next.getHref().startsWith("/") ? next.getHref().substring(1) : next.getHref());
+                //nextPageUrl = next.getHref().startsWith("/") ? next.getHref().substring(1) : next.getHref();
+
+            } else {
+                nextPageUrl = null; // Stop paging
+            }
+
+        } while (nextPageUrl != null && pageCount < pageLimit);
+
+        // Apply filtering logic (if needed)
         //fixme: can probably just get rid of this logic check and always assume "AND"
         //fixme: fix this in the controller
         if (caseStatus != null && !caseStatus.isEmpty() && "and".equalsIgnoreCase(logic)) {
@@ -363,6 +387,8 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         // Return the list of records
         return rmaCaseResponseDtos;
     }
+
+
     //fixme:
     @Override
     public List<RmaCaseResponseDto> findAll() {
