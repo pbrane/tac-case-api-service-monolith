@@ -21,7 +21,9 @@ public interface RmaCaseService {
                                           OffsetDateTime caseCreateDateTo,
                                           OffsetDateTime caseCreateDateSince,
                                           List<CaseStatus> caseStatus,
-                                          String logic);
+                                          String logic,
+                                          Integer pageSize,
+                                          Integer pageLimit);
 
     List<RmaCaseResponseDto> findAll();
 

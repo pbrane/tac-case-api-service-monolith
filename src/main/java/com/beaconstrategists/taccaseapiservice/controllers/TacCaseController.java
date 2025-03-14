@@ -5,6 +5,7 @@ import com.beaconstrategists.taccaseapiservice.exceptions.ResourceNotFoundExcept
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.beaconstrategists.taccaseapiservice.services.TacCaseService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +21,12 @@ import java.util.Optional;
 public class TacCaseController {
 
     private final TacCaseService tacCaseService;
+
+    @Value("${FD_DEFAULT_PAGE_SIZE:100}")
+    private Integer defaultPageSize;
+
+    @Value("${FD_DEFAULT_PAGE_LIMIT:1000}")
+    private Integer defaultPageLimit;
 
     public TacCaseController(TacCaseService tacCaseService) {
         this.tacCaseService = tacCaseService;
@@ -44,7 +50,20 @@ public class TacCaseController {
             List<CaseStatus> caseStatus,
 
             @RequestParam(required = false, defaultValue = "AND")
-            String logic) {
+            String logic,
+
+            @RequestParam(required = false)
+            Integer pageSize,
+
+            @RequestParam(required = false)
+            Integer pageLimit) {
+
+        if (pageSize == null) {
+            pageSize = defaultPageSize;
+        }
+        if (pageLimit == null) {
+            pageLimit = defaultPageLimit;
+        }
 
         if (caseCreateDateFrom != null && caseCreateDateTo != null) {
             if (caseCreateDateFrom.isAfter(caseCreateDateTo)) {
@@ -57,7 +76,9 @@ public class TacCaseController {
                 caseCreateDateTo,
                 caseCreateDateSince,
                 caseStatus,
-                logic
+                logic,
+                pageSize,
+                pageLimit
         );
         return new ResponseEntity<>(tacCases, HttpStatus.OK);
     }

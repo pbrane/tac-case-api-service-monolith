@@ -5,12 +5,9 @@ import com.beaconstrategists.taccaseapiservice.exceptions.ResourceNotFoundExcept
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.beaconstrategists.taccaseapiservice.services.RmaCaseService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.Resource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +23,13 @@ import static org.springframework.shell.command.invocation.InvocableShellMethod.
 public class RmaCaseController {
 
     private final RmaCaseService rmaCaseService;
+
+    @Value("${FD_DEFAULT_PAGE_SIZE:100}")
+    private Integer defaultPageSize;
+
+    @Value("${FD_DEFAULT_PAGE_LIMIT:1000}")
+    private Integer defaultPageLimit;
+
 
     public RmaCaseController(RmaCaseService rmaCaseService) {
         this.rmaCaseService = rmaCaseService;
@@ -49,7 +53,20 @@ public class RmaCaseController {
             List<CaseStatus> caseStatus,
 
             @RequestParam(required = false, defaultValue = "AND")
-            String logic) {
+            String logic,
+
+            @RequestParam(required = false, defaultValue = "100")
+            Integer pageSize,
+
+            @RequestParam(required = false, defaultValue = "100")
+            Integer pageLimit) {
+
+        if (pageSize == null) {
+            pageSize = defaultPageSize;
+        }
+        if (pageLimit == null) {
+            pageLimit = defaultPageLimit;
+        }
 
         if (caseCreateDateFrom != null && caseCreateDateTo != null) {
             if (caseCreateDateFrom.isAfter(caseCreateDateTo)) {
@@ -62,7 +79,9 @@ public class RmaCaseController {
                 caseCreateDateTo,
                 caseCreateDateSince,
                 caseStatus,
-                logic);
+                logic,
+                pageSize,
+                pageLimit);
 
         return new ResponseEntity<>(rmaCases, HttpStatus.OK);
     }

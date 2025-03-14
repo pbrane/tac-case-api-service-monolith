@@ -127,7 +127,9 @@ public class RmaCaseServiceImpl implements RmaCaseService {
                                                  OffsetDateTime caseCreateDateTo,
                                                  OffsetDateTime caseCreateDateSince,
                                                  List<CaseStatus> caseStatus,
-                                                 String logic) {
+                                                 String logic,
+                                                 Integer pageSize,
+                                                 Integer pageLimit) {
 
         Specification<RmaCaseEntity> specification = RmaCaseSpecification.buildSpecification(
                 caseCreateDateFrom,
@@ -140,6 +142,7 @@ public class RmaCaseServiceImpl implements RmaCaseService {
         List<RmaCaseEntity> rmaCases = rmaCaseRepository.findAll(specification);
 
         return rmaCases.stream()
+                .limit((long) pageSize *pageLimit)
                 .map(rmaCaseMapper::mapTo)
                 .collect(Collectors.toList());
     }

@@ -47,4 +47,4 @@ logging:
   level:
     root: warn
     org.springframework: warn
-    com.beaconstrategists: debug
+    com.beaconstrategists: warn

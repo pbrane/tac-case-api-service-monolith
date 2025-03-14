@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class JacksonConfig {
 
-    @Value("${ESCAPE_HTML_STRINGS:true}")
+    @Value("${ESCAPE_HTML_STRINGS:false}")
     private String escapeHtmlStrings;
 
 
