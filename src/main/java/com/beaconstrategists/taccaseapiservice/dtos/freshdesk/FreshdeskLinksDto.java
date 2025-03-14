@@ -18,6 +18,9 @@ public class FreshdeskLinksDto {
     @JsonProperty("count")
     private Link count;
 
+    @JsonProperty("prev")
+    private Link prev;
+
     @Getter
     @Setter
     @NoArgsConstructor
