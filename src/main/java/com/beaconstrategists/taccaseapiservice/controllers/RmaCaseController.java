@@ -55,10 +55,10 @@ public class RmaCaseController {
             @RequestParam(required = false, defaultValue = "AND")
             String logic,
 
-            @RequestParam(required = false, defaultValue = "100")
+            @RequestParam(required = false)
             Integer pageSize,
 
-            @RequestParam(required = false, defaultValue = "100")
+            @RequestParam(required = false)
             Integer pageLimit) {
 
         if (pageSize == null) {
