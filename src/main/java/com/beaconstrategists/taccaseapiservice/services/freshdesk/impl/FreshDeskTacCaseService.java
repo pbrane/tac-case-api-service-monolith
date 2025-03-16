@@ -180,12 +180,14 @@ public class FreshDeskTacCaseService implements TacCaseService {
         /*
          * A little housekeeping
          */
-        if (escapeHtmlSubject && !escapeHtmlStrings) {
-            tacCaseCreateDto.setSubject(HtmlUtils.htmlEscape(tacCaseCreateDto.getSubject()));
+        String subject = tacCaseCreateDto.getSubject();
+        if (escapeHtmlSubject && !escapeHtmlStrings && subject != null) {
+            tacCaseCreateDto.setSubject(HtmlUtils.htmlEscape(subject));
         }
 
-        if (escapeHtmlDescription && !escapeHtmlNotes) {
-            tacCaseCreateDto.setProblemDescription(HtmlUtils.htmlEscape(tacCaseCreateDto.getProblemDescription()));
+        String problemDescription = tacCaseCreateDto.getProblemDescription();
+        if (escapeHtmlDescription && !escapeHtmlStrings && problemDescription != null) {
+            tacCaseCreateDto.setProblemDescription(HtmlUtils.htmlEscape(problemDescription));
         }
 
         /*
