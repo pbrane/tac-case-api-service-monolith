@@ -119,8 +119,8 @@ public class FreshDeskTacCaseService implements TacCaseService {
         }
 
         //uriComponentsBuilder.queryParam("logic", logic);
-        uriComponentsBuilder.queryParam("sort_by", "created_time");
-        uriComponentsBuilder.queryParam("DESC");
+//        uriComponentsBuilder.queryParam("sort_by", "created_time");
+//        uriComponentsBuilder.queryParam("DESC");
 
         // Initialize result list
         List<TacCaseResponseDto> tacCaseResponseDtos = new ArrayList<>();
