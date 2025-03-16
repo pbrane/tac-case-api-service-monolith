@@ -1,6 +1,7 @@
 package com.beaconstrategists.taccaseapiservice.controllers;
 
 import com.beaconstrategists.taccaseapiservice.dtos.*;
+import com.beaconstrategists.taccaseapiservice.exceptions.InvalidPathParameterException;
 import com.beaconstrategists.taccaseapiservice.exceptions.ResourceNotFoundException;
 import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.beaconstrategists.taccaseapiservice.services.TacCaseService;
@@ -67,7 +68,7 @@ public class TacCaseController {
 
         if (caseCreateDateFrom != null && caseCreateDateTo != null) {
             if (caseCreateDateFrom.isAfter(caseCreateDateTo)) {
-                throw new IllegalArgumentException("The 'caseCreateDateFrom' parameter cannot be after 'caseCreateDateTo'.");
+                throw new InvalidPathParameterException("Invalid Search Date Range. The End Date should not be later than or equal to Start Date.", "INVALID_DATE_FILTER");
             }
         }
 
