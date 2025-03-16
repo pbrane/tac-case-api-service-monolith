@@ -24,6 +24,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -53,6 +54,13 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
 
     @Value("${RMA_DEFAULT_SHIPPED_CARRIER:FedEx}")
     private String defaultShippedCarrier;
+
+    @Value("${ESCAPE_HTML_DESCRIPTION:true}")
+    private boolean escapeHtmlDescription;
+
+    //this value is used by the deserializer, if this is true, the other escapes can be ignored
+    @Value("${ESCAPE_HTML_STRINGS:false}")
+    private boolean escapeHtmlStrings;
 
     public FreshDeskRmaCaseService(RestClientConfig restClientConfig,
                                    @Qualifier("snakeCaseRestClient") RestClient snakeCaseRestClient,
@@ -144,21 +152,26 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
          * If the update contains caseStatus, we should also update the ticket
          * Otherwise, just fetch the ticket.
          */
-        FreshdeskTicketUpdateDto dto = new FreshdeskTicketUpdateDto();
+        FreshdeskTicketUpdateDto updateTicketDto = new FreshdeskTicketUpdateDto();
         FreshdeskTicketResponseDto rmaCaseUpdateTicketResponseDto = null;
         boolean updateTicket = false;
         if (rmaCaseUpdateDto.isFieldPresent("caseStatus")) {
-            dto.setStatus(StatusForTickets.valueOf(rmaCaseUpdateDto.getCaseStatus().getValue()));
+            updateTicketDto.setStatus(StatusForTickets.valueOf(rmaCaseUpdateDto.getCaseStatus().getValue()));
             updateTicket = true;
         }
 
         if (rmaCaseUpdateDto.isFieldPresent("problemDescription")) {
-            dto.setDescription(rmaCaseUpdateDto.getProblemDescription());
+            String problemDescription = rmaCaseUpdateDto.getProblemDescription();
+            //problemDescription can be included in update and still be null
+            if (problemDescription != null && escapeHtmlDescription && !escapeHtmlStrings) {
+                problemDescription = HtmlUtils.htmlEscape(problemDescription);
+            }
+            updateTicketDto.setDescription(problemDescription);
             updateTicket = true;
         }
 
         if (updateTicket) {
-            rmaCaseUpdateTicketResponseDto = updateTicket(caseId, dto);
+            rmaCaseUpdateTicketResponseDto = updateTicket(caseId, updateTicketDto);
         }
 
         /*
@@ -232,55 +245,6 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
 
         return rmaCaseResponseDto;
     }
-
-/*    @Override
-    public Optional<RmaCaseResponseDto> findById(Long rmaTicketId) {
-
-        *//*
-         * Find the RMA Ticket
-         *//*
-        FreshdeskTicketResponseDto rmaCaseTicketResponseDto = findFreshdeskTicketById(rmaTicketId);
-
-        *//*
-         * Find the RMA Case
-         *//*
-        FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> rmaCaseRecords =
-                findFreshdeskRmaCaseRecordsByTicketId(rmaTicketId);
-        Optional<FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto>> freshdeskRmaCaseResponse =
-                rmaCaseRecords.getRecords().stream().findFirst();
-        FreshdeskRmaCaseResponseDto findRmaCaseResponseDto =
-                freshdeskRmaCaseResponse.map(FreshdeskCaseResponse::getData).orElse(null);
-        assert findRmaCaseResponseDto != null;
-
-
-        *//*
-         * Find the parent TAC Case
-         *//*
-
-        //now we have to pull the TAC Case to get the TAC Case ID which is the Freshdesk Ticket ID
-        FreshdeskCaseResponse<FreshdeskTacCaseResponseDto> freshdeskTacCaseResponse =
-                findFreshdeskTacCaseByDisplayId(findRmaCaseResponseDto.getTacCase());
-        FreshdeskTacCaseResponseDto freshdeskTacCaseResponseDto = freshdeskTacCaseResponse.getData();
-
-
-        *//*
-         * Start mapping values
-         *//*
-        RmaCaseResponseDto rmaCaseResponseDto = genericModelMapper.map(findRmaCaseResponseDto, RmaCaseResponseDto.class);
-        *//*
-          Finish mapping things for the response from a combination of the RMA Ticket and the RMA Response meta data
-        *//*
-        rmaCaseResponseDto.setId(rmaCaseTicketResponseDto.getId());
-        rmaCaseResponseDto.setTacCaseId(freshdeskTacCaseResponse.getData().getTicket());
-        rmaCaseResponseDto.setCaseStatus(CaseStatus.valueOf(rmaCaseTicketResponseDto.getStatusForTickets().name()));
-        rmaCaseResponseDto.setProblemDescription(rmaCaseTicketResponseDto.getDescriptionText());
-        //fixme: to do this right, we have to do an update to set this field in the RMA Case Record
-        rmaCaseResponseDto.setCaseNumber(freshdeskRmaCaseResponse.get().getDisplayId());
-        rmaCaseResponseDto.setCaseClosedDate(rmaCaseTicketResponseDto.getStats().getClosedAt());
-        rmaCaseResponseDto.setCaseCreatedDate(rmaCaseTicketResponseDto.getCreatedAt());
-
-        return Optional.of(rmaCaseResponseDto);
-    }*/
 
     @Override
     public Optional<RmaCaseResponseDto> findById(Long rmaTicketId) {
@@ -681,6 +645,11 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
 
     private FreshdeskTicketCreateDto buildCreateChildTicketDto(FreshdeskTicketResponseDto tacCaseTicketResponseDto, RmaCaseCreateDto rmaCaseCreateDto) {
 
+
+        String problemDescription = rmaCaseCreateDto.getProblemDescription();
+        if (problemDescription != null && escapeHtmlDescription && !escapeHtmlStrings) {
+            problemDescription = HtmlUtils.htmlEscape(problemDescription);
+        }
         return FreshdeskTicketCreateDto.builder()
                 .email(rmaCaseCreateDto.getContactEmail())
                 .subject("RMA: "+ tacCaseTicketResponseDto.getSubject())
@@ -691,7 +660,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
                 .source(Source.Email)
                 .status(StatusForTickets.Open)
                 .priority(tacCaseTicketResponseDto.getPriorityForTickets())
-                .description("RMA for TAC Case: "+rmaCaseCreateDto.getTacCaseId()+":\n"+rmaCaseCreateDto.getProblemDescription())
+                .description("RMA for TAC Case: "+rmaCaseCreateDto.getTacCaseId()+":\n"+ problemDescription)
                 .parentId(tacCaseTicketResponseDto.getId())
                 .tags(List.of("RMA"))
                 .build();

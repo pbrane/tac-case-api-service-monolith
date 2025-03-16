@@ -235,12 +235,14 @@ public class FreshDeskTacCaseService implements TacCaseService {
         /*
          * A little housekeeping
          */
-        if (escapeHtmlSubject && !escapeHtmlStrings) {
-            tacCaseUpdateDto.setSubject(HtmlUtils.htmlEscape(tacCaseUpdateDto.getSubject()));
+        String subject = tacCaseUpdateDto.getSubject();
+        if (escapeHtmlSubject && !escapeHtmlStrings && subject != null) {
+            tacCaseUpdateDto.setSubject(HtmlUtils.htmlEscape(subject));
         }
 
-        if (escapeHtmlDescription && !escapeHtmlNotes) {
-            tacCaseUpdateDto.setProblemDescription(HtmlUtils.htmlEscape(tacCaseUpdateDto.getProblemDescription()));
+        String problemDescription = tacCaseUpdateDto.getProblemDescription();
+        if (escapeHtmlDescription && !escapeHtmlStrings && problemDescription != null) {
+            tacCaseUpdateDto.setProblemDescription(HtmlUtils.htmlEscape(problemDescription));
         }
 
 
@@ -513,8 +515,9 @@ public class FreshDeskTacCaseService implements TacCaseService {
             throw new ResourceNotFoundException("Cannot retrieve case results: Invalid or Missing Case Number.", "INVALID_CASE");
         }
 
-        if (escapeHtmlNotes && !escapeHtmlStrings) {
-            uploadDto.setText(HtmlUtils.htmlEscape(uploadDto.getText()));
+        String text = uploadDto.getText();
+        if (escapeHtmlNotes && !escapeHtmlStrings && text != null) { //probably don't need the null check here
+            uploadDto.setText(HtmlUtils.htmlEscape(text));
         }
 
         FreshdeskTicketCreateNoteDto dto = FreshdeskTicketCreateNoteDto.builder()
