@@ -53,11 +53,19 @@ public class FreshDeskTacCaseService implements TacCaseService {
     private final RestClient fieldPresenseRestClient;
     private final GenericModelMapper genericModelMapper;
 
+    //fixme: consider having one variable to control these
     @Value("${ESCAPE_HTML_SUBJECT:true}")
-    private String escapeHtmlSubject;
+    private boolean escapeHtmlSubject;
 
     @Value("${ESCAPE_HTML_DESCRIPTION:true}")
-    private String escapeHtmlDescription;
+    private boolean escapeHtmlDescription;
+
+    @Value("${ESCAPE_HTML_NOTES:true}")
+    private boolean escapeHtmlNotes;
+
+    //this value is used by the deserializer, if this is true, the other escapes can be ignored
+    @Value("${ESCAPE_HTML_STRINGS:false}")
+    private boolean escapeHtmlStrings;
 
     private final SchemaService schemaService;
     private final RequesterResponderService requesterResponderService;
@@ -109,6 +117,10 @@ public class FreshDeskTacCaseService implements TacCaseService {
         } else if (caseCreateDateSince != null) {
             uriComponentsBuilder.queryParam("created_time[gte]", caseCreateDateSince.format(formatter));
         }
+
+        //uriComponentsBuilder.queryParam("logic", logic);
+        uriComponentsBuilder.queryParam("sort_by", "created_time");
+        uriComponentsBuilder.queryParam("DESC");
 
         // Initialize result list
         List<TacCaseResponseDto> tacCaseResponseDtos = new ArrayList<>();
@@ -168,11 +180,11 @@ public class FreshDeskTacCaseService implements TacCaseService {
         /*
          * A little housekeeping
          */
-        if (escapeHtmlSubject.equalsIgnoreCase("true")) {
+        if (escapeHtmlSubject && !escapeHtmlStrings) {
             tacCaseCreateDto.setSubject(HtmlUtils.htmlEscape(tacCaseCreateDto.getSubject()));
         }
 
-        if (escapeHtmlDescription.equalsIgnoreCase("true")) {
+        if (escapeHtmlDescription && !escapeHtmlNotes) {
             tacCaseCreateDto.setProblemDescription(HtmlUtils.htmlEscape(tacCaseCreateDto.getProblemDescription()));
         }
 
@@ -223,11 +235,11 @@ public class FreshDeskTacCaseService implements TacCaseService {
         /*
          * A little housekeeping
          */
-        if (escapeHtmlSubject.equalsIgnoreCase("true")) {
+        if (escapeHtmlSubject && !escapeHtmlStrings) {
             tacCaseUpdateDto.setSubject(HtmlUtils.htmlEscape(tacCaseUpdateDto.getSubject()));
         }
 
-        if (escapeHtmlDescription.equalsIgnoreCase("true")) {
+        if (escapeHtmlDescription && !escapeHtmlNotes) {
             tacCaseUpdateDto.setProblemDescription(HtmlUtils.htmlEscape(tacCaseUpdateDto.getProblemDescription()));
         }
 
@@ -498,7 +510,11 @@ public class FreshDeskTacCaseService implements TacCaseService {
         Optional<TacCaseResponseDto> freshdeskTacCaseByTicketId = findFreshdeskTacCaseByTicketId(caseId);
 
         if (freshdeskTacCaseByTicketId.isEmpty()) {
-            throw new ResourceNotFoundException("Cannot add note: Invalid or Missing Case Number.", "INVALID_CASE");
+            throw new ResourceNotFoundException("Cannot retrieve case results: Invalid or Missing Case Number.", "INVALID_CASE");
+        }
+
+        if (escapeHtmlNotes && !escapeHtmlStrings) {
+            uploadDto.setText(HtmlUtils.htmlEscape(uploadDto.getText()));
         }
 
         FreshdeskTicketCreateNoteDto dto = FreshdeskTicketCreateNoteDto.builder()
@@ -665,7 +681,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
 
         return FreshdeskTicketCreateDto.builder()
                 .email(tacCaseDto.getContactEmail())
-                .subject(HtmlUtils.htmlEscape(tacCaseDto.getSubject()))
+                .subject(tacCaseDto.getSubject())
                 .responderId(Long.valueOf(responderId))
                 .requesterId(Long.valueOf(requesterId))
                 .companyId(Long.valueOf(companyId))
@@ -676,7 +692,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
                         .map(CasePriorityEnum::getValue)
                         .map(PriorityForTickets::valueOf)
                         .orElse(null))
-                .description(HtmlUtils.htmlEscape(tacCaseDto.getProblemDescription()))
+                .description(tacCaseDto.getProblemDescription())
                 .tags(List.of("TAC"))
                 .build();
     }

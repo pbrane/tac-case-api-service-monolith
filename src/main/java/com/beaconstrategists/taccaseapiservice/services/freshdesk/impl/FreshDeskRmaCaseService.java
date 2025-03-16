@@ -532,7 +532,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         List<FreshdeskCaseResponse<FreshdeskRmaCaseResponseDto>> records = rmaCaseRecordsByTicketId.getRecords();
 
         if (records.isEmpty()) {
-            throw new ResourceNotFoundException("Cannot add note: Invalid or Missing Case Number.", "INVALID_CASE");
+            throw new ResourceNotFoundException("Cannot retrieve case results: Invalid or Missing Case Number.", "INVALID_CASE");
         }
 
         FreshdeskTicketCreateNoteDto dto = FreshdeskTicketCreateNoteDto.builder()

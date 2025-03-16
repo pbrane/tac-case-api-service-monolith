@@ -3,28 +3,31 @@ services:
     container_name: apisvc-doc-mono
     image: pbranestrategy/tac-case-api-service-mono:0.2.13
     environment:
-      - SERVER_PORT=8080
-      - API_SVC_ENV=secured
-      - API_SVC_MAX_FILE_SIZE_MB=20
-      - API_SVC_MODE=freshdesk
-      - AUTH_SVR_REPO=inMemory
-      - AUTH_SVC_ISSUER_URI=http://localhost:8080/oauth2/jwks
-      - PG_DATASOURCE_URL=jdbc:postgresql://localhost:5432/tacauthdb
-      - PG_DATASOURCE_USERNAME=postgres-user-name
-      - PG_DATASOURCE_PASSWORD=postgres-user-password
-      - CLIENT_ID=client-id
-      - CLIENT_SECRET=client-secret
-      - CLIENT_NAME=client-name
       - ACCESS_TOKEN_EXPIRATION_MIN=5
-      - FD_API_KEY=0123456789ABCDEFGHIJ
-      - FD_BASE_URI=https://domain.freshdesk.com/api/v2
-      - FD_TAC_CASE_SCHEMA_NAME="TAC Cases"
-      - FD_RMA_CASE_SCHEMA_NAME="RMA Cases"
+      - API_SVC_ENV=unsecured
+      - API_SVC_MAX_FILE_SIZE_MB=20
+      - API_SVC_MODE=database
+      - AUTH_SVR_REPO=inMemory
+      - CLIENT_ID=client-id
+      - CLIENT_NAME=client-name
+      - CLIENT_SECRET=client-secret
+      - ESCAPE_HTML_DESCRIPTION=true
+      - ESCAPE_HTML_STRINGS=false
+      - ESCAPE_HTML_SUBJECT=true
+      - FD_API_KEY=0123456789ABCDEFGHI
+      - FD_BASE_URI=https=//domain.freshdesk.com/api/v2
       - FD_CUSTOMER_NAME=Beacon
-      - FD_DEFAULT_RESPONDER_ID=1234567890123
-      - FD_DEFAULT_REQUESTER_ID=1234567890123
-      - FD_DEFAULT_PAGE_SIZE=100
       - FD_DEFAULT_PAGE_LIMIT=1000
+      - FD_DEFAULT_PAGE_SIZE=100
+      - FD_DEFAULT_REQUESTER_ID=123456
+      - FD_RMA_CASE_SCHEMA_NAME=RMA
+      - FD_TAC_CASE_SCHEMA_NAME=TAC
+      - PG_DATASOURCE_PASSWORD=tacauthpass
+      - PG_DATASOURCE_URL=jdbc:postgresql://localhost:5432/tacauthdb
+      - PG_DATASOURCE_USERNAME=tacauthuser
+      - REFRESH_TOKEN_EXPIRATION_MIN=60
+      - RMA_DEFAULT_SHIPPED_CARRIER=FedEx
+      - SERVER_PORT=8080
     build:
       context: .
       dockerfile: Dockerfile
@@ -42,15 +45,31 @@ services:
     container_name: apisvc-prod-mono
     image: pbranestrategy/tac-case-api-service-mono:0.2.13
     environment:
+      - ACCESS_TOKEN_EXPIRATION_MIN=5
       - API_SVC_ENV=secured
+      - API_SVC_MAX_FILE_SIZE_MB=20
       - API_SVC_MODE=freshdesk
-      - CLIENT_ID=c8e2f3d7-a5b6-4c23-b09f-1234567890ab
-      - CLIENT_SECRET=83f2d9a1-e456-4b23-b789-0123456789cd
-      - CLIENT_NAME=Beacon
-      - FD_API_KEY=0123456789ABCDEFGHIJ
+      - AUTH_SVR_REPO=inMemory
+      - CLIENT_ID=client-id
+      - CLIENT_NAME=client-name
+      - CLIENT_SECRET=client-secret
+      - ESCAPE_HTML_DESCRIPTION=true
+      - ESCAPE_HTML_STRINGS=false
+      - ESCAPE_HTML_SUBJECT=true
+      - FD_API_KEY=abcXYZmnoPQR
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
       - FD_CUSTOMER_NAME=Beacon
-      - FD_DEFAULT_RESPONDER_ID=1234567890123
+      - FD_DEFAULT_PAGE_LIMIT=1000
+      - FD_DEFAULT_PAGE_SIZE=100
+      - FD_DEFAULT_REQUESTER_ID=1234567890
+      - FD_RMA_CASE_SCHEMA_NAME=RMA Cases
+      - FD_TAC_CASE_SCHEMA_NAME=TAC Cases
+      - PG_DATASOURCE_PASSWORD=tacauthpass
+      - PG_DATASOURCE_URL=jdbc:postgresql://localhost:5432/tacauthdb
+      - PG_DATASOURCE_USERNAME=tacauthuser
+      - REFRESH_TOKEN_EXPIRATION_MIN=60
+      - RMA_DEFAULT_SHIPPED_CARRIER=FedEx
+      - SERVER_PORT=8080
     build:
       context: .
       dockerfile: Dockerfile

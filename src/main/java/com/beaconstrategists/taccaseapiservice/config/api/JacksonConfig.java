@@ -14,8 +14,7 @@ import org.springframework.context.annotation.Primary;
 public class JacksonConfig {
 
     @Value("${ESCAPE_HTML_STRINGS:false}")
-    private String escapeHtmlStrings;
-
+    private boolean escapeHtmlStrings;
 
     @Bean
     @Qualifier("camelCaseObjectMapper")
@@ -53,7 +52,7 @@ public class JacksonConfig {
                     JsonDeserializer<?> deserializer) {
 
                 if (beanDesc.getBeanClass() == String.class) {
-                    return new HtmlEscapingStringDeserializer(escapeHtmlStrings.equalsIgnoreCase("true"));
+                    return new HtmlEscapingStringDeserializer(escapeHtmlStrings);
                 }
                 return deserializer;
             }
