@@ -1,5 +1,6 @@
 package com.beaconstrategists.taccaseapiservice.exceptions;
 
+import com.beaconstrategists.taccaseapiservice.model.CaseStatus;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +14,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -115,4 +119,33 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Object> handleTypeMismatchException(MethodArgumentTypeMismatchException ex, WebRequest request) {
+        String paramName = ex.getName();
+        Object invalidValue = ex.getValue();
+
+        String allowedValues = Arrays.stream(CaseStatus.values())
+                .map(CaseStatus::getValue)
+                .collect(Collectors.joining(", "));
+
+        String errorMessage = String.format("Invalid case type: '%s' for parameter '%s'. Allowed values: %s",
+                invalidValue != null ? invalidValue : "null", paramName, allowedValues);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("message", errorMessage);
+        body.put("errorCode", "INVALID_PARAMETER");
+        body.put("timestamp", OffsetDateTime.now());
+        body.put("status", HttpStatus.BAD_REQUEST.value());
+        body.put("path", request.getDescription(false).replace("uri=", ""));
+
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    private String allowedValuesList() {
+        return Arrays.stream(CaseStatus.values())
+                .map(CaseStatus::getValue)
+                .collect(Collectors.joining(", "));
+    }
+
 }
