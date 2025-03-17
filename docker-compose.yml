@@ -1,7 +1,7 @@
 services:
   apisvc-documentation-mono:
     container_name: apisvc-doc-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.13
+    image: pbranestrategy/tac-case-api-service-mono:0.2.14
     environment:
       - ACCESS_TOKEN_EXPIRATION_MIN=5
       - API_SVC_ENV=unsecured
@@ -43,7 +43,7 @@ services:
 
   apisvc-prod-mono:
     container_name: apisvc-prod-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.13
+    image: pbranestrategy/tac-case-api-service-mono:0.2.14
     environment:
       - ACCESS_TOKEN_EXPIRATION_MIN=5
       - API_SVC_ENV=secured
@@ -85,7 +85,7 @@ services:
 
   apisvc-dev-mono:
     container_name: apisvc-dev-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.13
+    image: pbranestrategy/tac-case-api-service-mono:0.2.14
     environment:
       - API_SVC_ENV=unsecured
       - API_SVC_MODE=database
@@ -104,12 +104,12 @@ services:
 
   apisvc-test-mono:
     container_name: apisvc-test-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.13
+    image: pbranestrategy/tac-case-api-service-mono:0.2.14
     environment:
       - API_SVC_ENV=secured
       - API_SVC_MODE=freshdesk
-      - CLIENT_ID=c8e2f3d7-a5b6-4c23-b09f-1234567890ab
-      - CLIENT_SECRET=83f2d9a1-e456-4b23-b789-0123456789cd
+      - CLIENT_ID=client-id
+      - CLIENT_SECRET=client-secret
       - CLIENT_NAME=Beacon
       - FD_API_KEY=0123456789ABCDEFGHIJ
       - FD_BASE_URI=https://domain.freshdesk.com/api/v2
