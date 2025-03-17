@@ -12,6 +12,7 @@ services:
       - CLIENT_NAME=client-name
       - CLIENT_SECRET=client-secret
       - ESCAPE_HTML_DESCRIPTION=true
+      - ESCAPE_HTML_NOTES=true
       - ESCAPE_HTML_STRINGS=false
       - ESCAPE_HTML_SUBJECT=true
       - FD_API_KEY=0123456789ABCDEFGHI
@@ -54,6 +55,7 @@ services:
       - CLIENT_NAME=client-name
       - CLIENT_SECRET=client-secret
       - ESCAPE_HTML_DESCRIPTION=true
+      - ESCAPE_HTML_NOTES=true
       - ESCAPE_HTML_STRINGS=false
       - ESCAPE_HTML_SUBJECT=true
       - FD_API_KEY=abcXYZmnoPQR
