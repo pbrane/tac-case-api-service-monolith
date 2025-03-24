@@ -30,9 +30,11 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.HtmlUtils;
+import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.URI;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -67,6 +69,9 @@ public class FreshDeskTacCaseService implements TacCaseService {
     @Value("${ESCAPE_HTML_STRINGS:false}")
     private boolean escapeHtmlStrings;
 
+    private final static int FD_TICKET_QUERY_PAGE_SIZE = 30;
+    private final static int FD_TICKET_QUERY_MAX_PAGES = 10;
+
     private final SchemaService schemaService;
     private final RequesterResponderService requesterResponderService;
     private final CompanyService companyService;
@@ -88,67 +93,62 @@ public class FreshDeskTacCaseService implements TacCaseService {
 
 
     @Override
-    public List<TacCaseResponseDto> listTacCases(OffsetDateTime caseCreateDateFrom,
-                                                 OffsetDateTime caseCreateDateTo,
-                                                 OffsetDateTime caseCreateDateSince,
-                                                 List<CaseStatus> caseStatus,
-                                                 String logic,
-                                                 Integer pageSize,
-                                                 Integer pageLimit) {
+    public List<TacCaseResponseDto> listTacCases(final OffsetDateTime caseCreateDateFrom,
+                                                 final OffsetDateTime caseCreateDateTo,
+                                                 final OffsetDateTime caseCreateDateSince,
+                                                 final List<CaseStatus> caseStatus,
+                                                 final String logic,
+                                                 final Integer pageSize,
+                                                 final Integer pageLimit) {
+
+        if ((caseCreateDateFrom != null && caseCreateDateTo != null) || (caseCreateDateSince != null)) {
+            return listTacCasesQuery(caseCreateDateFrom, caseCreateDateTo, caseCreateDateSince, caseStatus, logic, pageSize, pageLimit);
+        }
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
         String schemaId = schemaService.getTacCaseSchemaId();
 
         //Mutating this client to adapt to path creation due to using the UriComponents builder
         //This forces a trailing "/"
-        RestClient restClient = snakeCaseRestClient.mutate()
-                .baseUrl(restClientConfig.getFreshdeskBaseUri().endsWith("/")
-                        ? restClientConfig.getFreshdeskBaseUri()
-                        : restClientConfig.getFreshdeskBaseUri() + "/") // Ensure trailing "/"
-                .build();
+        RestClient restClient = mutateRestClient();
 
         // Build the base query parameters
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance();
         uriComponentsBuilder.queryParam("page_size", pageSize);
 
+        /*
+         * Saving this for posterity even though it's not functional, now.
         if (caseCreateDateFrom != null && caseCreateDateTo != null) {
             uriComponentsBuilder.queryParam("created_time[gte]", caseCreateDateFrom.format(formatter))
                     .queryParam("created_time[lt]", caseCreateDateTo.format(formatter));
         } else if (caseCreateDateSince != null) {
             uriComponentsBuilder.queryParam("created_time[gte]", caseCreateDateSince.format(formatter));
         }
+         */
 
-        //uriComponentsBuilder.queryParam("logic", logic);
-//        uriComponentsBuilder.queryParam("sort_by", "created_time");
-//        uriComponentsBuilder.queryParam("DESC");
-
-        // Initialize result list
         List<TacCaseResponseDto> tacCaseResponseDtos = new ArrayList<>();
-
-        // Construct the initial API URL
         String query = uriComponentsBuilder.build().getQuery();
+
+        /*
+         * Don't include the leading slash in this URL String as it will
+         * cause the path ("/api/v2") already included in the REST Client to be trimmed off.
+         */
         String nextPageUrl = "custom_objects/schemas/" + schemaId + "/records?" + query;
 
         int pageCount = 0;
         do {
             pageCount++;
-            FreshdeskCaseResponseRecords<FreshdeskTacCaseResponseDto> responseRecords = restClient
-                    .get()
-                    .uri(nextPageUrl)
-                    .retrieve()
-                    .body(new ParameterizedTypeReference<>() {});
+            FreshdeskCaseResponseRecords<FreshdeskTacCaseResponseDto> responseRecords = searchCaseRecords(restClient, nextPageUrl);
 
             if (responseRecords == null || responseRecords.getRecords() == null) {
                 break; // No more records
             }
 
-            // Convert and add records
             List<TacCaseResponseDto> currentBatch = responseRecords.getRecords().stream()
                     .map(this::mapToTacCaseResponseDto)
                     .toList();
             tacCaseResponseDtos.addAll(currentBatch);
 
-            // Get the 'next' page link if available
             FreshdeskLinksDto links = responseRecords.getLinks();
             FreshdeskLinksDto.Link next = links.getNext();
             if (links != null && next != null) {
@@ -169,6 +169,149 @@ public class FreshDeskTacCaseService implements TacCaseService {
         return tacCaseResponseDtos;
     }
 
+    private static FreshdeskCaseResponseRecords<FreshdeskTacCaseResponseDto> searchCaseRecords(RestClient restClient, String nextPageUrl) {
+        FreshdeskCaseResponseRecords<FreshdeskTacCaseResponseDto> responseRecords = restClient
+                .get()
+                .uri(nextPageUrl)
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {});
+        return responseRecords;
+    }
+
+    /*
+     * Called from the API if the listing contains query parameters.
+     */
+    public List<TacCaseResponseDto> listTacCasesQuery(final OffsetDateTime caseCreateDateFrom,
+                                                 final OffsetDateTime caseCreateDateTo,
+                                                 final OffsetDateTime caseCreateDateSince,
+                                                 final List<CaseStatus> caseStatus,
+                                                 final String logic,
+                                                 final Integer pageSize,      // Freshdesk Search always returns 30 per page, but we’ll keep this param for consistency
+                                                 final Integer pageLimit) {
+
+        //Mutating this client to adapt to path creation due to using the UriComponents builder
+        //This forces a trailing slash "/" in the URI
+        RestClient restClient = mutateRestClient();
+        List<TacCaseResponseDto> results = new ArrayList<>();
+        Set<Long> seenCaseIds = new HashSet<>();
+
+        OffsetDateTime createDateFrom;
+        OffsetDateTime createDateTo;
+        if (caseCreateDateSince != null) {
+            createDateFrom = caseCreateDateSince;
+            createDateTo = OffsetDateTime.now();
+        } else {
+            createDateFrom = caseCreateDateFrom;
+            createDateTo = caseCreateDateTo;
+        }
+
+        String filterClause = createFilterClause(createDateFrom, createDateTo);
+        int page = 1;
+        FreshdeskTicketSearchResponseDto ticketSearchResponse = searchTickets(restClient, getRelativeUri(filterClause, page));
+
+        int totalTicketsFound = ticketSearchResponse.getTotal();
+        int totalPages = (totalTicketsFound / FD_TICKET_QUERY_PAGE_SIZE) + (totalTicketsFound % FD_TICKET_QUERY_PAGE_SIZE == 0 ? 0 : 1);
+        int pageBundleSize = FD_TICKET_QUERY_MAX_PAGES;
+        int totalPageBundles = (totalPages / pageBundleSize) + (totalPages % pageBundleSize == 0 ? 0 : 1);
+
+        OffsetDateTime caseCreateDateToTracker = createDateFrom;
+        int pageBundle = 1;
+        int totalPageCnt = 1;
+        while (pageBundle <= totalPageBundles) {
+
+            //fixme: need to stop if we've exceeded the number of pages needed within the bundle
+            while (totalPageCnt <= pageLimit && page <= FD_TICKET_QUERY_MAX_PAGES) {
+
+                //we have to repeat the search first time through, unfortunately
+                ticketSearchResponse = searchTickets(restClient, getRelativeUri(filterClause, page));
+
+                // work through this page of responses
+                for (FreshdeskTicketResponseDto ticket : ticketSearchResponse.getResults()) {
+                    caseCreateDateToTracker = ticket.getCreatedAt();
+
+                    if (seenCaseIds.contains(ticket.getId())) {
+                        continue;
+                    } else {
+                        seenCaseIds.add(ticket.getId());
+                    }
+
+                    FreshdeskCaseResponseRecords<FreshdeskTacCaseResponseDto> caseRecords = findFreshdeskTacCaseRecords(ticket.getId());
+                    // Typically, 1 record for that ticket. If found, map them:
+                    Optional<FreshdeskCaseResponse<FreshdeskTacCaseResponseDto>> tacCase = caseRecords.getRecords().stream().findFirst();
+
+                    //Do I really need this if statement?
+                    if (tacCase.isPresent()) {
+                        FreshdeskCaseResponse<FreshdeskTacCaseResponseDto> tacCaseResponse = tacCase.get();
+                        // fixme: someday - This is unfortunate that we have to query the same ticket again to get the stats
+                        FreshdeskTicketResponseDto ticketWithStats = findFreshdeskTicketById(ticket.getId());
+                        TacCaseResponseDto dto = mapToTacCaseResponseDto(tacCaseResponse, ticketWithStats);
+                        results.add(dto);
+                        seenCaseIds.add(dto.getId());
+                    }
+                    else {
+                        // Log something here
+                    }
+                }
+                //we need to do this up top???
+                page++;
+                totalPageCnt++;
+            }
+
+            filterClause = createFilterClause(createDateFrom, caseCreateDateToTracker);
+            page=1;
+            pageBundle++;
+        }
+
+        if (caseStatus != null && !caseStatus.isEmpty() && "and".equalsIgnoreCase(logic)) {
+            results.removeIf(tac -> !caseStatus.contains(tac.getCaseStatus()));
+            results.removeIf(tac -> tac.getCaseCreatedDate().isBefore(createDateFrom) || tac.getCaseCreatedDate().isAfter(createDateTo));
+        }
+
+        return results;
+    }
+
+    private RestClient mutateRestClient() {
+        return snakeCaseRestClient.mutate()
+                .baseUrl(restClientConfig.getFreshdeskBaseUri().endsWith("/")
+                        ? restClientConfig.getFreshdeskBaseUri()
+                        : restClientConfig.getFreshdeskBaseUri() + "/") // Ensure trailing "/"
+                .build();
+    }
+
+    private static String createFilterClause(OffsetDateTime caseCreateDateFrom, OffsetDateTime caseCreateDateTo) {
+        DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_DATE;
+        String filterClause = "";
+        filterClause = String.format("created_at:>'%s' AND created_at:<'%s' AND tag:'%s'", caseCreateDateFrom.format(fmt), caseCreateDateTo.format(fmt), "TAC");
+        //filterClause = String.format("created_at:>'%s' AND created_at:<'%s'", caseCreateDateFrom.format(fmt), caseCreateDateTo.format(fmt));
+        filterClause = "\"" + filterClause + "\"";
+        return filterClause;
+    }
+
+    private static FreshdeskTicketSearchResponseDto searchTickets(RestClient restClient, URI relativeUri) {
+        FreshdeskTicketSearchResponseDto ticketSearchResponse =
+                restClient.get()
+                        .uri(relativeUri)
+                        .retrieve()
+                        .body(new ParameterizedTypeReference<>() {
+                        });
+        return ticketSearchResponse;
+    }
+
+    private static URI getRelativeUri(String finalQuery, int page) {
+        UriComponents uc = UriComponentsBuilder.newInstance()
+                // Use .path("search/tickets"), NOT .pathSegment("search", "tickets")
+                // this prevents the truncation of any path already set in the baseUrl
+                // of the RestClient by not prepending a "/" to the relative path
+                // this implies that the RestClient as been mutated to have a "/" appended
+                // to the baseUri
+                .path("search/tickets")
+                .queryParam("query", finalQuery)
+                .queryParam("page", page)
+                .build()
+                .encode();  // single-pass encoding
+        URI relativeUri = uc.toUri();  // "search/tickets?query=...&page=1" (no scheme/host)
+        return relativeUri;
+    }
 
 
     /*
@@ -874,6 +1017,26 @@ public class FreshDeskTacCaseService implements TacCaseService {
         return tacCaseResponseDto;
     }
 
+    private TacCaseResponseDto mapToTacCaseResponseDto(FreshdeskCaseResponse<FreshdeskTacCaseResponseDto> freshdeskTacCaseResponse, FreshdeskTicketResponseDto freshdeskTicketResponseDto) {
+
+        FreshdeskTacCaseResponseDto freshdeskTacCaseResponseDto = freshdeskTacCaseResponse.getData();
+        TacCaseResponseDto tacCaseResponseDto = genericModelMapper.map(freshdeskTacCaseResponseDto, TacCaseResponseDto.class);
+        tacCaseResponseDto.setCaseNumber(freshdeskTacCaseResponse.getDisplayId());
+        tacCaseResponseDto.setId(freshdeskTacCaseResponseDto.getTicket());
+        tacCaseResponseDto.setCaseStatus(CaseStatus.valueOf(freshdeskTicketResponseDto.getStatusForTickets().name()));
+        tacCaseResponseDto.setCasePriority(CasePriorityEnum.valueOf(freshdeskTicketResponseDto.getPriorityForTickets().name()));
+        tacCaseResponseDto.setSubject(freshdeskTicketResponseDto.getSubject());
+//        tacCaseResponseDto.setCaseOwner(requesterResponderService.getResponderName());
+        tacCaseResponseDto.setProblemDescription(freshdeskTicketResponseDto.getDescriptionText());
+        tacCaseResponseDto.setCaseNumber(freshdeskTacCaseResponse.getDisplayId());
+        tacCaseResponseDto.setFirstResponseDate(freshdeskTicketResponseDto.getStats().getFirstRespondedAt());
+        tacCaseResponseDto.setCaseClosedDate(freshdeskTicketResponseDto.getStats().getClosedAt());
+        tacCaseResponseDto.setCaseCreatedDate(freshdeskTicketResponseDto.getCreatedAt());
+
+        return tacCaseResponseDto;
+    }
+
+    //fixme: review this and compare it to the above method to make sure we're covering all the fields
     private TacCaseResponseDto mapToTacCaseResponseDto(TacCaseResponseDto tacCase, FreshdeskTicketResponseDto ticket) {
         tacCase.setId(ticket.getId());
         tacCase.setSubject(ticket.getSubject());
