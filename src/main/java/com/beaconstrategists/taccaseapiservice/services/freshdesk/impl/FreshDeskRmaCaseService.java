@@ -355,7 +355,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         //fixme: can probably just get rid of this logic check and always assume "AND"
         //fixme: fix this in the controller
         if (caseStatus != null && !caseStatus.isEmpty() && "and".equalsIgnoreCase(logic)) {
-            rmaCaseResponseDtos.removeIf(tacCaseResponseDto -> !caseStatus.contains(tacCaseResponseDto.getCaseStatus()));
+            rmaCaseResponseDtos.removeIf(rmaCaseResponseDto -> !caseStatus.contains(rmaCaseResponseDto.getCaseStatus()));
         }
 
         // Return the list of records
@@ -474,7 +474,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
     private static String createFilterClause(OffsetDateTime caseCreateDateFrom, OffsetDateTime caseCreateDateTo) {
         DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_DATE;
         String filterClause = "";
-        filterClause = String.format("created_at:>'%s' AND created_at:<'%s' AND tag:'%s'", caseCreateDateFrom.format(fmt), caseCreateDateTo.format(fmt), "TAC");
+        filterClause = String.format("created_at:>'%s' AND created_at:<'%s' AND tag:'%s'", caseCreateDateFrom.format(fmt), caseCreateDateTo.format(fmt), "RMA");
         //filterClause = String.format("created_at:>'%s' AND created_at:<'%s'", caseCreateDateFrom.format(fmt), caseCreateDateTo.format(fmt));
         filterClause = "\"" + filterClause + "\"";
         return filterClause;
@@ -709,7 +709,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         // Retrieve all the conversations of a ticket
         List<FreshdeskTicketConversationDto> freshdeskTicketConversations = findFreshdeskTicketConversations(caseId);
 
-        // Find and map the note to TacCaseNoteDownloadDto
+        // Find and map the note to RmaCaseNoteDownloadDto
         return freshdeskTicketConversations.stream()
                 .filter(freshdesk -> Objects.equals(freshdesk.getId(), noteId))
                 .map(freshdesk -> RmaCaseNoteDownloadDto.builder()
@@ -744,9 +744,9 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
     }
 
     private FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> findFreshdeskRmaCaseRecordsByTicketId(Long rmaTicketId) {
-        String tacCaseSchemaId = schemaService.getRMACaseSchemaId();
+        String rmaCaseSchemaId = schemaService.getRMACaseSchemaId();
         return snakeCaseRestClient.get()
-                .uri("/custom_objects/schemas/{schema-id}/records?ticket={ticketId}", tacCaseSchemaId, rmaTicketId)
+                .uri("/custom_objects/schemas/{schema-id}/records?ticket={ticketId}", rmaCaseSchemaId, rmaTicketId)
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {
                 });
