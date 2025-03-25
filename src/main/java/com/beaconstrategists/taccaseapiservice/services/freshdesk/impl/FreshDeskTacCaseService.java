@@ -195,6 +195,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
         List<TacCaseResponseDto> results = new ArrayList<>();
         Set<Long> seenCaseIds = new HashSet<>();
 
+        //Created these twin fields to generically support a caseCreatedDateSince query
         OffsetDateTime createDateFrom;
         OffsetDateTime createDateTo;
         if (caseCreateDateSince != null) {
@@ -262,9 +263,10 @@ public class FreshDeskTacCaseService implements TacCaseService {
             pageBundle++;
         }
 
+        results.removeIf(tac -> tac.getCaseCreatedDate().isBefore(createDateFrom) || tac.getCaseCreatedDate().isAfter(createDateTo));
+
         if (caseStatus != null && !caseStatus.isEmpty() && "and".equalsIgnoreCase(logic)) {
             results.removeIf(tac -> !caseStatus.contains(tac.getCaseStatus()));
-            results.removeIf(tac -> tac.getCaseCreatedDate().isBefore(createDateFrom) || tac.getCaseCreatedDate().isAfter(createDateTo));
         }
 
         return results;
@@ -288,13 +290,11 @@ public class FreshDeskTacCaseService implements TacCaseService {
     }
 
     private static FreshdeskTicketSearchResponseDto searchTickets(RestClient restClient, URI relativeUri) {
-        FreshdeskTicketSearchResponseDto ticketSearchResponse =
-                restClient.get()
-                        .uri(relativeUri)
-                        .retrieve()
-                        .body(new ParameterizedTypeReference<>() {
-                        });
-        return ticketSearchResponse;
+        return restClient.get()
+                .uri(relativeUri)
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {
+                });
     }
 
     private static URI getRelativeUri(String finalQuery, int page) {

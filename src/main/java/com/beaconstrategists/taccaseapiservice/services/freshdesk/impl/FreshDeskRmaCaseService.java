@@ -341,6 +341,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
             // Get the 'next' page link if available
             FreshdeskLinksDto links = responseRecords.getLinks();
             FreshdeskLinksDto.Link next = links.getNext();
+
             if (links != null && next != null) {
                 nextPageUrl = "custom_objects/" + (next.getHref().startsWith("/") ? next.getHref().substring(1) : next.getHref());
                 //nextPageUrl = next.getHref().startsWith("/") ? next.getHref().substring(1) : next.getHref();
@@ -363,12 +364,11 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
     }
 
     private static FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> searchCaseRecords(RestClient restClient, String nextPageUrl) {
-        FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> responseRecords = restClient
+        return restClient
                 .get()
                 .uri(nextPageUrl)
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {});
-        return responseRecords;
     }
 
     /*
@@ -388,6 +388,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         List<RmaCaseResponseDto> results = new ArrayList<>();
         Set<Long> seenCaseIds = new HashSet<>();
 
+        //Created these twin fields to generically support a caseCreatedDateSince query
         OffsetDateTime createDateFrom;
         OffsetDateTime createDateTo;
         if (caseCreateDateSince != null) {
@@ -455,9 +456,10 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
             pageBundle++;
         }
 
+        results.removeIf(rma -> rma.getCaseCreatedDate().isBefore(createDateFrom) || rma.getCaseCreatedDate().isAfter(createDateTo));
+
         if (caseStatus != null && !caseStatus.isEmpty() && "and".equalsIgnoreCase(logic)) {
             results.removeIf(rma -> !caseStatus.contains(rma.getCaseStatus()));
-            results.removeIf(rma -> rma.getCaseCreatedDate().isBefore(createDateFrom) || rma.getCaseCreatedDate().isAfter(createDateTo));
         }
 
         return results;
