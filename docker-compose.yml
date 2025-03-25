@@ -1,7 +1,7 @@
 services:
   apisvc-documentation-mono:
     container_name: apisvc-doc-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.15
+    image: pbranestrategy/tac-case-api-service-mono:0.2.16
     environment:
       - ACCESS_TOKEN_EXPIRATION_MIN=5
       - API_SVC_ENV=unsecured
@@ -44,7 +44,7 @@ services:
 
   apisvc-prod-mono:
     container_name: apisvc-prod-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.15
+    image: pbranestrategy/tac-case-api-service-mono:0.2.16
     environment:
       - ACCESS_TOKEN_EXPIRATION_MIN=5
       - API_SVC_ENV=secured
@@ -87,7 +87,7 @@ services:
 
   apisvc-dev-mono:
     container_name: apisvc-dev-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.15
+    image: pbranestrategy/tac-case-api-service-mono:0.2.16
     environment:
       - API_SVC_ENV=unsecured
       - API_SVC_MODE=database
@@ -106,7 +106,7 @@ services:
 
   apisvc-test-mono:
     container_name: apisvc-test-mono
-    image: pbranestrategy/tac-case-api-service-mono:0.2.15
+    image: pbranestrategy/tac-case-api-service-mono:0.2.16
     environment:
       - API_SVC_ENV=secured
       - API_SVC_MODE=freshdesk
