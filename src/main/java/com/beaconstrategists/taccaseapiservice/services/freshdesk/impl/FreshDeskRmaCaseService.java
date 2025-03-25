@@ -672,7 +672,7 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
     }
 
     @Override
-    public List<RmaCaseNoteResponseDto> getAllNotes(Long caseId) {
+    public List<RmaCaseNoteResponseDto> getAllNotes(Long caseId, OffsetDateTime sinceDate) {
 
         //First make sure this is a valid RMA Ticket
         FreshdeskCaseResponseRecords<FreshdeskRmaCaseResponseDto> rmaCaseRecordsByTicketId = findFreshdeskRmaCaseRecordsByTicketId(caseId);
@@ -688,6 +688,9 @@ public class FreshDeskRmaCaseService implements RmaCaseService {
         return freshdeskTicketConversations.stream()
                 .filter(freshdesk -> freshdesk.getSource() == FreshdeskConversationSource.Note)
                 .filter(freshdesk -> !freshdesk.isPrivate())
+                //this behaves like ">=" as opposed to using .isAfter() which would strictly be ">"
+                //could also use .isEqual() || .isAfter()
+                .filter(freshdesk -> sinceDate == null || !freshdesk.getCreatedAt().isBefore(sinceDate))
                 .map(freshdesk -> RmaCaseNoteResponseDto.builder()
                         .id(freshdesk.getId())
                         .rmaCaseId(caseId)

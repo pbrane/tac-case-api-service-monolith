@@ -39,7 +39,7 @@ public interface RmaCaseService {
 
     // Note Operations
     RmaCaseNoteResponseDto addNote(Long caseId, RmaCaseNoteUploadDto uploadDto) throws IOException;
-    List<RmaCaseNoteResponseDto> getAllNotes(Long caseId);
+    List<RmaCaseNoteResponseDto> getAllNotes(Long caseId, OffsetDateTime sinceDate);
     RmaCaseNoteDownloadDto getNote(Long caseId, Long noteId);
     void deleteNote(Long caseId, Long noteId);
     void deleteAllNotes(Long caseId);

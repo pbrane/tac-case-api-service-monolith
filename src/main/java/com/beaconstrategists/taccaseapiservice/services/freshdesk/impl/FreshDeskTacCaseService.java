@@ -682,7 +682,7 @@ public class FreshDeskTacCaseService implements TacCaseService {
     }
 
     @Override
-    public List<TacCaseNoteResponseDto> getAllNotes(Long caseId) {
+    public List<TacCaseNoteResponseDto> getAllNotes(Long caseId, OffsetDateTime sinceDate) {
 
         //First make sure this is a valid TAC Ticket
         Optional<TacCaseResponseDto> freshdeskTacCaseByTicketId = findFreshdeskTacCaseByTicketId(caseId);
@@ -697,6 +697,9 @@ public class FreshDeskTacCaseService implements TacCaseService {
         return freshdeskTicketConversations.stream()
                 .filter(freshdesk -> freshdesk.getSource() == FreshdeskConversationSource.Note)
                 .filter(freshdesk -> !freshdesk.isPrivate())
+                //this behaves like ">=" as opposed to using .isAfter() which would strictly be ">"
+                //could also use .isEqual() || .isAfter()
+                .filter(freshdesk -> sinceDate == null || !freshdesk.getCreatedAt().isBefore(sinceDate))
                 .map(freshdesk -> TacCaseNoteResponseDto.builder()
                         .id(freshdesk.getId())
                         .tacCaseId(caseId)

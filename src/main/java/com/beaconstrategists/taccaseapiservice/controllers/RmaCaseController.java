@@ -218,8 +218,13 @@ public class RmaCaseController {
     }
 
     @GetMapping("/{id}/notes")
-    public ResponseEntity<List<RmaCaseNoteResponseDto>> getAllNotes(@PathVariable Long id) {
-        List<RmaCaseNoteResponseDto> notes = rmaCaseService.getAllNotes(id);
+    public ResponseEntity<List<RmaCaseNoteResponseDto>> getAllNotes(
+            @PathVariable Long id,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            OffsetDateTime sinceDate)
+    {
+        List<RmaCaseNoteResponseDto> notes = rmaCaseService.getAllNotes(id, sinceDate);
         return new ResponseEntity<>(notes, HttpStatus.OK);
     }
 

@@ -292,11 +292,12 @@ public class TacCaseServiceImpl implements TacCaseService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TacCaseNoteResponseDto> getAllNotes(Long caseId) {
+    public List<TacCaseNoteResponseDto> getAllNotes(Long caseId, OffsetDateTime sinceDate) {
         TacCaseEntity tacCase = tacCaseRepository.findById(caseId)
                 .orElseThrow(() -> new ResourceNotFoundException("TAC Case not found with id " + caseId));
 
         return tacCase.getTacCaseNotes().stream()
+                .filter(rec -> sinceDate == null || !rec.getDate().isBefore(sinceDate))
                 .map(tacCaseNoteResponseMapper::mapTo)
                 .collect(Collectors.toList());
     }

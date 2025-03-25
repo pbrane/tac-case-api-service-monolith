@@ -284,11 +284,12 @@ public class RmaCaseServiceImpl implements RmaCaseService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<RmaCaseNoteResponseDto> getAllNotes(Long caseId) {
+    public List<RmaCaseNoteResponseDto> getAllNotes(Long caseId, OffsetDateTime sinceDate) {
         RmaCaseEntity tacCase = rmaCaseRepository.findById(caseId)
                 .orElseThrow(() -> new ResourceNotFoundException("RMA Case not found with id " + caseId));
 
         return tacCase.getRmaCaseNotes().stream()
+                .filter(rec -> sinceDate == null || !rec.getDate().isBefore(sinceDate))
                 .map(rmaCaseNoteResponseMapper::mapTo)
                 .collect(Collectors.toList());
     }

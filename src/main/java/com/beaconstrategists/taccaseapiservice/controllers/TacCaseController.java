@@ -225,8 +225,13 @@ public class TacCaseController {
     }
 
     @GetMapping("/{id}/notes")
-    public ResponseEntity<List<TacCaseNoteResponseDto>> getAllNotes(@PathVariable Long id) {
-        List<TacCaseNoteResponseDto> notes = tacCaseService.getAllNotes(id);
+    public ResponseEntity<List<TacCaseNoteResponseDto>> getAllNotes(
+            @PathVariable Long id,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            OffsetDateTime sinceDate)
+    {
+        List<TacCaseNoteResponseDto> notes = tacCaseService.getAllNotes(id, sinceDate);
         return new ResponseEntity<>(notes, HttpStatus.OK);
     }
 

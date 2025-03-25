@@ -39,7 +39,7 @@ public interface TacCaseService {
 
     // Note Operations
     TacCaseNoteResponseDto addNote(Long caseId, TacCaseNoteUploadDto uploadDto) throws IOException;
-    List<TacCaseNoteResponseDto> getAllNotes(Long caseId);
+    List<TacCaseNoteResponseDto> getAllNotes(Long caseId, OffsetDateTime sinceDate);
     TacCaseNoteDownloadDto getNote(Long caseId, Long noteId);
     void deleteNote(Long caseId, Long noteId);
     void deleteAllNotes(Long caseId);
