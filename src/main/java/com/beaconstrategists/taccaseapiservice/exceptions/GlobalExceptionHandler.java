@@ -98,7 +98,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.NOT_FOUND.value()); // Set as 400
+        //body.put("status", HttpStatus.NOT_FOUND.value()); // Set as 404
+        body.put("status", HttpStatus.BAD_REQUEST.value()); // Set as 400
         body.put("error", "Bad Request");
         body.put("ErrorCode", ex.getErrorCode());  // Include error code
         body.put("message", ex.getMessage());
@@ -125,24 +126,28 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String paramName = ex.getName();
         Object invalidValue = ex.getValue();
 
-        String allowedValues = Arrays.stream(CaseStatus.values())
-                .map(CaseStatus::getValue)
-                .collect(Collectors.joining(", "));
+        if (paramName.equalsIgnoreCase("caseStatus")) {
 
-        String errorMessage = String.format("Invalid case type: '%s' for parameter '%s'. Allowed values: %s",
-                invalidValue != null ? invalidValue : "null", paramName, allowedValues);
+            String allowedValues = allowedValuesList();
 
-        Map<String, Object> body = new HashMap<>();
-        body.put("message", errorMessage);
-        body.put("errorCode", "INVALID_PARAMETER");
-        body.put("timestamp", OffsetDateTime.now());
-        body.put("status", HttpStatus.BAD_REQUEST.value());
-        body.put("path", request.getDescription(false).replace("uri=", ""));
+            String errorMessage = String.format("Invalid case type: '%s' for parameter '%s'. Allowed values: %s",
+                    invalidValue, paramName, allowedValues);
 
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+            Map<String, Object> body = new HashMap<>();
+            body.put("message", errorMessage);
+            body.put("errorCode", "INVALID_CASE_TYPE");
+            body.put("timestamp", OffsetDateTime.now());
+            body.put("status", HttpStatus.BAD_REQUEST.value());
+            body.put("path", request.getDescription(false).replace("uri=", ""));
+
+            return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+        }
+
+        return ResponseEntity.badRequest().body("Invalid value "+invalidValue+" for parameter "+paramName);
+
     }
 
-    private String allowedValuesList() {
+    private static String allowedValuesList() {
         return Arrays.stream(CaseStatus.values())
                 .map(CaseStatus::getValue)
                 .collect(Collectors.joining(", "));
