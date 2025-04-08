@@ -112,7 +112,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleInvalidPathParameterException(InvalidPathParameterException ex, WebRequest request) {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.NOT_FOUND.value()); // Set as 400
+//        body.put("status", HttpStatus.NOT_FOUND.value()); // Set as 400
+        body.put("status", HttpStatus.BAD_REQUEST.value()); // Set as 400
         body.put("error", "Bad Request");
         body.put("ErrorCode", ex.getErrorCode());  // Include error code
         body.put("message", ex.getMessage());
